@@ -93,7 +93,14 @@ public class GameScreen extends ScreenAdapter {
             Vector3 pos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
             int[] coordinate = gameMap.getTileCoordinateByLocation(1,pos.x, pos.y);
             if (coordinate != null) {
-                gameMap.destroyTile(coordinate);
+                if (gameMap.presentTile(coordinate)) {
+                    gameMap.destroyTile(coordinate);
+                    System.out.println("add");
+                } else {
+                    gameMap.addTile(coordinate);
+                    System.out.println("delete");
+                }
+
             }
         }
 

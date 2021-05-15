@@ -97,6 +97,17 @@ public class GameMap extends Actor {
         getMap()[coordinate[0]][coordinate[1]][coordinate[2]] = 0;
     }
 
+    public boolean presentTile(int[] coordinate) {
+        if (getMap()[coordinate[0]][coordinate[1]][coordinate[2]] != 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public void addTile(int[] coordinate) {
+        getMap()[coordinate[0]][coordinate[1]][coordinate[2]] = 3;
+    }
+
     public int getPixelWidth() {
         return this.getWidthMap() * TileType.TILE_SIZE;
     }
