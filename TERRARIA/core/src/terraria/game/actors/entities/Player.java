@@ -66,11 +66,11 @@ public class Player extends Entity {
 
         super.render(deltaTime, gravity, camera);//Apply gravity
 
-        if (Gdx.input.isKeyPressed(Keys.LEFT)) {
+        if (Gdx.input.isKeyPressed(Keys.Q)) {
             moveX(-SPEED * deltaTime);
         }
 
-        if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
+        if (Gdx.input.isKeyPressed(Keys.D)) {
             moveX(SPEED * deltaTime);
         }
     }
@@ -90,13 +90,13 @@ public class Player extends Entity {
             }
             else{ batch.draw(animations.get(2).getFrame(), (float)pos.x, (float)pos.y);}
         }
-        else if (Gdx.input.isKeyPressed(Keys.LEFT)){
+        else if (Gdx.input.isKeyPressed(Keys.Q)){
             runRight = false;
             batch.draw( animations.get(4).getFrame(), (float)pos.x, (float)pos.y);
             animations.get(4).update( Gdx.graphics.getDeltaTime());
 
         }
-        else if (Gdx.input.isKeyPressed(Keys.RIGHT)){
+        else if (Gdx.input.isKeyPressed(Keys.D)){
             runRight = true;
             batch.draw( animations.get(5).getFrame(), (float)pos.x, (float)pos.y);
             animations.get(5).update( Gdx.graphics.getDeltaTime());
