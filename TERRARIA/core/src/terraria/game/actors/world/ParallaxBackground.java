@@ -73,18 +73,17 @@ public class ParallaxBackground extends Actor {
 
         batch.setColor(getColor().r, getColor().g, getColor().b, getColor().a * parentAlpha);
 
-        if(constantAnimation){scroll += speed;}
-        else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            scroll -= speed;
-        }
-        else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        if (constantAnimation)
             scroll += speed;
-        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.Q))
+            scroll -= speed;
+        else if (Gdx.input.isKeyPressed(Input.Keys.D))
+            scroll += speed;
+
         for(int i = 0;i<textures.size ;i++) {
             srcX = scroll + i*this.LAYER_SPEED_DIFFERENCE *scroll;
             srcX =  srcX/4;
             batch.draw(textures.get(i), x, y, originX, originY, width, heigth,scaleX,scaleY,rotation,srcX,srcY,textures.get(i).getWidth(),textures.get(i).getHeight(),flipX,flipY);
-
         }
     }
 }
