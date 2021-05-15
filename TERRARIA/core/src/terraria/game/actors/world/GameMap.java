@@ -67,6 +67,56 @@ public class GameMap extends Actor {
         ScreenHeigth = stage.getViewport().getScreenHeight();
     }
 
+    /**
+     * Donne quelle tuille est à cette location
+     * @param layer
+     * @param x
+     * @param y
+     * @return
+     */
+    public int[] getTileCoordinateByLocation(int layer, float x, float y) {
+        return this.getTileCoordinate(layer, (int) (x / TileType.TILE_SIZE), (int) (y / TileType.TILE_SIZE));
+    }
+
+    /**
+     *
+     * @param layer
+     * @param col
+     * @param row
+     * @return
+     */
+    public int[] getTileCoordinate(int layer, int col, int row) {
+        int[] coordinate = new int[3];
+        coordinate[0] = layer;
+        coordinate[1] = getHeightMap() - row - 1;
+        coordinate[2] = col;
+        return coordinate;
+    }
+
+    public void destroyTile(int[] coordinate) {
+        getMap()[coordinate[0]][coordinate[1]][coordinate[2]] = 0;
+    }
+
+    public int getPixelWidth() {
+        return this.getWidthMap() * TileType.TILE_SIZE;
+    }
+
+    public int getPixelHeight() {
+        return this.getHeightMap() * TileType.TILE_SIZE;
+    }
+
+    public int getWidthMap() {
+        return getMap()[0][0].length;
+    }
+
+    public int getHeightMap() {
+        return getMap()[0].length;
+    }
+
+    public int getLayers() {
+        return getMap().length;
+    }
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
 
