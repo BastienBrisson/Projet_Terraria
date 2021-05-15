@@ -50,7 +50,7 @@ public class Player extends Entity {
 
         camera.position.set(pos.x, pos.y + 32*5, 0);
 
-        if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP)) && grounded) {
+        if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.Z)) && grounded) {
             this.velocityY += JUMP_VELOCITY * getWeight();
         }
         else if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded && this.velocityY > 0) {
