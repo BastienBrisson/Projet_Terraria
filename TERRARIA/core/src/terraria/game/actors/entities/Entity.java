@@ -16,6 +16,7 @@ public class Entity extends Actor {
     protected GameScreen gameScreen;
     protected GameMap gameMap;
     protected boolean grounded = false;
+    protected boolean flipX = false;
 
     protected Array<Texture> textures;
     protected Array<Animation> animations ;
@@ -63,6 +64,10 @@ public class Entity extends Actor {
      * @param amount
      */
     protected void moveX (float amount) {
+        //Check if textures face right or left (+x or -x)
+        if (amount < 0) flipX = true;
+        else flipX = false;
+
         //Check if movement possible
         float newX = this.pos.x + amount;
         if(!gameScreen.DoesRectCollideWithMap(newX, this.pos.y, (int)getWidth(), (int)getHeight())){
