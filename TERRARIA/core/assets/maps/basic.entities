@@ -1,8 +1,0 @@
-[
-{
-	class: terraria.game.actors.entities.EntitySnapshot
-	type: player
-	x: 15245.193
-	y: 3328
-}
-]
