@@ -7,24 +7,24 @@ import java.util.HashMap;
 public enum TileType {
 
 
-    GRASS(1, true),
-    EARTH(2, true),
-    DIRT(3, true),
-    CAVE(4, false),
-    COAL(5, true),
-    GOLD(6, true),
-    DIAMOND(7, true),
-    IRON(8, true),
-    LAVA(9, true),
-    GRASSONSTONE(10, true),
-    lightOff(11, false),
+    GRASS(1, true, "grass"),
+    DIRT(2, true, "dirt"),
+    STONE(3, true, "stone"),
+    CAVE_BACKGROUND(4, false, "cave_bg"),
+    COAL(5, true, "coal"),
+    GOLD(6, true, "gold"),
+    DIAMOND(7, true, "diamond"),
+    IRON(8, true, "iron"),
+    LAVA(9, true, "lava"),
+    MOSSY_STONE(10, true, "mossy_stone"),
+    DARK_BACKGROUND(11, false, "dark_bg"),
 
-    PLANT(12, false),
-    STEM(13, false),
-    PEBBLE(14, false),
-    FILTRE0(15, false),
-    FILTRE1(16, false),
-    FILTRE2(17, false);
+    WEED(12, false, "weed"),
+    LOG(13, false, "log"),
+    PEBBLE(14, false,"pebble"),
+    FILTRE0(15, false, "light_filter"),
+    FILTRE1(16, false,"light_filter"),
+    FILTRE2(17, false, "light_filter");
 
 
 
@@ -32,12 +32,13 @@ public enum TileType {
 
     private int id;
     private boolean collidable;
+    private String name;
 
 
-    private TileType(int id, boolean collidable) {
+    private TileType(int id, boolean collidable, String name) {
         this.id = id;
         this.collidable = collidable;
-
+        this.name = name;
     }
 
     public int getId() {
@@ -46,9 +47,9 @@ public enum TileType {
     public boolean isCollidable() {
         return collidable;
     }
-
-
-
+    public String getName() {
+        return name;
+    }
 
     public static HashMap<Integer, TileType> caseMap;
     static {

@@ -11,8 +11,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import terraria.game.actors.entities.Entity;
 import terraria.game.actors.entities.EntityLoader;
-import terraria.game.actors.entities.EntityType;
-import terraria.game.actors.entities.Player;
 import terraria.game.actors.world.GameMap;
 import terraria.game.actors.world.GeneratorMap.MapLoader;
 import terraria.game.actors.world.ParallaxBackground;
@@ -57,7 +55,7 @@ public class GameScreen extends ScreenAdapter {
 
 
         entities = new ArrayList<Entity>();
-        entities = EntityLoader.loadEntities("basic", gameMap, this);
+        entities = EntityLoader.loadEntities("test", gameMap, this);
 
 
         //On ajoute nos acteurs//
@@ -81,11 +79,11 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         for (Entity entity : entities) {
-            entity.render(delta, -9.8f, camera);
+            entity.update(delta, -9.8f, camera);
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
-            EntityLoader.saveEntities("basic", entities);
+            EntityLoader.saveEntities("test", entities);
             MapLoader.saveMap(gameMap.getId(), gameMap.getName(), gameMap.getMap(), gameMap.getStartingPoint());
         }
 
@@ -107,8 +105,8 @@ public class GameScreen extends ScreenAdapter {
         stage.act();
         stage.draw();
 
-        this.parallaxBackground.render(camera, stage);
-        this.gameMap.render(camera, stage);
+        this.parallaxBackground.update(camera, stage);
+        this.gameMap.update(camera, stage);
 
     }
 

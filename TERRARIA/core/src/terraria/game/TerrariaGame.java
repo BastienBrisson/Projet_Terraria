@@ -1,8 +1,7 @@
 package terraria.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
-import terraria.game.screens.GameScreen;
-import terraria.game.screens.MainScreen;
+import terraria.game.screens.MainMenuScreen;
 
 public class TerrariaGame extends Game {
 
@@ -13,10 +12,7 @@ public class TerrariaGame extends Game {
 
 		assetManager = new AssetManager();
 
-		/*On demarre l'ecran de jeu*//*
-		this.setScreen(new GameScreen());*/
-
-		this.setScreen(new MainScreen(this));
+		this.setScreen(new MainMenuScreen(this));
 	}
 
 	@Override

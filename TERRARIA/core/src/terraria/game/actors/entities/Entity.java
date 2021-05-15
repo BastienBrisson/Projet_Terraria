@@ -36,7 +36,8 @@ public class Entity extends Actor {
     }
 
 
-    public void render(float deltaTime, float gravity, Camera camera) {
+    public void update(float deltaTime, float gravity, Camera camera) {
+        //Apply gravity
         float newY = pos.y;
         this.velocityY += gravity * deltaTime * getWeight();
         newY += this.velocityY * deltaTime;
@@ -58,12 +59,12 @@ public class Entity extends Actor {
     }
 
     /**
-     * Calcule collision
+     * Calcule le mouvement horizontale
      * @param amount
      */
     protected void moveX (float amount) {
+        //Check if movement possible
         float newX = this.pos.x + amount;
-
         if(!gameScreen.DoesRectCollideWithMap(newX, this.pos.y, (int)getWidth(), (int)getHeight())){
             this.pos.x = newX;
         }

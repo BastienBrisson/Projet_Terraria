@@ -12,8 +12,8 @@ import java.util.Random;
 public class MapLoader {
 
     private static Json json = new Json();
-    public static final int SIZE_HEIGHT = 256;
-    public static final int SIZE_WIDTH = 1024;
+    public static final int HEIGHT = 256;
+    public static final int WIDTH = 1024;
 
     /**
      * On obtient une mapProcédurale :
@@ -26,18 +26,17 @@ public class MapLoader {
      */
     public static DataMap loadMap(String id, String name) {
 
-        Gdx.files.local("maps/").file().mkdirs();
+        Gdx.files.local("saves/").file().mkdirs();
 
-        FileHandle file = Gdx.files.local("maps/" + id + ".map");
+        FileHandle file = Gdx.files.local("saves/" + id + ".map");
+        DataMap mapData;
         if (file.exists()) {
-            DataMap mapData = json.fromJson(DataMap.class, file.readString());
-            return mapData;
+            mapData = json.fromJson(DataMap.class, file.readString());
         } else {
-
-            DataMap mapData = generateRandomMap(id, name);
+            mapData = generateRandomMap(id, name);
             saveMap(mapData.id, mapData.name, mapData.map, mapData.startingPoint);
-            return mapData;
         }
+        return mapData;
     }
 
     /**
@@ -53,11 +52,11 @@ public class MapLoader {
         mapData.name = name;
         mapData.map = map;
         mapData.startingPoint = startingPoint;
-        mapData.size_height = SIZE_HEIGHT;
-        mapData.size_width = SIZE_WIDTH;
+        mapData.height = HEIGHT;
+        mapData.width = WIDTH;
 
-        Gdx.files.local("maps/").file().mkdirs();
-        FileHandle file = Gdx.files.local("maps/" + id + ".map");
+        Gdx.files.local("saves/").file().mkdirs();
+        FileHandle file = Gdx.files.local("saves/" + id + ".map");
         file.writeString(json.prettyPrint(mapData), false);
     }
 
@@ -72,13 +71,13 @@ public class MapLoader {
         DataMap mapData = new DataMap();
         mapData.id = id;
         mapData.name = id;
-        mapData.map = new int[3][SIZE_HEIGHT][SIZE_WIDTH];
+        mapData.map = new int[3][HEIGHT][WIDTH];
 
         Random rand = new Random();
         int random = rand.nextInt(1000);
         System.out.println("random : " + random);
 
-        for (int col = 0; col < SIZE_WIDTH; col++) {
+        for (int col = 0; col < WIDTH; col++) {
 
 
             float LimitOfGrasses = PerlinNoise.PerlinNoise1D((float) (random * 0.1), 0.25f, 1);
@@ -86,17 +85,17 @@ public class MapLoader {
             float LimitOfRocks = PerlinNoise.PerlinNoise1D((float) (random * 0.1), 0.60f, 1);
             LimitOfRocks = (float) MettreALEchelleNoise(LimitOfRocks, 40, 10);//14.2
 
-            if (col == SIZE_WIDTH / 2) {
+            if (col == WIDTH / 2) {
                 starting((int)LimitOfGrasses,  (int)LimitOfRocks, random,  col,mapData);
                 System.out.println("current + 0 :  "+(int)LimitOfGrasses + "  " + (int)LimitOfRocks + "\n");
             }
-            if (col == SIZE_WIDTH / 2 + 1){
+            if (col == WIDTH / 2 + 1){
                 System.out.println("current + 1 :  "+(int)LimitOfGrasses + "  " + (int)LimitOfRocks + "\n");
             }
-            if (col == SIZE_WIDTH / 2 + 2){
+            if (col == WIDTH / 2 + 2){
                 System.out.println("current + 2 :  "+(int)LimitOfGrasses + "  " + (int)LimitOfRocks + "\n");
             }
-            if (col == SIZE_WIDTH / 2 + 3){
+            if (col == WIDTH / 2 + 3){
                 System.out.println("current + 3 :  "+(int)LimitOfGrasses + "  " + (int)LimitOfRocks + "\n");
             }
 
@@ -127,8 +126,8 @@ public class MapLoader {
         mapData.map[2][row][col] = TileType.FILTRE0.getId();
         row++;
 
-        while (row < SIZE_HEIGHT) {
-            mapData.map[2][row][col] = TileType.lightOff.getId();
+        while (row < HEIGHT) {
+            mapData.map[2][row][col] = TileType.DARK_BACKGROUND.getId();
             row++;
         }
     }
@@ -137,7 +136,7 @@ public class MapLoader {
     public static float MettreALEchelleNoise(float noise, double amplitude, double AxeVertical) {
         noise = noise + 1;
         noise = (float) (noise * (amplitude) / 2);
-        noise = (float) (noise + SIZE_HEIGHT / 2 + (AxeVertical));
+        noise = (float) (noise + HEIGHT / 2 + (AxeVertical));
         return noise;
     }
 
@@ -157,7 +156,7 @@ public class MapLoader {
             if (LimitOfGrasses < LimitOfRocks) {
 
                     if (nextLimitOfGrasses >= LimitOfGrasses) {
-                        mapData.startingPoint = new int[]{(int) (SIZE_HEIGHT - LimitOfGrasses), col + (i-1)};
+                        mapData.startingPoint = new int[]{(int) (HEIGHT - LimitOfGrasses), col + (i-1)};
                         starting = true;
                     }
                     else{
@@ -168,7 +167,7 @@ public class MapLoader {
 
             } else {
                     if(nextLimitOfRocks >= LimitOfRocks && nextLimitOfGrasses >= LimitOfRocks) {
-                        mapData.startingPoint = new int[]{ (SIZE_HEIGHT - LimitOfRocks), col};
+                        mapData.startingPoint = new int[]{ (HEIGHT - LimitOfRocks), col};
                         starting = true;
                     }
                     else{

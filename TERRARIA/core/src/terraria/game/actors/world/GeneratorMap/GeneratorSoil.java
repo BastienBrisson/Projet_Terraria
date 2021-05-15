@@ -7,7 +7,7 @@ public class GeneratorSoil {
 
     protected  static void GenerateSoil(int LimitOfGrasses, int LimitOfRocks, int col, DataMap mapData, int random){
         mapData.map[1][LimitOfGrasses][col] = TileType.GRASS.getId();
-        mapData.map[1][LimitOfRocks][col] = TileType.GRASSONSTONE.getId();
+        mapData.map[1][LimitOfRocks][col] = TileType.MOSSY_STONE.getId();
 
 
         float treeValLast = PerlinNoise.PerlinNoise1D((float) (( random - 1 )*0.1), 0.50f, 9);
@@ -24,7 +24,7 @@ public class GeneratorSoil {
             int randomSur3 = rand.nextInt(3);
             if(randomSur3 == 0){
                 if(LimitOfRocks >= LimitOfGrasses) {
-                    mapData.map[1][LimitOfGrasses - 1][col] = TileType.PLANT.getId();
+                    mapData.map[1][LimitOfGrasses - 1][col] = TileType.WEED.getId();
                 }
             }
             else{
@@ -62,7 +62,7 @@ public class GeneratorSoil {
                 break;
         }
         for(int i = 0; i < TreeHeight; i++){
-            mapData.map[1][row - i][col] = TileType.STEM.getId();
+            mapData.map[1][row - i][col] = TileType.LOG.getId();
         }
     }
 }

@@ -6,8 +6,8 @@ public class DataMap {
     public String name;
     public int[][][] map;
     public int[] startingPoint;
-    public int size_height;
-    public int size_width;
+    public int height;
+    public int width;
 
 
 }

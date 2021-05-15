@@ -14,8 +14,8 @@ public class EntityLoader {
     private static Json json = new Json();
 
     public static ArrayList<Entity> loadEntities (String id, GameMap gameMap, GameScreen gameScreen) {
-        Gdx.files.local("maps/").file().mkdirs();
-        FileHandle file = Gdx.files.local("maps/" + id + ".entities");
+        Gdx.files.local("saves/").file().mkdirs();
+        FileHandle file = Gdx.files.local("saves/" + id + ".entities");
         ArrayList<Entity> entities = new ArrayList<Entity>();
 
         if (file.exists()) {
@@ -39,8 +39,8 @@ public class EntityLoader {
         for (Entity entity : entities)
             snapshots.add(entity.getSaveSnapshot());
 
-        Gdx.files.local("maps/").file().mkdirs();
-        FileHandle file = Gdx.files.local("maps/" + id + ".entities");
+        Gdx.files.local("saves/").file().mkdirs();
+        FileHandle file = Gdx.files.local("saves/" + id + ".entities");
         file.writeString(json.prettyPrint(snapshots), false);
     }
 

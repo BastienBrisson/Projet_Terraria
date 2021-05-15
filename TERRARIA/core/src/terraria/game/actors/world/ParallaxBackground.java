@@ -9,7 +9,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
-import terraria.game.screens.MainScreen;
 
 
 public class ParallaxBackground extends Actor {
@@ -52,7 +51,7 @@ public class ParallaxBackground extends Actor {
      * @param camera
      * @param stage
      */
-    public void render(OrthographicCamera camera, Stage stage){
+    public void update(OrthographicCamera camera, Stage stage){
 
         this.camera = camera;
         Vector3 vec = camera.position;

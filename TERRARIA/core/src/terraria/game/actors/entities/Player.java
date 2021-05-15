@@ -52,7 +52,7 @@ public class Player extends Entity {
      * @param gravity
      */
     @Override
-    public void render(float deltaTime, float gravity, Camera camera) {
+    public void update(float deltaTime, float gravity, Camera camera) {
 
         camera.position.set(pos.x, pos.y + 32*5, 0);
 
@@ -64,7 +64,7 @@ public class Player extends Entity {
             this.velocityY += JUMP_VELOCITY * getWeight() * deltaTime;
         }
 
-        super.render(deltaTime, gravity, camera);//Apply gravity
+        super.update(deltaTime, gravity, camera);//Apply gravity
 
         if (Gdx.input.isKeyPressed(Keys.Q)) {
             moveX(-SPEED * deltaTime);
