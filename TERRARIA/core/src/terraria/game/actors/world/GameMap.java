@@ -91,16 +91,16 @@ public class GameMap extends Actor {
      * @return
      */
     public Vector3 getTileCoordinateByLocation(int layer, float x, float y) {
-        return new Vector3((int) (getMapHeight() - (y / TileType.TILE_SIZE)), (int) (x / TileType.TILE_SIZE), layer);
+        return new Vector3((int) (x / TileType.TILE_SIZE), (int) (getMapHeight() - (y / TileType.TILE_SIZE)), layer);
     }
 
     public void destroyTile(Vector3 coordinate) {
-        getMap()[(int)coordinate.z][(int)coordinate.x][(int)coordinate.y] = 0;
+        getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = 0;
     }
 
     public boolean presentTile(Vector3 coordinate) {
         if (tilesInMap(coordinate))  {
-            if (getMap()[(int)coordinate.z][(int)coordinate.x][(int)coordinate.y] != 0) {
+            if (getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] != 0) {
                 return true;
             }
         }
@@ -108,7 +108,9 @@ public class GameMap extends Actor {
     }
 
     public boolean tilesInMap(Vector3 coordinate) {
-        if (coordinate.x > 0 && coordinate.x < getMapHeight() && coordinate.y > 0 && coordinate.y < getMapWidth())  {
+        System.out.println("x : "+coordinate.x);
+        System.out.println("y : "+coordinate.y);
+        if (coordinate.x > 0 && coordinate.x < getMapWidth() && coordinate.y > 0 && coordinate.y < getMapHeight())  {
             return true;
         }
         return false;
@@ -116,7 +118,7 @@ public class GameMap extends Actor {
 
     public void addTile(Vector3 coordinate) {
         if (tilesInMap(coordinate)) {
-            getMap()[(int)coordinate.z][(int)coordinate.x][(int)coordinate.y] = 3;
+            getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = 3;
         }
     }
 

@@ -35,6 +35,7 @@ public class MapLoader {
         } else {
             mapData = generateRandomMap(id, name);
             saveMap(mapData.id, mapData.name, mapData.map, mapData.startingPoint);
+            mapData = json.fromJson(DataMap.class, file.readString());
         }
         return mapData;
     }
