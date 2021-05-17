@@ -159,20 +159,22 @@ public class GameMap extends Actor {
                                 case MOSSY_STONE:
                                     batch.draw(tilesTextures.get(type.getId()), col * TileType.TILE_SIZE, row * TileType.TILE_SIZE);
 
-                                    int srcFunc = batch.getBlendSrcFunc();
+                                    /*int srcFunc = batch.getBlendSrcFunc();
                                     int dstFunc = batch.getBlendDstFunc();
                                     batch.enableBlending();
                                     batch.setBlendFunction(Gdx.gl20.GL_DST_COLOR, Gdx.gl20.GL_SRC_ALPHA);
                                     batch.draw(filtre[0][0], col * TileType.TILE_SIZE, row * TileType.TILE_SIZE);
                                     batch.draw(filtre[0][1], col * TileType.TILE_SIZE, (row - 1) * TileType.TILE_SIZE);
                                     batch.draw(filtre[0][2], col * TileType.TILE_SIZE, (row - 2) * TileType.TILE_SIZE);
-                                    batch.setBlendFunction(srcFunc, dstFunc);
+                                    batch.setBlendFunction(srcFunc, dstFunc);*/
 
                                     break;
 
                                 case FILTRE0:
                                 case FILTRE1:
+                                case DARK_BACKGROUND:
                                 case FILTRE2:break;
+
 
                                 default:
                                     batch.draw(tilesTextures.get(type.getId()), col * TileType.TILE_SIZE, row * TileType.TILE_SIZE);
