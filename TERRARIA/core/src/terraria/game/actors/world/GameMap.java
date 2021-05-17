@@ -94,21 +94,6 @@ public class GameMap extends Actor {
         return new Vector3((int) (getMapHeight() - (y / TileType.TILE_SIZE)), (int) (x / TileType.TILE_SIZE), layer);
     }
 
-    /**
-     *
-     * @param layer
-     * @param col
-     * @param row
-     * @return
-     */
-    public int[] getTileCoordinate(int layer, int col, int row) {
-        int[] coordinate = new int[3];
-        coordinate[0] = layer;
-        coordinate[1] = getMapHeight() - row - 1;
-        coordinate[2] = col;
-        return coordinate;
-    }
-
     public void destroyTile(Vector3 coordinate) {
         getMap()[(int)coordinate.z][(int)coordinate.x][(int)coordinate.y] = 0;
     }
@@ -123,7 +108,7 @@ public class GameMap extends Actor {
     }
 
     public boolean tilesInMap(Vector3 coordinate) {
-        if (coordinate.x > 0 && coordinate.x < 256 && coordinate.y > 0 && coordinate.y < 1024)  {
+        if (coordinate.x > 0 && coordinate.x < getMapHeight() && coordinate.y > 0 && coordinate.y < getMapWidth())  {
             return true;
         }
         return false;

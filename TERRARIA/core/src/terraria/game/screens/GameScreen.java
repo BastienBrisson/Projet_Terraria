@@ -89,20 +89,7 @@ public class GameScreen extends ScreenAdapter {
         }
 
         if (Gdx.input.justTouched()) {
-            Vector3 pos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-            Vector3 coordinate = gameMap.getTileCoordinateByLocation(1,pos.x, pos.y);
-            if (coordinate != null) {
-                if (gameMap.presentTile(coordinate) ) {
-                    gameMap.destroyTile(coordinate);
-                } else {
-                    gameMap.addTile(coordinate);
-                    System.out.println("test poser bloc");
-                    if (DoesRectCollideWithMap(entities.get(0).getX(), entities.get(0).getY(), (int) entities.get(0).getWidth(), (int) entities.get(0).getHeight())) {
-                        gameMap.destroyTile(coordinate);
-                    }
-                }
-
-            }
+            blocAction();
         }
 
         stage.act();
@@ -111,6 +98,21 @@ public class GameScreen extends ScreenAdapter {
         this.parallaxBackground.update(camera, stage);
         this.gameMap.update(camera, stage);
 
+    }
+
+    public void blocAction() {
+        Vector3 pos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+        Vector3 coordinate = gameMap.getTileCoordinateByLocation(1,pos.x, pos.y);
+        if (coordinate != null) {
+            if (gameMap.presentTile(coordinate) ) {
+                gameMap.destroyTile(coordinate);
+            } else {
+                gameMap.addTile(coordinate);
+                if (DoesRectCollideWithMap(entities.get(0).getX(), entities.get(0).getY(), (int) entities.get(0).getWidth(), (int) entities.get(0).getHeight())) {
+                    gameMap.destroyTile(coordinate);
+                }
+            }
+        }
     }
 
 
