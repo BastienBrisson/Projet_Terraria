@@ -101,12 +101,5 @@ public class Entity extends Actor {
     public Array<Texture> getArrayTextures(){return textures;}
     public Array<Animation> getArrayAnimations(){return animations;}
 
-    public boolean isHere(int[] coordinate) {
-        //if ((int) getX() <= coordinate[1] <= (int) getX() + getWidth() && getY() <= coordinate[2] <= getY() + getHeight()) {
-
-        //}
-        return false;
-    }
-
 
 }

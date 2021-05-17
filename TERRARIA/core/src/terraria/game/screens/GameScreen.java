@@ -36,6 +36,7 @@ public class GameScreen extends ScreenAdapter {
         stage = new Stage(new ScreenViewport());
         camera = (OrthographicCamera) stage.getViewport().getCamera();
 
+
         //Initalisation des acteurs//
 
         /*Initialisation de l'arrière plan*/
@@ -91,10 +92,13 @@ public class GameScreen extends ScreenAdapter {
             Vector3 pos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
             int[] coordinate = gameMap.getTileCoordinateByLocation(1,pos.x, pos.y);
             if (coordinate != null) {
-                if (gameMap.presentTile(coordinate) && !entities.get(0).isHere(coordinate)) {
+                if (gameMap.presentTile(coordinate) ) {
                     gameMap.destroyTile(coordinate);
                 } else {
                     gameMap.addTile(coordinate);
+                    if (DoesRectCollideWithMap(entities.get(0).getX(), entities.get(0).getY(), (int) entities.get(0).getWidth(), (int) entities.get(0).getHeight())) {
+                        gameMap.destroyTile(coordinate);
+                    }
                 }
 
             }
