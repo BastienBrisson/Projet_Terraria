@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import terraria.game.actors.world.GameMap;
+import terraria.game.actors.world.TileType;
 import terraria.game.screens.GameScreen;
 
 public class Entity extends Actor {
@@ -99,6 +100,13 @@ public class Entity extends Actor {
 
     public Array<Texture> getArrayTextures(){return textures;}
     public Array<Animation> getArrayAnimations(){return animations;}
+
+    public boolean isHere(int[] coordinate) {
+        //if ((int) getX() <= coordinate[1] <= (int) getX() + getWidth() && getY() <= coordinate[2] <= getY() + getHeight()) {
+
+        //}
+        return false;
+    }
 
 
 }
