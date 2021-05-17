@@ -31,7 +31,6 @@ public class GeneratorSubSoil {
             if((noiseTab[i] > 0.7 && noiseTab[i] < 1.3)   && HeightLimitOfCaves) {
 
                     if(row == MapLoader.HEIGHT - 1){  mapData.map[1][row][col] = TileType.LAVA.getId();}
-                    else{ mapData.map[1][row][col] = TileType.CAVE_BACKGROUND.getId();}
             }
             else{
                 i++;
