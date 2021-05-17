@@ -96,6 +96,10 @@ public class GameMap extends Actor {
 
     public void destroyTile(Vector3 coordinate) {
         getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = 0;
+        int idBlocSupp = getMap()[(int)coordinate.z][(int)coordinate.y-1][(int)coordinate.x];
+        if (idBlocSupp == 12 || idBlocSupp == 13 || idBlocSupp == 14) {
+            getMap()[(int)coordinate.z][(int)coordinate.y-1][(int)coordinate.x] = 0;
+        }
     }
 
     public boolean presentTile(Vector3 coordinate) {
@@ -108,8 +112,6 @@ public class GameMap extends Actor {
     }
 
     public boolean tilesInMap(Vector3 coordinate) {
-        System.out.println("x : "+coordinate.x);
-        System.out.println("y : "+coordinate.y);
         if (coordinate.x > 0 && coordinate.x < getMapWidth() && coordinate.y > 0 && coordinate.y < getMapHeight())  {
             return true;
         }
