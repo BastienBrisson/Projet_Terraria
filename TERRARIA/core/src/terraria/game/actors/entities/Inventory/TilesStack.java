@@ -25,8 +25,23 @@ public class TilesStack {
         return this.idTile;
     }
 
-    public void changeSlot(TileType tile, int amount) {
+    public void incrAmount() {
+        this.amount++;
+    }
+
+    public void decrAmount() {
+        this.amount--;
+    }
+
+    public void changeContent(TileType tile, int amount) {
         this.amount = amount;
         this.idTile = tile.getId();
+    }
+
+    public boolean compareTo(TilesStack stack) {
+        if(this.amount == stack.amount && this.idTile == stack.idTile) {
+            return true;
+        }
+        return false;
     }
 }
