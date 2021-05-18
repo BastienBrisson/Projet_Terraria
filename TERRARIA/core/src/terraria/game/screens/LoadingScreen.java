@@ -4,13 +4,17 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import terraria.game.TerrariaGame;
 import terraria.game.actors.entities.Entity;
 import terraria.game.actors.entities.EntityLoader;
@@ -18,29 +22,38 @@ import terraria.game.actors.world.GameMap;
 import terraria.game.actors.world.ParallaxBackground;
 import terraria.game.actors.world.TileType;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class LoadingScreen extends ScreenAdapter {
 
-    private final ParallaxBackground parallaxBackground;
-    private Stage stage;
-    private OrthographicCamera camera;
+    private ParallaxBackground parallaxBackground;
     private TerrariaGame game;
     private  ArrayList<Entity>  entities;
     private GameMap gameMap;
-    private float progress = 0;
+
 
     public static int TEXTURE_NUMBER_PLAYER = 3;
     public static int TEXTURE_NUMBER_PARALLAX_GAME = 3;
 
+    private static final float PROGRESS_BAR_WIDTH = 500;
+    private static final float PROGRESS_BAR_HEIGHT = 25;
+
+    private ShapeRenderer shapeRenderer;
+    private ScreenViewport viewport;
+    private Camera camera;
+    private float progress = 0;
+
+
 
     LoadingScreen(TerrariaGame game){
 
-        this.game = game;
-        stage = new Stage(new ScreenViewport());
-        camera = (OrthographicCamera) stage.getViewport().getCamera();
+        viewport = new ScreenViewport();
+        camera = viewport.getCamera();
+        shapeRenderer = new ShapeRenderer();
 
+        this.game = game;
 
         for(int i = 1; i < TEXTURE_NUMBER_PARALLAX_GAME + 1;i++){
             game.getAssetManager().load("parallax/img"+i+".png", Texture.class);
@@ -63,42 +76,18 @@ public class LoadingScreen extends ScreenAdapter {
         game.getAssetManager().load("cailloux.png",Texture.class );
         game.getAssetManager().load("filtre.png", Texture.class);
 
-        game.getAssetManager().finishLoading();
-
-
-        Array<Texture> texturesParallax = new Array<Texture>();
-        for(int i = 1; i < TEXTURE_NUMBER_PARALLAX_GAME ;i++){
-            texturesParallax.add(game.getAssetManager().get("parallax/img"+i+".png", Texture.class));
-            texturesParallax.get(texturesParallax.size-1).setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
-        }
-
-        this.parallaxBackground = new ParallaxBackground(texturesParallax, false);
-
-        gameMap = new GameMap(game);
-        entities = new ArrayList<Entity>();
-        entities = EntityLoader.loadEntities("test", gameMap, game);
-
-
+        //game.getAssetManager().finishLoading();
 
     }
-
-
-
-
-
-
     /**
      * Called when the screen should render itself.
      * @param delta
      */
     @Override
     public void	render(float delta){
-
-        stage.act(delta);
-        stage.draw();
-
         update();
-
+        clearScreen();
+        draw();
     }
 
     /**
@@ -106,24 +95,13 @@ public class LoadingScreen extends ScreenAdapter {
      */
     @Override
     public void dispose(){
-        stage.dispose();
+        shapeRenderer.dispose();
 
     }
 
-    /**
-     * Called when this screen is no longer the current screen for a Game.
-     */
-    @Override
-    public void hide(){}
-
-
-    @Override
-    public void	pause(){}
-
-
     @Override
     public void	resize(int width, int height){
-        stage.getViewport().update(width,height,true );
+        viewport.update(width,height,true );
     }
     @Override
     public void	resume(){}
@@ -132,18 +110,56 @@ public class LoadingScreen extends ScreenAdapter {
      * Called when this screen becomes the current screen for a Game.
      */
     @Override
-    public void	show(){ Gdx.input.setInputProcessor(stage);}
+    public void	show(){
 
-
+    }
 
     public void update() {
         if (game.getAssetManager().update()) {
+
+            Array<Texture> texturesParallax = new Array<Texture>();
+            for(int i = 1; i < TEXTURE_NUMBER_PARALLAX_GAME ;i++){
+                texturesParallax.add(game.getAssetManager().get("parallax/img"+i+".png", Texture.class));
+                texturesParallax.get(texturesParallax.size-1).setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
+            }
+
+            this.parallaxBackground = new ParallaxBackground(texturesParallax, false);
+
+            gameMap = new GameMap(game);
+            entities = new ArrayList<Entity>();
+            entities = EntityLoader.loadEntities("test", gameMap, game);
+
             game.setScreen(new GameScreen(game, parallaxBackground, entities, gameMap));
+
         } else {
             progress = game.getAssetManager().getProgress();
+
         }
     }
 
+    private void clearScreen(){
+        Gdx.gl.glClearColor(Color.BLACK.getRed(), Color.BLACK.getGreen(), Color.BLACK.getBlue(), Color.BLACK.getAlpha());
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    }
+
+    private void draw(){
+        shapeRenderer.setProjectionMatrix(camera.projection);
+        shapeRenderer.setTransformMatrix(camera.view);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(com.badlogic.gdx.graphics.Color.WHITE);
+        shapeRenderer.rect(
+                (viewport.getScreenWidth() - PROGRESS_BAR_WIDTH)/2,
+                (viewport.getScreenHeight() - PROGRESS_BAR_HEIGHT)/2,
+                progress * PROGRESS_BAR_WIDTH,
+                PROGRESS_BAR_HEIGHT
+        );
+        shapeRenderer.end();
+    }
+
+    @Override
+    public void hide(){}
+    @Override
+    public void	pause(){}
 
 }
 
