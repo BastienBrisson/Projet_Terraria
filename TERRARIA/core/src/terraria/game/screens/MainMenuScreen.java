@@ -87,7 +87,7 @@ public class MainMenuScreen extends ScreenAdapter {
     }
 
     public void startGame(){
-        game.setScreen(new GameScreen());
+        game.setScreen(new GameScreen(game));
     }
 
     /**

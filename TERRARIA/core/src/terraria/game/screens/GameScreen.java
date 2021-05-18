@@ -1,12 +1,20 @@
 package terraria.game.screens;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import terraria.game.actors.entities.Entity;
@@ -20,22 +28,41 @@ import java.util.ArrayList;
 
 public class GameScreen extends ScreenAdapter {
 
+    private final Game game;
     private Stage stage;
     private OrthographicCamera camera;
+
 
     //Acteurs//
     ParallaxBackground parallaxBackground;
     GameMap gameMap;
+    ImageButton exitButton;
+    Boolean isMenuShow = false;
 
     protected ArrayList<Entity> entities;
     Entity player;
 
-    public GameScreen() {
-
+    public GameScreen(final Game game) {
+        this.game = game;
         //Initialisation du stage et de la camera//
         stage = new Stage(new ScreenViewport());
         camera = (OrthographicCamera) stage.getViewport().getCamera();
 
+        TextureRegion exit = new TextureRegion(new Texture(Gdx.files.internal("background/exit.png")));
+        TextureRegion exitPressed = new TextureRegion(new Texture(Gdx.files.internal("background/exitPressed.png")));
+        exitButton = new ImageButton( new TextureRegionDrawable(exit), new TextureRegionDrawable(exitPressed));
+        exitButton.setPosition(stage.getViewport().getScreenWidth()/2,(stage.getViewport().getScreenHeight()/2)-exit.getRegionHeight(), Align.center);
+        exitButton.addListener(new ActorGestureListener() {
+
+            @Override
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                super.tap(event, x, y, count, button);
+                dispose();
+                EntityLoader.saveEntities("test", entities);
+                MapLoader.saveMap(gameMap.getId(), gameMap.getName(), gameMap.getMap(), gameMap.getStartingPoint());
+                game.setScreen(new MainMenuScreen(game));
+            }
+        });
 
         //Initalisation des acteurs//
 
@@ -48,7 +75,7 @@ public class GameScreen extends ScreenAdapter {
         }
 
         this.parallaxBackground = new ParallaxBackground(texturesParallax, false);
-        parallaxBackground.setSize(stage.getViewport().getScreenWidth(),stage.getViewport().getScreenHeight());
+        parallaxBackground.setSize(0,0);
         parallaxBackground.setSpeed(1);
 
         /*Initialisation de la map*/
@@ -60,12 +87,15 @@ public class GameScreen extends ScreenAdapter {
 
 
         //On ajoute nos acteurs//
+
         stage.addActor(parallaxBackground);
         stage.addActor(gameMap);
+
 
         for(Entity entity : entities ){
             stage.addActor(entity);
         }
+        stage.addActor(exitButton);
 
     }
 
@@ -89,14 +119,28 @@ public class GameScreen extends ScreenAdapter {
         }
 
         if (Gdx.input.justTouched()) {
-            blocAction();
+            if (!isMenuShow)
+                blocAction();
         }
 
-        stage.act();
-        stage.draw();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            if (isMenuShow) {
+                isMenuShow = false;
+            } else {
+                isMenuShow = true;
+            }
+        }
+        if (isMenuShow) {
+            exitButton.setPosition(camera.position.x,camera.position.y, Align.center);
+        } else {
+            exitButton.setPosition(0,0, Align.center);
+        }
+
 
         this.parallaxBackground.update(camera, stage);
         this.gameMap.update(camera, stage);
+        stage.act(delta);
+        stage.draw();
 
     }
 
