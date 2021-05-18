@@ -63,6 +63,7 @@ public class GameScreen extends ScreenAdapter {
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
                 dispose();
+                game.getAssetManager().clear();
                 EntityLoader.saveEntities("test", entities);
                 MapLoader.saveMap(gameMap.getId(), gameMap.getName(), gameMap.getMap(), gameMap.getStartingPoint());
                 game.setScreen(new MainMenuScreen(game));

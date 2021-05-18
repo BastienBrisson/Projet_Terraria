@@ -31,6 +31,8 @@ public class MainMenuScreen extends ScreenAdapter {
 
     TextureRegion play;
 
+    public static int TEXTURE_NUMBER_PARALLAX = 2;
+
     public MainMenuScreen(TerrariaGame game){
         this.game = game;
 
@@ -39,8 +41,22 @@ public class MainMenuScreen extends ScreenAdapter {
         camera = (OrthographicCamera) stage.getViewport().getCamera();
 
         //Initialize menu's buttons
-        play = new TextureRegion(new Texture(Gdx.files.internal("background/play.png")));
-        TextureRegion playPressed = new TextureRegion(new Texture(Gdx.files.internal("background/playPressed.png")));
+
+        game.getAssetManager().load("background/play.png", Texture.class);
+        game.getAssetManager().load("background/playPressed.png",Texture.class);
+        game.getAssetManager().load("background/exit.png",Texture.class);
+        game.getAssetManager().load("background/exitPressed.png",Texture.class);
+
+        for(int i = 1; i < TEXTURE_NUMBER_PARALLAX + 1;i++){
+            game.getAssetManager().load("background/img"+i+".png",Texture.class);
+        }
+
+        game.getAssetManager().finishLoading();
+
+
+
+        play = new TextureRegion(game.getAssetManager().get("background/play.png", Texture.class));
+        TextureRegion playPressed = new TextureRegion(game.getAssetManager().get("background/playPressed.png", Texture.class));
 
         playButton = new ImageButton( new TextureRegionDrawable(play), new TextureRegionDrawable(playPressed));
         playButton.setPosition(stage.getViewport().getScreenWidth()/2,stage.getViewport().getScreenHeight()/2, Align.center);
@@ -55,8 +71,8 @@ public class MainMenuScreen extends ScreenAdapter {
             }
         });
 
-        TextureRegion exit = new TextureRegion(new Texture(Gdx.files.internal("background/exit.png")));
-        TextureRegion exitPressed = new TextureRegion(new Texture(Gdx.files.internal("background/exitPressed.png")));
+        TextureRegion exit = new TextureRegion(game.getAssetManager().get("background/exit.png",Texture.class));
+        TextureRegion exitPressed = new TextureRegion(game.getAssetManager().get("background/exitPressed.png",Texture.class));
 
         exitButton = new ImageButton( new TextureRegionDrawable(exit), new TextureRegionDrawable(exitPressed));
         exitButton.setPosition(stage.getViewport().getScreenWidth()/2,(stage.getViewport().getScreenHeight()/2)-play.getRegionHeight(), Align.center);
@@ -73,7 +89,7 @@ public class MainMenuScreen extends ScreenAdapter {
         //Set the menu's background
         MainScreenParallax = new Array<Texture>();
         for(int i = 1; i < 3;i++){
-            MainScreenParallax.add(new Texture(Gdx.files.internal("background/img"+i+".png")));
+            MainScreenParallax.add(game.getAssetManager().get("background/img"+i+".png", Texture.class));
             MainScreenParallax.get(MainScreenParallax.size-1).setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
         }
 

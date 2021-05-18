@@ -65,6 +65,7 @@ public class LoadingScreen extends ScreenAdapter {
 
         game.getAssetManager().finishLoading();
 
+
         Array<Texture> texturesParallax = new Array<Texture>();
         for(int i = 1; i < TEXTURE_NUMBER_PARALLAX_GAME ;i++){
             texturesParallax.add(game.getAssetManager().get("parallax/img"+i+".png", Texture.class));
