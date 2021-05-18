@@ -64,6 +64,8 @@ public class Player extends Entity {
         }
         else if (Gdx.input.isKeyPressed(Keys.D)) {
             moveX(SPEED * deltaTime);
+        } else if(Gdx.input.isKeyPressed(Keys.E)) {
+            
         }
 
         //Check the state of the character
