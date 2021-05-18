@@ -33,7 +33,7 @@ public class MainMenuScreen extends ScreenAdapter {
 
     public static int TEXTURE_NUMBER_PARALLAX = 2;
 
-    public MainMenuScreen(TerrariaGame game){
+    public MainMenuScreen(final TerrariaGame game){
         this.game = game;
 
         //Initialize the stage and camera
@@ -82,6 +82,7 @@ public class MainMenuScreen extends ScreenAdapter {
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
                 dispose();
+                game.dispose();
                 Gdx.app.exit();
             }
         });

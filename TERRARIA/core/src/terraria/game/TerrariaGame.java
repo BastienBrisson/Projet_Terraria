@@ -22,6 +22,7 @@ public class TerrariaGame extends Game {
 
 	@Override
 	public void dispose () {
+		assetManager.clear();
 		assetManager.dispose();
 	}
 
