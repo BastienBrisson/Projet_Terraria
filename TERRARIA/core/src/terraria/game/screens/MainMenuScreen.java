@@ -23,10 +23,12 @@ public class MainMenuScreen extends ScreenAdapter {
     private Stage stage;
     private Camera camera;
     private ImageButton playButton;
+    private ImageButton exitButton;
     private final Game game;
     private ParallaxBackground parallaxBackground;
     private Array<Texture> MainScreenParallax;
 
+    TextureRegion play;
 
     public MainMenuScreen(Game game){
         this.game = game;
@@ -36,7 +38,7 @@ public class MainMenuScreen extends ScreenAdapter {
         camera = (OrthographicCamera) stage.getViewport().getCamera();
 
         //Initialize menu's buttons
-        TextureRegion play = new TextureRegion(new Texture(Gdx.files.internal("background/play.png")));
+        play = new TextureRegion(new Texture(Gdx.files.internal("background/play.png")));
         TextureRegion playPressed = new TextureRegion(new Texture(Gdx.files.internal("background/playPressed.png")));
 
         playButton = new ImageButton( new TextureRegionDrawable(play), new TextureRegionDrawable(playPressed));
@@ -49,6 +51,21 @@ public class MainMenuScreen extends ScreenAdapter {
                 startGame();
                 dispose();
 
+            }
+        });
+
+        TextureRegion exit = new TextureRegion(new Texture(Gdx.files.internal("background/exit.png")));
+        TextureRegion exitPressed = new TextureRegion(new Texture(Gdx.files.internal("background/exitPressed.png")));
+
+        exitButton = new ImageButton( new TextureRegionDrawable(exit), new TextureRegionDrawable(exitPressed));
+        exitButton.setPosition(stage.getViewport().getScreenWidth()/2,(stage.getViewport().getScreenHeight()/2)-play.getRegionHeight(), Align.center);
+        exitButton.addListener(new ActorGestureListener() {
+
+            @Override
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                super.tap(event, x, y, count, button);
+                dispose();
+                Gdx.app.exit();
             }
         });
 
@@ -66,6 +83,7 @@ public class MainMenuScreen extends ScreenAdapter {
         //Set the stage
         stage.addActor(parallaxBackground);
         stage.addActor(playButton);
+        stage.addActor(exitButton);
     }
 
     public void startGame(){
@@ -79,6 +97,7 @@ public class MainMenuScreen extends ScreenAdapter {
     @Override
     public void	render(float delta){
         playButton.setPosition(stage.getViewport().getScreenWidth()/2,stage.getViewport().getScreenHeight()/2, Align.center);
+        exitButton.setPosition(stage.getViewport().getScreenWidth()/2,stage.getViewport().getScreenHeight()/2-play.getRegionHeight()-10, Align.center);
         stage.act(delta);
         stage.draw();
 
