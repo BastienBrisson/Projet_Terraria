@@ -17,21 +17,20 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import terraria.game.TerrariaGame;
 import terraria.game.actors.entities.Entity;
 import terraria.game.actors.entities.EntityLoader;
 import terraria.game.actors.world.GameMap;
 import terraria.game.actors.world.GeneratorMap.MapLoader;
 import terraria.game.actors.world.ParallaxBackground;
-import terraria.game.actors.world.TileType;
 import java.util.ArrayList;
 
 
 public class GameScreen extends ScreenAdapter {
 
-    private final Game game;
+    public TerrariaGame game;
     private Stage stage;
     private OrthographicCamera camera;
-
 
     //Acteurs//
     ParallaxBackground parallaxBackground;
@@ -40,10 +39,16 @@ public class GameScreen extends ScreenAdapter {
     Boolean isMenuShow = false;
 
     protected ArrayList<Entity> entities;
-    Entity player;
 
-    public GameScreen(final Game game) {
+
+
+    public GameScreen(final TerrariaGame game, ParallaxBackground parallaxBackground, final ArrayList<Entity> entities, final GameMap gameMap) {
+
         this.game = game;
+        this.parallaxBackground = parallaxBackground;
+        this.entities = entities;
+        this.gameMap = gameMap;
+
         //Initialisation du stage et de la camera//
         stage = new Stage(new ScreenViewport());
         camera = (OrthographicCamera) stage.getViewport().getCamera();
@@ -64,33 +69,13 @@ public class GameScreen extends ScreenAdapter {
             }
         });
 
-        //Initalisation des acteurs//
-
-        /*Initialisation de l'arrière plan*/
-
-        Array<Texture> texturesParallax = new Array<Texture>();
-        for(int i = 1; i < 4;i++){
-            texturesParallax.add(new Texture(Gdx.files.internal("parallax/img"+i+".png")));
-            texturesParallax.get(texturesParallax.size-1).setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
-        }
-
-        this.parallaxBackground = new ParallaxBackground(texturesParallax, false);
-        parallaxBackground.setSize(0,0);
+        parallaxBackground.setSize(stage.getViewport().getScreenWidth(),stage.getViewport().getScreenHeight());
         parallaxBackground.setSpeed(1);
-
-        /*Initialisation de la map*/
-        this.gameMap = new GameMap(this);
-
-
-        entities = new ArrayList<Entity>();
-        entities = EntityLoader.loadEntities("test", gameMap, this);
 
 
         //On ajoute nos acteurs//
-
         stage.addActor(parallaxBackground);
         stage.addActor(gameMap);
-
 
         for(Entity entity : entities ){
             stage.addActor(entity);
@@ -152,11 +137,19 @@ public class GameScreen extends ScreenAdapter {
                 gameMap.destroyTile(coordinate);
             } else {
                 gameMap.addTile(coordinate);
-                if (DoesRectCollideWithMap(entities.get(0).getX(), entities.get(0).getY(), (int) entities.get(0).getWidth(), (int) entities.get(0).getHeight())) {
+                if (gameMap.DoesRectCollideWithMap(entities.get(0).getX(), entities.get(0).getY(), (int) entities.get(0).getWidth(), (int) entities.get(0).getHeight())) {
                     gameMap.destroyTile(coordinate);
                 }
+
             }
         }
+
+        stage.act();
+        stage.draw();
+
+        this.parallaxBackground.update(camera, stage);
+        this.gameMap.update(camera, stage);
+
     }
 
 
@@ -185,51 +178,5 @@ public class GameScreen extends ScreenAdapter {
         stage.dispose();
     }
 
-    /**
-     * vrais si la case de coordonnée x,y est un obstacle, faut sinon
-     * @param x
-     * @param y
-     * @param width
-     * @param height
-     * @return
-     */
-    public boolean DoesRectCollideWithMap(float x, float y, int width, int height){
-        if (x < 0 || y < 0 || x + width > getPixelWidth() || y + height > getPixelHeight()){
-            return true;
-        }
-        for (int row = (int) (y / TileType.TILE_SIZE); row < Math.ceil((y + height ) / TileType.TILE_SIZE); row++) {
-            for (int col = (int) (x / TileType.TILE_SIZE); col < Math.ceil((x +width ) / TileType.TILE_SIZE); col++) {
-                for (int layer = 0; layer < getLayers(); layer++) {
-                    TileType type = getTileTypeByCoordinate(layer, col, row);
-                    if (type != null && type.isCollidable()) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
 
-    /**
-     * retourne le type d'une case en fonction de ses coordonnées
-     * @param layer
-     * @param col
-     * @param row
-     * @return
-     */
-    public TileType getTileTypeByCoordinate(int layer, int col, int row) {
-        if (col < 0 || col >= getWidth() || row < 0 || row >= getHeight())
-            return null;
-
-        int id = gameMap.getMap()[layer][getHeight() - row - 1][col];
-        if(id == 0){return null;}
-        return TileType.getTileTypeById(id);
-    }
-
-
-    public int getWidth() {return gameMap.getMap()[0][0].length; }
-    public int getHeight() {return gameMap.getMap()[0].length;}
-    public int getLayers() {return gameMap.getMap().length;}
-    public int getPixelWidth(){return this.getWidth() * TileType.TILE_SIZE;}
-    public int getPixelHeight(){return this.getHeight() * TileType.TILE_SIZE; }
 }

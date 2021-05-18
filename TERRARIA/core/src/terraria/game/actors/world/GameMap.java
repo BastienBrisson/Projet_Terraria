@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import terraria.game.TerrariaGame;
 import terraria.game.actors.world.GeneratorMap.MapLoader;
 import terraria.game.screens.GameScreen;
 import terraria.game.actors.world.GeneratorMap.DataMap;
@@ -24,32 +25,34 @@ public class GameMap extends Actor {
     private TextureRegion [][] pebble;
     private TextureRegion [][] filtre;
 
-    GameScreen gameScreen;
+    TerrariaGame game;
     public Camera camera;
     private DataMap dataMap;
 
     int ScreenX, ScreenY,ScreenWidth,ScreenHeigth;
 
 
-    public GameMap(GameScreen gameScreen) {
-        this.gameScreen = gameScreen;
+    public GameMap(TerrariaGame game) {
+        this.game = game;
 
         //Create a new map or load it if it already exists
         dataMap = MapLoader.loadMap("test", "My Grass Lands!");
+
 
         //Load tile' textures
         tilesTextures = new HashMap<Integer, Texture>();
         for (TileType tile : TileType.values()) {
             FileHandle texture = Gdx.files.internal("tiles/"+tile.getName()+".png");
             if (texture.exists())
-                tilesTextures.put(tile.getId(), new Texture(texture));
+                tilesTextures.put(tile.getId(), game.getAssetManager().get("tiles/"+tile.getName()+".png", Texture.class));
         }
 
         //Load map elements' textures
-        plant = TextureRegion.split(new Texture("herbes.png"), TileType.TILE_SIZE, TileType.TILE_SIZE);
-        trees =  TextureRegion.split(new Texture(Gdx.files.internal("arbres/arbreTest.png")), 202, 375 );
-        pebble =  TextureRegion.split(new Texture("cailloux.png"), TileType.TILE_SIZE, TileType.TILE_SIZE);
-        filtre = TextureRegion.split(new Texture("filtre.png"), TileType.TILE_SIZE, TileType.TILE_SIZE);
+
+        plant = TextureRegion.split( game.getAssetManager().get("herbes.png", Texture.class), TileType.TILE_SIZE, TileType.TILE_SIZE);
+        trees =  TextureRegion.split(game.getAssetManager().get("arbres/arbreTest.png", Texture.class), 202, 375 );
+        pebble =  TextureRegion.split(game.getAssetManager().get("cailloux.png", Texture.class), TileType.TILE_SIZE, TileType.TILE_SIZE);
+        filtre = TextureRegion.split(game.getAssetManager().get("filtre.png", Texture.class), TileType.TILE_SIZE, TileType.TILE_SIZE);
     }
 
 
@@ -124,6 +127,54 @@ public class GameMap extends Actor {
         }
     }
 
+    /**
+     * vrais si la case de coordonnée x,y est un obstacle, faut sinon
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     * @return
+     */
+    public boolean DoesRectCollideWithMap(float x, float y, int width, int height){
+        if (x < 0 || y < 0 || x + width > getPixelWidth() || y + height > getPixelHeight()){
+            return true;
+        }
+        for (int row = (int) (y / TileType.TILE_SIZE); row < Math.ceil((y + height ) / TileType.TILE_SIZE); row++) {
+            for (int col = (int) (x / TileType.TILE_SIZE); col < Math.ceil((x +width ) / TileType.TILE_SIZE); col++) {
+                for (int layer = 0; layer < getLayers(); layer++) {
+                    TileType type = getTileTypeByCoordinate(layer, col, row);
+                    if (type != null && type.isCollidable()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * retourne le type d'une case en fonction de ses coordonnées
+     * @param layer
+     * @param col
+     * @param row
+     * @return
+     */
+    public TileType getTileTypeByCoordinate(int layer, int col, int row) {
+        if (col < 0 || col >= getWidth() || row < 0 || row >= getHeight())
+            return null;
+
+        int id = getMap()[layer][(int) (getHeight() - row - 1)][col];
+        if(id == 0){return null;}
+        return TileType.getTileTypeById(id);
+    }
+
+
+    public float getWidth() {return getMap()[0][0].length; }
+    public float getHeight() {return getMap()[0].length;}
+    public int getLayers() {return getMap().length;}
+    public int getPixelWidth(){return (int) (this.getWidth() * TileType.TILE_SIZE);}
+    public int getPixelHeight(){return (int) (this.getHeight() * TileType.TILE_SIZE); }
+
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
@@ -135,8 +186,8 @@ public class GameMap extends Actor {
                     if( col* TileType.TILE_SIZE - 128 <= ScreenX + ScreenWidth && (col * TileType.TILE_SIZE + 128>= ScreenX) && (row * TileType.TILE_SIZE - 128 <= ScreenY + ScreenHeigth && row * TileType.TILE_SIZE + 128 >= ScreenY)) {
 
 
-                        TileType type = gameScreen.getTileTypeByCoordinate(layer, col, row);
-                        TileType Lighttype = gameScreen.getTileTypeByCoordinate(2, col, row);
+                        TileType type = getTileTypeByCoordinate(layer, col, row);
+                        TileType Lighttype = getTileTypeByCoordinate(2, col, row);
 
 
                         if (type != null) {
@@ -144,7 +195,7 @@ public class GameMap extends Actor {
                             switch (type) {
 
                                 case LOG:
-                                    if (gameScreen.getTileTypeByCoordinate(layer, col, row - 1) == TileType.GRASS)
+                                    if (getTileTypeByCoordinate(layer, col, row - 1) == TileType.GRASS)
                                         batch.draw(trees[0][col % 13], col * TileType.TILE_SIZE - 85, row * TileType.TILE_SIZE);
                                     break;
                                 case PEBBLE:

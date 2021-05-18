@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import terraria.game.TerrariaGame;
 import terraria.game.actors.world.ParallaxBackground;
 
 public class MainMenuScreen extends ScreenAdapter {
@@ -23,14 +24,14 @@ public class MainMenuScreen extends ScreenAdapter {
     private Stage stage;
     private Camera camera;
     private ImageButton playButton;
+    private TerrariaGame game;
     private ImageButton exitButton;
-    private final Game game;
     private ParallaxBackground parallaxBackground;
     private Array<Texture> MainScreenParallax;
 
     TextureRegion play;
 
-    public MainMenuScreen(Game game){
+    public MainMenuScreen(TerrariaGame game){
         this.game = game;
 
         //Initialize the stage and camera
@@ -87,7 +88,7 @@ public class MainMenuScreen extends ScreenAdapter {
     }
 
     public void startGame(){
-        game.setScreen(new GameScreen(game));
+        game.setScreen(new LoadingScreen(game));
     }
 
     /**

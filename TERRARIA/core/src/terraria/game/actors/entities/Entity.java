@@ -5,16 +5,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
+import terraria.game.TerrariaGame;
 import terraria.game.actors.world.GameMap;
 import terraria.game.actors.world.TileType;
 import terraria.game.screens.GameScreen;
+import terraria.game.screens.LoadingScreen;
 
 public class Entity extends Actor {
 
     public Vector2 pos;
     protected EntityType type;
     protected float velocityY = 0;
-    protected GameScreen gameScreen;
+    protected TerrariaGame game;
     protected GameMap gameMap;
     protected boolean grounded = false;
     protected boolean flipX = false;
@@ -23,18 +25,18 @@ public class Entity extends Actor {
     protected Array<Animation> animations ;
 
 
-    public void create (EntitySnapshot snapshot, EntityType type, GameMap gameMap, GameScreen gameScreen) {
+    public void create (EntitySnapshot snapshot, EntityType type, GameMap gameMap, TerrariaGame game) {
         this.pos = new Vector2(snapshot.getX(), snapshot.getY());
         this.type = type;
         this.gameMap = gameMap;
-        this.gameScreen = gameScreen;
+        this.game = game;
     }
 
-    public void create (int posX, int posY, EntityType type, GameMap gameMap, GameScreen gameScreen) {
+    public void create (int posX, int posY, EntityType type, GameMap gameMap, TerrariaGame game) {
         this.pos = new Vector2(posX,posY);
         this.type = type;
         this.gameMap = gameMap;
-        this.gameScreen = gameScreen;
+        this.game = game;
     }
 
 
@@ -43,7 +45,7 @@ public class Entity extends Actor {
         float newY = pos.y;
         this.velocityY += gravity * deltaTime * getWeight();
         newY += this.velocityY * deltaTime;
-        if(gameScreen.DoesRectCollideWithMap(pos.x, newY, (int)getWidth(), (int)getHeight())){
+        if(gameMap.DoesRectCollideWithMap(pos.x, newY, (int)getWidth(), (int)getHeight())){
             if(velocityY < 0){
                 this.pos.y = (float)Math.floor(pos.y);
                 grounded = true;
@@ -71,7 +73,7 @@ public class Entity extends Actor {
 
         //Check if movement possible
         float newX = this.pos.x + amount;
-        if(!gameScreen.DoesRectCollideWithMap(newX, this.pos.y, (int)getWidth(), (int)getHeight())){
+        if(!gameMap.DoesRectCollideWithMap(newX, this.pos.y, (int)getWidth(), (int)getHeight())){
             this.pos.x = newX;
         }
     }

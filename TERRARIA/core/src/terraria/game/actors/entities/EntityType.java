@@ -2,6 +2,7 @@ package terraria.game.actors.entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import terraria.game.TerrariaGame;
 import terraria.game.actors.world.GameMap;
 import terraria.game.screens.GameScreen;
 
@@ -32,11 +33,11 @@ public enum EntityType {
     }
 
 
-    public static Entity createEntityUsingSnapshot (EntitySnapshot entitySnapshot, GameMap gameMap, GameScreen gameScreen) {
+    public static Entity createEntityUsingSnapshot (EntitySnapshot entitySnapshot, GameMap gameMap, TerrariaGame game) {
         EntityType type = entityTypes.get(entitySnapshot.type);
         try {
             Entity entity = (Entity) ClassReflection.newInstance(type.loaderClass);
-            entity.create(entitySnapshot, type, gameMap, gameScreen);
+            entity.create(entitySnapshot, type, gameMap, game);
             return entity;
         } catch (ReflectionException e) {
             Gdx.app.error("Entity Loader", "Could not load entity of type " + type.id);

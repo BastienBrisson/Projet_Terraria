@@ -3,6 +3,7 @@ package terraria.game.actors.entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
+import terraria.game.TerrariaGame;
 import terraria.game.actors.world.GameMap;
 import terraria.game.actors.world.TileType;
 import terraria.game.screens.GameScreen;
@@ -13,7 +14,7 @@ public class EntityLoader {
 
     private static Json json = new Json();
 
-    public static ArrayList<Entity> loadEntities (String id, GameMap gameMap, GameScreen gameScreen) {
+    public static ArrayList<Entity> loadEntities (String id, GameMap gameMap, TerrariaGame game) {
         Gdx.files.local("saves/").file().mkdirs();
         FileHandle file = Gdx.files.local("saves/" + id + ".entities");
         ArrayList<Entity> entities = new ArrayList<Entity>();
@@ -21,13 +22,13 @@ public class EntityLoader {
         if (file.exists()) {
             EntitySnapshot[] snapshots = json.fromJson(EntitySnapshot[].class, file.readString());
             for (EntitySnapshot snapshot : snapshots) {
-                entities.add(EntityType.createEntityUsingSnapshot(snapshot, gameMap, gameScreen));
+                entities.add(EntityType.createEntityUsingSnapshot(snapshot, gameMap, game));
             }
             return entities;
 
         } else {
             Player player = new Player();
-            player.create(gameMap.getStartingPoint()[1] * TileType.TILE_SIZE,  gameMap.getStartingPoint()[0] * TileType.TILE_SIZE,EntityType.PLAYER,gameMap,gameScreen);
+            player.create(gameMap.getStartingPoint()[1] * TileType.TILE_SIZE,  gameMap.getStartingPoint()[0] * TileType.TILE_SIZE,EntityType.PLAYER,gameMap,game);
             entities.add(player);
             saveEntities(id, entities);
             return entities;

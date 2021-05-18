@@ -3,11 +3,13 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
+import terraria.game.TerrariaGame;
 import terraria.game.actors.world.GameMap;
 import terraria.game.screens.GameScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
+import terraria.game.screens.LoadingScreen;
 
 public class Player extends Entity {
 
@@ -17,12 +19,12 @@ public class Player extends Entity {
     private static final int IDLE = 0, JUMPING = 1, RUNNING = 2;
 
     @Override
-    public void create(EntitySnapshot snapshot, EntityType type, GameMap gameMap, GameScreen gameScreen) {
-        super.create(snapshot, type, gameMap,gameScreen);
+    public void create(EntitySnapshot snapshot, EntityType type, GameMap gameMap, TerrariaGame game) {
+        super.create(snapshot, type, gameMap,game);
         init();
     }
-    public void create(int posX, int posY, EntityType type, GameMap gameMap, GameScreen gameScreen) {
-        super.create(posX,posY, type, gameMap,gameScreen);
+    public void create(int posX, int posY, EntityType type, GameMap gameMap, TerrariaGame game) {
+        super.create(posX,posY, type, gameMap,game);
         init();
     }
 
@@ -30,11 +32,11 @@ public class Player extends Entity {
     public void init(){
 
         animations = new Array<>();
-        for(int i =0; i < 3; i++){
+        for(int i = 0; i < LoadingScreen.TEXTURE_NUMBER_PLAYER ; i++){
             switch (i){
-                case 0: animations.add(new Animation(new TextureRegion(new Texture(Gdx.files.internal("playerAnimation/player"+i+".png"))),2 , 0.5F));break;
-                case 1: animations.add(new Animation(new TextureRegion(new Texture(Gdx.files.internal("playerAnimation/player"+i+".png"))),1 , 0.5F));break;
-                case 2: animations.add(new Animation(new TextureRegion(new Texture(Gdx.files.internal("playerAnimation/player"+i+".png"))),6 , 0.5F));break;
+                case 0: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("playerAnimation/player"+i+".png", Texture.class)),2 , 0.5F));break;
+                case 1: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("playerAnimation/player"+i+".png", Texture.class)),1 , 0.5F));break;
+                case 2: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("playerAnimation/player"+i+".png", Texture.class)),6 , 0.5F));break;
             }
         }
     }
