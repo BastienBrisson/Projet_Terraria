@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import terraria.game.TerrariaGame;
 import terraria.game.actors.entities.Entity;
 import terraria.game.actors.entities.EntityLoader;
+import terraria.game.actors.playerHealth.PlayerHealth;
 import terraria.game.actors.world.GameMap;
 import terraria.game.actors.world.GeneratorMap.MapLoader;
 import terraria.game.actors.world.ParallaxBackground;
@@ -34,6 +35,7 @@ public class GameScreen extends ScreenAdapter {
 
     //Acteurs//
     ParallaxBackground parallaxBackground;
+    PlayerHealth playerHealth;
     GameMap gameMap;
     ImageButton exitButton;
     Boolean isMenuShow = false;
@@ -73,6 +75,9 @@ public class GameScreen extends ScreenAdapter {
         parallaxBackground.setSize(stage.getViewport().getScreenWidth(),stage.getViewport().getScreenHeight());
         parallaxBackground.setSpeed(1);
 
+        //
+        this.playerHealth = new PlayerHealth(stage, game);
+
 
         //On ajoute nos acteurs//
         stage.addActor(parallaxBackground);
@@ -81,7 +86,8 @@ public class GameScreen extends ScreenAdapter {
         for(Entity entity : entities ){
             stage.addActor(entity);
         }
-        stage.addActor(exitButton);
+        //stage.addActor(exitButton);
+        stage.addActor(playerHealth);
 
     }
 
@@ -125,6 +131,7 @@ public class GameScreen extends ScreenAdapter {
 
         this.parallaxBackground.update(camera, stage);
         this.gameMap.update(camera, stage);
+        this.playerHealth.update(camera, stage);
         stage.act(delta);
         stage.draw();
 
@@ -150,6 +157,7 @@ public class GameScreen extends ScreenAdapter {
 
         this.parallaxBackground.update(camera, stage);
         this.gameMap.update(camera, stage);
+        this.playerHealth.update(camera, stage);
 
     }
 

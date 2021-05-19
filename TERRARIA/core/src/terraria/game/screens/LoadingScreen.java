@@ -75,8 +75,7 @@ public class LoadingScreen extends ScreenAdapter {
         game.getAssetManager().load("arbres/arbreTest.png", Texture.class);
         game.getAssetManager().load("cailloux.png",Texture.class );
         game.getAssetManager().load("filtre.png", Texture.class);
-
-        //game.getAssetManager().finishLoading();
+        game.getAssetManager().load("heart.png",Texture.class);
 
     }
     /**
@@ -128,6 +127,8 @@ public class LoadingScreen extends ScreenAdapter {
             gameMap = new GameMap(game);
             entities = new ArrayList<Entity>();
             entities = EntityLoader.loadEntities("test", gameMap, game);
+
+
 
             game.setScreen(new GameScreen(game, parallaxBackground, entities, gameMap));
 
