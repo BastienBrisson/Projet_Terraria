@@ -18,12 +18,13 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import terraria.game.TerrariaGame;
-import terraria.game.actors.entities.Entity;
-import terraria.game.actors.entities.EntityLoader;
+import terraria.game.actors.entities.*;
 import terraria.game.actors.playerHealth.PlayerHealth;
 import terraria.game.actors.world.GameMap;
 import terraria.game.actors.world.GeneratorMap.MapLoader;
 import terraria.game.actors.world.ParallaxBackground;
+import terraria.game.actors.world.TileType;
+
 import java.util.ArrayList;
 
 
@@ -41,7 +42,7 @@ public class GameScreen extends ScreenAdapter {
     Boolean isMenuShow = false;
 
     protected ArrayList<Entity> entities;
-
+    Player player;
 
 
     public GameScreen(final TerrariaGame game, ParallaxBackground parallaxBackground, final ArrayList<Entity> entities, final GameMap gameMap) {
@@ -75,9 +76,11 @@ public class GameScreen extends ScreenAdapter {
         parallaxBackground.setSize(stage.getViewport().getScreenWidth(),stage.getViewport().getScreenHeight());
         parallaxBackground.setSpeed(1);
 
-        //
-        this.playerHealth = new PlayerHealth(stage, game);
+        player = (Player) entities.get(0);
 
+        //Ajout de la barre de vie
+        this.playerHealth = new PlayerHealth(stage, game);
+        //player.setHealthBar(playerHealth);
 
         //On ajoute nos acteurs//
         stage.addActor(parallaxBackground);
@@ -88,6 +91,8 @@ public class GameScreen extends ScreenAdapter {
         }
         //stage.addActor(exitButton);
         stage.addActor(playerHealth);
+
+        //spawnMushroom((int)player.pos.x+4* TileType.TILE_SIZE, (int)player.pos.y);
 
     }
 
@@ -161,6 +166,13 @@ public class GameScreen extends ScreenAdapter {
 
     }
 
+    public void spawnMushroom (int posX, int posY) {
+        Mushroom entity = new Mushroom();
+        entity.create(posX, posY, EntityType.SHROOM, gameMap, game);
+        entities.add(entity);
+        stage.addActor(entity);
+        entity.setTarget(player);
+    }
 
     @Override
     public void resize(int width, int height) {

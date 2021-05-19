@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import terraria.game.TerrariaGame;
+import terraria.game.actors.playerHealth.PlayerHealth;
 import terraria.game.actors.world.GameMap;
 import terraria.game.screens.GameScreen;
 import com.badlogic.gdx.Gdx;
@@ -13,7 +14,12 @@ import terraria.game.screens.LoadingScreen;
 
 public class Player extends Entity {
 
-    private static final int SPEED = 120, JUMP_VELOCITY = 5;
+    private static final int SPEED = 200, JUMP_VELOCITY = 5;
+
+    private static PlayerHealth healthBar;
+    private boolean invulnerable;
+    private final long INVULNERABILITY_TIME = 1000000000;
+    private long invulnerabilityTimer = 0;
 
     private static int state = 0;
     private static final int IDLE = 0, JUMPING = 1, RUNNING = 2;
@@ -30,7 +36,7 @@ public class Player extends Entity {
 
 
     public void init(){
-
+        invulnerable = false;
         animations = new Array<>();
         for(int i = 0; i < LoadingScreen.TEXTURE_NUMBER_PLAYER ; i++){
             switch (i){
@@ -70,12 +76,32 @@ public class Player extends Entity {
             
         }
 
+        //Gérer le temps d'invulnérabilité apres un coups
+        if (invulnerable) {
+            System.out.println("invulnérable: "+invulnerabilityTimer);
+            invulnerabilityTimer -= deltaTime;
+            if (invulnerabilityTimer <= 0)
+                System.out.println("invulnerability end");
+            invulnerable = false;
+        }
+
         //Check the state of the character
         if (!grounded) state = JUMPING;
         else if (Gdx.input.isKeyPressed(Keys.Q) || Gdx.input.isKeyPressed(Keys.D)) state = RUNNING;
         else state = IDLE;
 
     }
+
+    public void takeAHit (int damage) {
+        //Lancer un temps d'invulnérabilité
+        if (!invulnerable) {
+            //healthBar.applyDamage(1)
+            invulnerable = true;
+            System.out.println("touche!");
+            invulnerabilityTimer = INVULNERABILITY_TIME;
+        }
+    }
+
     @Override
     public EntitySnapshot getSaveSnapshot() {
         EntitySnapshot snapshot = super.getSaveSnapshot();

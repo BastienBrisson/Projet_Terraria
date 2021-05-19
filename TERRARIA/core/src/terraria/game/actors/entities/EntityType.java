@@ -11,7 +11,8 @@ import java.util.HashMap;
 @SuppressWarnings("rawtypes")
 public enum EntityType {
 
-    PLAYER("player", Player.class, 40, 40, 52 );
+    PLAYER("player", Player.class, 40, 40, 52 ),
+    SHROOM("mushroom", Mushroom.class, 20, 32, 32);
 
     private String id;
     private Class loaderClass;

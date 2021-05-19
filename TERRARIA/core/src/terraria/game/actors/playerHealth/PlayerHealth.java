@@ -14,12 +14,11 @@ public class PlayerHealth extends Actor {
 
     private static int MAXHEALTH = 10;
 
-    private Player player;
     double health;  //0 = death
     TextureRegion[][] heart;
     int ScreenX, ScreenY,ScreenWidth,ScreenHeigth;
 
-    public int  width = 35, height = 35;
+    public int  width = 32, height = 32;
 
     public PlayerHealth(Stage stage, TerrariaGame game){
         this.health = MAXHEALTH;
