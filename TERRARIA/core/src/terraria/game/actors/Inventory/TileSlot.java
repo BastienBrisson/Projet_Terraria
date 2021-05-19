@@ -1,4 +1,4 @@
-package terraria.game.actors.entities.Inventory;
+package terraria.game.actors.Inventory;
 
 
 public class TileSlot {

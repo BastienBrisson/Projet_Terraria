@@ -1,4 +1,4 @@
-package terraria.game.actors.entities.Inventory;
+package terraria.game.actors.Inventory;
 
 import java.util.ArrayList;
 import terraria.game.actors.world.TileType;

@@ -1,4 +1,4 @@
-package terraria.game.actors.entities.Inventory;
+package terraria.game.actors.Inventory;
 
 import terraria.game.actors.world.TileType;
 
