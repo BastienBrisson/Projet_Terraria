@@ -2,17 +2,24 @@ package terraria.game.actors.Inventory;
 
 import terraria.game.actors.world.TileType;
 
-public class TilesStack {
+public class Items {
 
+
+    public static final int MAXELEMENT = 65;
     private int amount;
     private int idTile;
 
-    public TilesStack(TileType tile) {
+    public Items() {
+        this.amount = 0;
+        this.idTile = 0;
+    }
+
+    public Items(TileType tile) {
         this.amount = 1;
         this.idTile = tile.getId();
     }
 
-    public TilesStack(int amount, TileType tile) {
+    public Items(TileType tile, int amount) {
         this.amount = amount;
         this.idTile = tile.getId();
     }
@@ -33,13 +40,18 @@ public class TilesStack {
         this.amount--;
     }
 
+    public void lastElement() {
+        this.amount--;
+        this.idTile = 0;
+    }
+
     public void changeContent(TileType tile, int amount) {
         this.amount = amount;
         this.idTile = tile.getId();
     }
 
-    public boolean compareTo(TilesStack stack) {
-        if(this.amount == stack.amount && this.idTile == stack.idTile) {
+    public boolean compareTo(Items item) {
+        if(this.amount == item.amount && this.idTile == item.idTile) {
             return true;
         }
         return false;
