@@ -27,7 +27,7 @@ public class PlayerHealth extends Actor {
     }
 
     public void ApplyDamage(Damage damage) {
-        health = damage.getNumberOfdamage();
+        health = health - damage.getNumberOfdamage();
     }
 
     public void update(Camera camera, Stage stage){
@@ -43,23 +43,24 @@ public class PlayerHealth extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
 
-
-
-
         for (int i = 0; i < (int)health; i++){
             batch.draw(heart[0][0], (ScreenX) + width *  i + (width/2), ScreenY + ScreenHeigth - (height + height/2));
         }
+        double test = health % 1;
 
-        if ((1 % health) == 0.25) {
-            batch.draw(heart[0][3], ScreenX + width * (int)health + (width/2), ScreenY - (height + height/2));
-        } else if ((1 % health) == 0.5) {
-            batch.draw(heart[0][2], ScreenX + width * (int)health + (width/2), ScreenY - (height + height/2));
-        } else if ((1 % health) == 0.75) {
-            batch.draw(heart[0][1], ScreenX + width * (int)health + (width/2), ScreenY - (height + height/2));
+        if ( (health % 1) == 0.25) {
+            batch.draw(heart[0][3], ScreenX + width * ((int)health) + (width/2), ScreenY + ScreenHeigth - (height + height/2));
+        } else if ((health % 1) == 0.5) {
+            batch.draw(heart[0][2], ScreenX + width * ((int)health) + (width/2), ScreenY + ScreenHeigth - (height + height/2));
+        } else if ((health % 1) == 0.75) {
+            batch.draw(heart[0][1], ScreenX + width * ((int)health)+ (width/2), ScreenY + ScreenHeigth- (height + height/2));
+        }
+        else{
+            batch.draw(heart[0][4], ScreenX + width * ((int)health) + (width/2), ScreenY + ScreenHeigth - (height + height/2));
         }
 
-        for (int i = (int)health + 1; i <= MAXHEALTH; i++){
-            batch.draw(heart[0][4], ScreenX + width * ((int)health + i) + (width/2), ScreenY - (height + height/2));
+        for (int i = (int)health + 1; i < MAXHEALTH; i++){
+            batch.draw(heart[0][4], ScreenX + width *  i + (width/2), ScreenY + ScreenHeigth - (height + height/2));
         }
 
     }

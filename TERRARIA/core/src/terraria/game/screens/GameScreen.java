@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import terraria.game.TerrariaGame;
 import terraria.game.actors.entities.*;
+import terraria.game.actors.playerHealth.Damage;
 import terraria.game.actors.playerHealth.PlayerHealth;
 import terraria.game.actors.world.GameMap;
 import terraria.game.actors.world.GeneratorMap.MapLoader;
@@ -91,6 +92,10 @@ public class GameScreen extends ScreenAdapter {
         }
         //stage.addActor(exitButton);
         stage.addActor(playerHealth);
+
+        //Test pour les dommages
+        playerHealth.ApplyDamage(Damage.MAXIMUM_DAMAGE);
+        playerHealth.ApplyDamage(Damage.SMALL_DAMAGE);
 
         //spawnMushroom((int)player.pos.x+4* TileType.TILE_SIZE, (int)player.pos.y);
 
