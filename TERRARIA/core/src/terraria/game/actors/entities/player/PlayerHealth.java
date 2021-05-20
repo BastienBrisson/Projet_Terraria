@@ -21,8 +21,9 @@ public class PlayerHealth {
         this.heart = heart;
     }
 
-    public void ApplyDamage(Damage damage) {
-        health = health - damage.getNumberOfdamage();
+    public void ApplyDamage(double damage) {
+        health = health - Math.round(damage*4f)/4f;
+        //System.out.println(damage+" damage -> health = "+health);
     }
 
     public void update(Camera camera, Stage stage){
@@ -43,6 +44,7 @@ public class PlayerHealth {
         }
 
         if(health != Player.MAXHEALTH) {
+
             if ((health % 1) == 0.25) {
                 batch.draw(heart[0][3], ScreenX + width * ((int) health) + (width / 2), ScreenY + ScreenHeigth - (height + height / 2));
             } else if ((health % 1) == 0.5) {

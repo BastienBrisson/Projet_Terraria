@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import terraria.game.TerrariaGame;
 import terraria.game.actors.world.GeneratorMap.MapLoader;
-import terraria.game.screens.GameScreen;
 import terraria.game.actors.world.GeneratorMap.DataMap;
 
 import java.util.HashMap;
