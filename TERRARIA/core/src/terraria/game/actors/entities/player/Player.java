@@ -31,7 +31,7 @@ public class Player extends Entity {
     public void create(EntitySnapshot snapshot, EntityType type, GameMap gameMap, TerrariaGame game) {
         super.create(snapshot, type, gameMap,game);
         TextureRegion[][] heart =  TextureRegion.split(game.getAssetManager().get("heart.png", Texture.class), 35, 35);
-        this.playerHealth = new PlayerHealth(game, heart, MAXHEALTH);
+        this.playerHealth = new PlayerHealth(game, heart, snapshot.health);
 
 
         init();
@@ -102,7 +102,7 @@ public class Player extends Entity {
 
         playerHealth.update(camera,stage);
 
-        //is fall from too high
+        //if fall from too high
         fallFromTooHigh();
 
     }
@@ -127,6 +127,7 @@ public class Player extends Entity {
     @Override
     public EntitySnapshot getSaveSnapshot() {
         EntitySnapshot snapshot = super.getSaveSnapshot();
+        snapshot.health = playerHealth.health;
         return snapshot;
 
     }

@@ -5,7 +5,8 @@ import java.util.HashMap;
 public class EntitySnapshot {
 
     public String type;
-    public float x, y, health;
+    public float x, y;
+    public double health;
     public HashMap<String, String> data;
 
     public EntitySnapshot() {}

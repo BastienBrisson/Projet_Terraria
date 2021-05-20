@@ -16,7 +16,7 @@ public class PlayerHealth {
 
     public int  width = 35, height = 35;
 
-    public PlayerHealth( TerrariaGame game,TextureRegion[][] heart, float health ){
+    public PlayerHealth( TerrariaGame game,TextureRegion[][] heart, double health ){
         this.health = health;
         this.heart = heart;
     }
@@ -42,23 +42,20 @@ public class PlayerHealth {
             batch.draw(heart[0][0], (ScreenX) + width *  i + (width/2), ScreenY + ScreenHeigth - (height + height/2));
         }
 
+        if(health != Player.MAXHEALTH) {
+            if ((health % 1) == 0.25) {
+                batch.draw(heart[0][3], ScreenX + width * ((int) health) + (width / 2), ScreenY + ScreenHeigth - (height + height / 2));
+            } else if ((health % 1) == 0.5) {
+                batch.draw(heart[0][2], ScreenX + width * ((int) health) + (width / 2), ScreenY + ScreenHeigth - (height + height / 2));
+            } else if ((health % 1) == 0.75) {
+                batch.draw(heart[0][1], ScreenX + width * ((int) health) + (width / 2), ScreenY + ScreenHeigth - (height + height / 2));
+            } else {
+                batch.draw(heart[0][4], ScreenX + width * ((int) health) + (width / 2), ScreenY + ScreenHeigth - (height + height / 2));
+            }
 
-        if ( (health % 1) == 0.25) {
-            batch.draw(heart[0][3], ScreenX + width * ((int)health) + (width/2), ScreenY + ScreenHeigth - (height + height/2));
-        } else if ((health % 1) == 0.5) {
-            batch.draw(heart[0][2], ScreenX + width * ((int)health) + (width/2), ScreenY + ScreenHeigth - (height + height/2));
-        } else if ((health % 1) == 0.75) {
-            batch.draw(heart[0][1], ScreenX + width * ((int)health)+ (width/2), ScreenY + ScreenHeigth- (height + height/2));
-        }
-        else if(health == Player.MAXHEALTH){
-            batch.draw(heart[0][0], (ScreenX) + width * ((int)health)+ (width/2), ScreenY + ScreenHeigth - (height + height/2));
-        }
-        else{
-            batch.draw(heart[0][4], ScreenX + width * ((int)health) + (width/2), ScreenY + ScreenHeigth - (height + height/2));
-        }
-
-        for (int i = (int)health + 1; i < Player.MAXHEALTH; i++){
-            batch.draw(heart[0][4], ScreenX + width *  i + (width/2), ScreenY + ScreenHeigth - (height + height/2));
+            for (int i = (int) health + 1; i < Player.MAXHEALTH; i++) {
+                batch.draw(heart[0][4], ScreenX + width * i + (width / 2), ScreenY + ScreenHeigth - (height + height / 2));
+            }
         }
 
     }
