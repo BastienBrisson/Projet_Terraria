@@ -17,16 +17,14 @@ public class Inventory extends Actor {
 
     public static final int SLOTINVENTORYBAR = 10;
     private static int currentTile = 0;
-    private ArrayList<TileSlot> inventory; // inventaire complet
-    private ArrayList<TileSlot> inventoryBar; // barre d'inventaire
+    private ArrayList<Items> inventory; // inventaire complet
 
     TextureRegion[][] barInventory;
     float ScreenX, ScreenY,ScreenWidth,ScreenHeight;
     public int  width = 50, height = 50;
 
     public Inventory(Stage stage, TerrariaGame game) {
-        this.inventory = new ArrayList<TileSlot>();
-        this.inventoryBar = new ArrayList<TileSlot>();
+        this.inventory = new ArrayList<Items>();
 
         barInventory = TextureRegion.split(game.getAssetManager().get("inventory.png", Texture.class), width, height);
     }
@@ -56,22 +54,21 @@ public class Inventory extends Actor {
      */
     public boolean addTileInInventory(TileType tile) {
         int index = -1, i = 0;
-        for(TileSlot t : inventory) {
-            TileType currentInventoryTile = TileType.getTileTypeById(t.getTileStack().getIdTile()); 
-            if((currentInventoryTile.getName().compareTo(tile.getName()) == 0) && t.getTileStack().getAmount() < 64) {
-                t.addTileOnSlot();
+        for(Items t : inventory) {
+            TileType currentInventoryTile = TileType.getTileTypeById(t.getIdTile());
+            if((currentInventoryTile.getName().compareTo(tile.getName()) == 0) && t.getAmount() < 64) {
+                t.incrAmount();
                 return true;
-            } else if(t.getTileStack() == null) {
+            } else if(t.getIdTile() == 0) {
                 index = i;
             }
             i++;
         }
 
         if(index >= 0) {
-            TileSlot slot = inventory.get(index);
-            TilesStack stack = new TilesStack(tile);
-            slot.setTileStack(stack);
-            inventory.set(index, slot);
+            Items item = inventory.get(index);
+            item.changeContent(tile, 1);
+            inventory.set(index, item);
             return true;
         }
 
@@ -83,20 +80,20 @@ public class Inventory extends Actor {
      * quand le nombre d'élement descend à 0.
      */
     public void delTileInInventory() {
-        TileSlot currentSlot = inventory.get(currentTile);
-        if(currentSlot.getTileStack().getAmount() == 1) {
-            currentSlot.removeTileStack();
+        Items currentSlot = inventory.get(currentTile);
+        if(currentSlot.getAmount() == 1) {
+            currentSlot.lastElement();
         } else {
-            currentSlot.getTileStack().decrAmount();
+            currentSlot.decrAmount();
         }
-        updateInventoryBar();
+        //updateInventoryBar();
     }
 
     /**
      * Permet de mettre à jour les éléments de la barre d'inventaire
      * à partir de l'inventaire complet 
      */
-    public void updateInventoryBar() {
+    /*public void updateInventoryBar() {
         TileSlot slot;
         for(int i = 0; i < 10; i++) {
             slot = inventory.get(i);
@@ -105,7 +102,7 @@ public class Inventory extends Actor {
                 inventoryBar.get(i).setTileStack(slot.getTileStack());
             }
         }
-    }
+    }*/
 
     public static int getCurrentTile() {
         return currentTile;
@@ -115,11 +112,8 @@ public class Inventory extends Actor {
         currentTile = tile;
     }
 
-    public ArrayList<TileSlot> getInventory() {
+    public ArrayList<Items> getInventory() {
         return inventory;
     }
 
-    public ArrayList<TileSlot> getInventoryBar() {
-        return inventoryBar;
-    }
 }
