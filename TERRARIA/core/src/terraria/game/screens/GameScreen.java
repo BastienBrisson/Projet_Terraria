@@ -1,7 +1,6 @@
 package terraria.game.screens;
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -40,7 +39,6 @@ public class GameScreen extends ScreenAdapter {
 
     protected ArrayList<Entity> entities;
     Player player;
-
 
     public GameScreen(final TerrariaGame game, ParallaxBackground parallaxBackground, final ArrayList<Entity> entities, final GameMap gameMap) {
 
@@ -94,7 +92,10 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(new terraria.game.screens.Input(this));
+        inputMultiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
@@ -116,6 +117,10 @@ public class GameScreen extends ScreenAdapter {
                 blocAction();
         }
 
+        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            //Permet l'ouverture de l'inventaire
+        }
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             if (isMenuShow) {
                 isMenuShow = false;
@@ -123,13 +128,14 @@ public class GameScreen extends ScreenAdapter {
                 isMenuShow = true;
             }
         }
+        
         if (isMenuShow) {
             exitButton.setPosition(camera.position.x,camera.position.y, Align.center);
         } else {
             exitButton.setPosition(0,0, Align.center);
         }
 
-
+        this.camera.update();
         this.parallaxBackground.update(camera, stage);
         this.gameMap.update(camera, stage);
 
@@ -159,6 +165,10 @@ public class GameScreen extends ScreenAdapter {
         this.parallaxBackground.update(camera, stage);
         this.gameMap.update(camera, stage);
 
+    }
+
+    public OrthographicCamera getCamera() {
+        return camera;
     }
 
     public void spawnMushroom (int posX, int posY) {
