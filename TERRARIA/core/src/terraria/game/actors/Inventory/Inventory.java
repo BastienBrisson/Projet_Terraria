@@ -1,19 +1,50 @@
 package terraria.game.actors.Inventory;
 
 import java.util.ArrayList;
+
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import terraria.game.TerrariaGame;
 import terraria.game.actors.world.TileType;
 
 
-public class Inventory {
+public class Inventory extends Actor {
 
     public static final int SLOTINVENTORYBAR = 10;
     private static int currentTile = 0;
     private ArrayList<TileSlot> inventory; // inventaire complet
     private ArrayList<TileSlot> inventoryBar; // barre d'inventaire
 
-    public Inventory() {
+    TextureRegion[][] barInventory;
+    float ScreenX, ScreenY,ScreenWidth,ScreenHeight;
+    public int  width = 50, height = 50;
+
+    public Inventory(Stage stage, TerrariaGame game) {
         this.inventory = new ArrayList<TileSlot>();
         this.inventoryBar = new ArrayList<TileSlot>();
+
+        barInventory = TextureRegion.split(game.getAssetManager().get("inventory.png", Texture.class), width, height);
+    }
+
+    public void update(Camera camera, Stage stage){
+        Vector3 vec = camera.position;
+        ScreenX =  vec.x + stage.getViewport().getScreenWidth()/2 - SLOTINVENTORYBAR * width;
+        ScreenY = vec.y - stage.getViewport().getScreenHeight()/2;
+        ScreenWidth =   stage.getViewport().getScreenWidth();
+        ScreenHeight = stage.getViewport().getScreenHeight();
+    }
+
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        for (int i = 0; i < SLOTINVENTORYBAR; i++){
+            batch.draw(barInventory[0][0], ScreenX + width *  i - (width/2), ScreenY + ScreenHeight - (height + height/2));
+        }
+
     }
 
     /**
