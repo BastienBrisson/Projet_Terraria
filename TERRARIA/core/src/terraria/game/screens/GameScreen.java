@@ -137,6 +137,7 @@ public class GameScreen extends ScreenAdapter {
         this.parallaxBackground.update(camera, stage);
         this.gameMap.update(camera, stage);
         this.playerHealth.update(camera, stage);
+
         stage.act(delta);
         stage.draw();
 

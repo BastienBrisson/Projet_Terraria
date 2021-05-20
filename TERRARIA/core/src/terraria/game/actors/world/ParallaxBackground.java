@@ -55,8 +55,8 @@ public class ParallaxBackground extends Actor {
 
         this.camera = camera;
         Vector3 vec = camera.position;
-        x =  (int)vec.x -  stage.getViewport().getScreenWidth()/2 - 16;;
-        y = (int)vec.y -  stage.getViewport().getScreenHeight()/2 - 16;
+        x =  vec.x -  stage.getViewport().getScreenWidth()/2 - 16;;
+        y = vec.y -  stage.getViewport().getScreenHeight()/2 - 16;
         width =   stage.getViewport().getScreenWidth() + 16;
         heigth = stage.getViewport().getScreenHeight() + 16;
 

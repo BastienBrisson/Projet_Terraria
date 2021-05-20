@@ -16,9 +16,9 @@ public class PlayerHealth extends Actor {
 
     double health;  //0 = death
     TextureRegion[][] heart;
-    int ScreenX, ScreenY,ScreenWidth,ScreenHeigth;
+    float ScreenX, ScreenY,ScreenWidth,ScreenHeigth;
 
-    public int  width = 32, height = 32;
+    public int  width = 35, height = 35;
 
     public PlayerHealth(Stage stage, TerrariaGame game){
         this.health = MAXHEALTH;
@@ -31,15 +31,19 @@ public class PlayerHealth extends Actor {
     }
 
     public void update(Camera camera, Stage stage){
+
         Vector3 vec = camera.position;
-        ScreenX =  (int)vec.x -  stage.getViewport().getScreenWidth()/2;;
-        ScreenY = (int)vec.y -  stage.getViewport().getScreenHeight()/2;
+
+        ScreenX =  vec.x -  stage.getViewport().getScreenWidth()/2;;
+        ScreenY = vec.y -  stage.getViewport().getScreenHeight()/2;
         ScreenWidth =   stage.getViewport().getScreenWidth();
         ScreenHeigth = stage.getViewport().getScreenHeight();
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+
+
 
 
         for (int i = 0; i < (int)health; i++){
