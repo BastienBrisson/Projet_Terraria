@@ -3,8 +3,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import terraria.game.TerrariaGame;
+import terraria.game.actors.entities.player.Player;
 import terraria.game.actors.world.GameMap;
-import terraria.game.screens.GameScreen;
 
 import java.util.HashMap;
 

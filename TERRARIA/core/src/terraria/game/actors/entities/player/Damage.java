@@ -1,4 +1,4 @@
-package terraria.game.actors.playerHealth;
+package terraria.game.actors.entities.player;
 
 public enum Damage {
 

@@ -1,5 +1,4 @@
 package terraria.game.screens;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
@@ -10,21 +9,18 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import terraria.game.TerrariaGame;
 import terraria.game.actors.entities.*;
-import terraria.game.actors.playerHealth.Damage;
-import terraria.game.actors.playerHealth.PlayerHealth;
+import terraria.game.actors.entities.player.Player;
+import terraria.game.actors.entities.player.PlayerHealth;
 import terraria.game.actors.world.GameMap;
 import terraria.game.actors.world.GeneratorMap.MapLoader;
 import terraria.game.actors.world.ParallaxBackground;
-import terraria.game.actors.world.TileType;
 
 import java.util.ArrayList;
 
@@ -53,6 +49,7 @@ public class GameScreen extends ScreenAdapter {
         this.entities = entities;
         this.gameMap = gameMap;
 
+
         //Initialisation du stage et de la camera//
         stage = new Stage(new ScreenViewport());
         camera = (OrthographicCamera) stage.getViewport().getCamera();
@@ -79,9 +76,6 @@ public class GameScreen extends ScreenAdapter {
 
         player = (Player) entities.get(0);
 
-        //Ajout de la barre de vie
-        this.playerHealth = new PlayerHealth(stage, game);
-        //player.setHealthBar(playerHealth);
 
         //On ajoute nos acteurs//
         stage.addActor(parallaxBackground);
@@ -91,11 +85,8 @@ public class GameScreen extends ScreenAdapter {
             stage.addActor(entity);
         }
         //stage.addActor(exitButton);
-        stage.addActor(playerHealth);
 
-        //Test pour les dommages
-        playerHealth.ApplyDamage(Damage.MAXIMUM_DAMAGE);
-        playerHealth.ApplyDamage(Damage.SMALL_DAMAGE);
+
 
         //spawnMushroom((int)player.pos.x+4* TileType.TILE_SIZE, (int)player.pos.y);
 
@@ -112,7 +103,7 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         for (Entity entity : entities) {
-            entity.update(delta, -9.8f, camera);
+            entity.update(delta, -9.8f, camera, stage);
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
@@ -141,7 +132,6 @@ public class GameScreen extends ScreenAdapter {
 
         this.parallaxBackground.update(camera, stage);
         this.gameMap.update(camera, stage);
-        this.playerHealth.update(camera, stage);
 
         stage.act(delta);
         stage.draw();
@@ -168,7 +158,6 @@ public class GameScreen extends ScreenAdapter {
 
         this.parallaxBackground.update(camera, stage);
         this.gameMap.update(camera, stage);
-        this.playerHealth.update(camera, stage);
 
     }
 
@@ -204,6 +193,8 @@ public class GameScreen extends ScreenAdapter {
     public void dispose() {
         stage.dispose();
     }
+
+
 
 
 }

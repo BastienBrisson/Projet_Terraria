@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import terraria.game.TerrariaGame;
 import terraria.game.actors.world.GameMap;
@@ -40,10 +41,13 @@ public class Entity extends Actor {
     }
 
 
-    public void update(float deltaTime, float gravity, Camera camera) {
+    public void update(float deltaTime, float gravity, Camera camera, Stage stage) {
         //Apply gravity
         float newY = pos.y;
         this.velocityY += gravity * deltaTime * getWeight();
+
+        if (!grounded){System.out.println(velocityY);}  //test
+
         newY += this.velocityY * deltaTime;
         if(gameMap.DoesRectCollideWithMap(pos.x, newY, (int)getWidth(), (int)getHeight())){
             if(velocityY < 0){

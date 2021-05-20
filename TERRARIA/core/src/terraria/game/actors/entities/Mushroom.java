@@ -5,8 +5,10 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import terraria.game.TerrariaGame;
+import terraria.game.actors.entities.player.Player;
 import terraria.game.actors.world.GameMap;
 import terraria.game.screens.LoadingScreen;
 
@@ -41,7 +43,7 @@ public class Mushroom extends Entity {
     }
 
     @Override
-    public void update(float deltaTime, float gravity, Camera camera) {
+    public void update(float deltaTime, float gravity, Camera camera, Stage stage) {
         if (target != null) {
             float distance = target.pos.x - pos.x;
             if (distance > getWidth()) {
@@ -67,7 +69,7 @@ public class Mushroom extends Entity {
             state = IDLE;
         }
 
-        super.update(deltaTime, gravity, camera);   //Apply gravity
+        super.update(deltaTime, gravity, camera, stage);   //Apply gravity
     }
 
     @Override
