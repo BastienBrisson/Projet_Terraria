@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import terraria.game.TerrariaGame;
+import terraria.game.actors.Inventory.Inventory;
 import terraria.game.actors.entities.*;
 import terraria.game.actors.entities.player.Player;
 import terraria.game.actors.entities.player.PlayerHealth;
@@ -32,7 +33,8 @@ public class GameScreen extends ScreenAdapter {
 
     //Acteurs//
     ParallaxBackground parallaxBackground;
-    PlayerHealth playerHealth;
+    Inventory inventory;
+
     GameMap gameMap;
     ImageButton exitButton;
     Boolean isMenuShow = false;
@@ -74,15 +76,18 @@ public class GameScreen extends ScreenAdapter {
 
         player = (Player) entities.get(0);
 
+        inventory = new Inventory(stage, game);
+
 
         //On ajoute nos acteurs//
         stage.addActor(parallaxBackground);
         stage.addActor(gameMap);
+        stage.addActor(inventory);
 
         for(Entity entity : entities ){
             stage.addActor(entity);
         }
-        //stage.addActor(exitButton);
+        stage.addActor(exitButton);
 
 
 
@@ -138,6 +143,7 @@ public class GameScreen extends ScreenAdapter {
         this.camera.update();
         this.parallaxBackground.update(camera, stage);
         this.gameMap.update(camera, stage);
+        this.inventory.update(camera, stage);
 
         stage.act(delta);
         stage.draw();
