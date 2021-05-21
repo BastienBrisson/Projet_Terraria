@@ -120,7 +120,7 @@ public class Player extends Entity {
     public void fallFromTooHigh(){
 
         if( velocityY < -350){ tooHigh = true;}
-        if(isGrounded() && tooHigh){ playerHealth.ApplyDamage(3); tooHigh = false;}
+        if(isGrounded() && tooHigh){ playerHealth.ApplyDamage(2.12); tooHigh = false;}
     }
 
 

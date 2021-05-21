@@ -108,6 +108,8 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+
+
         for (Entity entity : entities) {
             entity.update(delta, -9.8f, camera, stage);
         }
@@ -145,8 +147,10 @@ public class GameScreen extends ScreenAdapter {
         this.gameMap.update(camera, stage);
         this.inventory.update(camera, stage);
 
+
         stage.act(delta);
         stage.draw();
+
 
     }
 
@@ -187,6 +191,7 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void resize(int width, int height) {
+        camera.zoom = 1;
         stage.getViewport().update(width,height,true );
         parallaxBackground.setSize(stage.getViewport().getWorldWidth(),stage.getViewport().getWorldHeight());
     }
@@ -208,6 +213,10 @@ public class GameScreen extends ScreenAdapter {
 
     public void dispose() {
         stage.dispose();
+    }
+
+    public Stage getStage(){
+        return stage;
     }
 
 

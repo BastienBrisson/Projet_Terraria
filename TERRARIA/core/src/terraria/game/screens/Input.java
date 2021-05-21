@@ -48,14 +48,35 @@ public class Input implements InputProcessor {
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
+
+        float ratio = screen.getStage().getViewport().getWorldWidth()/screen.getStage().getViewport().getWorldHeight();
+
         if(amountY == 1) {
+
+
             if(this.zoomIndice < 2) {
-                this.screen.getCamera().zoom += 0.1f;
+
+                screen.getCamera().zoom += 0.1f;
+
+                float width = screen.getStage().getViewport().getWorldWidth();
+
+
+                this.screen.getStage().getViewport().setScreenWidth((int) (screen.getStage().getViewport().getScreenWidth() + (width * 0.1)));
+                this.screen.getStage().getViewport().setScreenHeight((int) (screen.getStage().getViewport().getScreenHeight() + ((width * 0.1)/ratio)));
+
                 zoomIndice += 1;
             }
         } else if(amountY == -1) {
             if (this.zoomIndice > -3) {
-                this.screen.getCamera().zoom -= 0.1f;
+
+
+                screen.getCamera().zoom -= 0.1f;
+
+                float width = screen.getStage().getViewport().getWorldWidth();
+
+                this.screen.getStage().getViewport().setScreenWidth( (int) (screen.getStage().getViewport().getScreenWidth() - (width * 0.1)));
+                this.screen.getStage().getViewport().setScreenHeight((int) (screen.getStage().getViewport().getScreenHeight() - ((width * 0.1)/ratio)));
+
                 zoomIndice -= 1;
             }
         }

@@ -40,6 +40,8 @@ public class ParallaxBackground extends Actor {
         scaleX = scaleY = 1;
 
 
+
+
     }
 
     public void setSpeed(int newSpeed){
@@ -55,10 +57,10 @@ public class ParallaxBackground extends Actor {
 
         this.camera = camera;
         Vector3 vec = camera.position;
-        x =  vec.x -  stage.getViewport().getScreenWidth()/2 - 130;
-        y = vec.y -  stage.getViewport().getScreenHeight()/2 - 70;
-        width =   stage.getViewport().getScreenWidth() + 270;
-        heigth = stage.getViewport().getScreenHeight() + 160;
+        x =  vec.x -  stage.getViewport().getScreenWidth()/2 ;
+        y = vec.y -  stage.getViewport().getScreenHeight()/2 ;
+        width =   stage.getViewport().getScreenWidth() ;
+        heigth = stage.getViewport().getScreenHeight() ;
 
     }
 
