@@ -19,14 +19,19 @@ public class Inventory extends Actor {
     private static int currentTile = 0;
     private ArrayList<Items> inventory; // inventaire complet
 
-    TextureRegion[][] barInventory;
+    TextureRegion[][] slot;
     float ScreenX, ScreenY,ScreenWidth,ScreenHeight;
     public int  width = 50, height = 50;
 
     public Inventory(Stage stage, TerrariaGame game) {
         this.inventory = new ArrayList<Items>();
 
-        barInventory = TextureRegion.split(game.getAssetManager().get("inventory.png", Texture.class), width, height);
+        for (int i = 0; i < 10; i++) {
+            //addTileInInventory(TileType.GRASS);
+            //inventoryBar.add(new TileSlot(0,0, new TilesStack(TileType.GRASS)));
+        }
+
+        slot = TextureRegion.split(game.getAssetManager().get("inventory/slot.png", Texture.class), width, height);
     }
 
     public void update(Camera camera, Stage stage){
@@ -40,8 +45,10 @@ public class Inventory extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         for (int i = 0; i < SLOTINVENTORYBAR; i++){
-            batch.draw(barInventory[0][0], ScreenX + width *  i - (width/2), ScreenY + ScreenHeight - (height + height/2));
+            //System.out.println(inventoryBar.get(i).getTileStack().getIdTile());
+            batch.draw(slot[0][0], ScreenX + width *  i - (width/2), ScreenY + ScreenHeight - (height + height/2));
         }
+        //batch.draw(slot[0][1], ScreenX + width *  1 - (width/2), ScreenY + ScreenHeight - (height + height/2));
 
     }
 
