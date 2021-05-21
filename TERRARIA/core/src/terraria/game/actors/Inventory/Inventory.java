@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -19,6 +20,7 @@ public class Inventory extends Actor {
     public static final int SIZEINVENTORY = 50;
     private static int currentItems = 0;
     private ArrayList<Items> inventory; // inventaire complet
+    BitmapFont font;
 
     TextureRegion[][] slot;
     TextureRegion[][] items;
@@ -27,6 +29,7 @@ public class Inventory extends Actor {
     public int  width = 50, height = 50;
 
     public Inventory(Stage stage, TerrariaGame game) {
+        font = new BitmapFont();
         this.inventory = new ArrayList<Items>();
 
         for (int i = 0; i < 50; i++) {
@@ -35,7 +38,7 @@ public class Inventory extends Actor {
 
         slot = TextureRegion.split(game.getAssetManager().get("inventory/slot.png", Texture.class), width, height);
         items = TextureRegion.split(game.getAssetManager().get("inventory/itemsInventory.png", Texture.class), width, height);
-        //inventory.get(1).changeContent(TileType.GRASS, 1);
+        inventory.get(1).changeContent(TileType.GRASS, 20);
     }
 
     public void update(Camera camera, Stage stage){
@@ -61,10 +64,9 @@ public class Inventory extends Actor {
         //On dessine les items dans la barre d'inventaire
         for (int i = 0; i < SLOTINVENTORYBAR; i++){
             batch.draw(items[0][inventory.get(i).getIdTile()], ScreenX + width *  i - (width/2), ScreenY + ScreenHeight - (height + height/2));
+            if (inventory.get(i).getAmount() != 0)
+                font.draw(batch, String.valueOf(inventory.get(i).getAmount()),ScreenX + width *  i, ScreenY + ScreenHeight - (height/7 + height));
         }
-
-        //batch.draw(slot[0][1], ScreenX + width *  1 - (width/2), ScreenY + ScreenHeight - (height + height/2));
-
     }
 
     /**
