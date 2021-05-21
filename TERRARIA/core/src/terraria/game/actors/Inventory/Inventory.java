@@ -16,22 +16,26 @@ import terraria.game.actors.world.TileType;
 public class Inventory extends Actor {
 
     public static final int SLOTINVENTORYBAR = 10;
-    private static int currentTile = 0;
+    public static final int SIZEINVENTORY = 50;
+    private static int currentItems = 0;
     private ArrayList<Items> inventory; // inventaire complet
 
     TextureRegion[][] slot;
+    TextureRegion[][] items;
+
     float ScreenX, ScreenY,ScreenWidth,ScreenHeight;
     public int  width = 50, height = 50;
 
     public Inventory(Stage stage, TerrariaGame game) {
         this.inventory = new ArrayList<Items>();
 
-        for (int i = 0; i < 10; i++) {
-            //addTileInInventory(TileType.GRASS);
-            //inventoryBar.add(new TileSlot(0,0, new TilesStack(TileType.GRASS)));
+        for (int i = 0; i < 50; i++) {
+            inventory.add(new Items());
         }
 
         slot = TextureRegion.split(game.getAssetManager().get("inventory/slot.png", Texture.class), width, height);
+        items = TextureRegion.split(game.getAssetManager().get("inventory/itemsInventory.png", Texture.class), width, height);
+        //inventory.get(1).changeContent(TileType.GRASS, 1);
     }
 
     public void update(Camera camera, Stage stage){
@@ -44,10 +48,21 @@ public class Inventory extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+
+        //On dessine les slots de la barre d'inventaire
         for (int i = 0; i < SLOTINVENTORYBAR; i++){
-            //System.out.println(inventoryBar.get(i).getTileStack().getIdTile());
-            batch.draw(slot[0][0], ScreenX + width *  i - (width/2), ScreenY + ScreenHeight - (height + height/2));
+            if (currentItems == i) {
+                batch.draw(slot[0][1], ScreenX + width *  i - (width/2), ScreenY + ScreenHeight - (height + height/2));
+            } else {
+                batch.draw(slot[0][0], ScreenX + width *  i - (width/2), ScreenY + ScreenHeight - (height + height/2));
+            }
         }
+
+        //On dessine les items dans la barre d'inventaire
+        for (int i = 0; i < SLOTINVENTORYBAR; i++){
+            batch.draw(items[0][inventory.get(i).getIdTile()], ScreenX + width *  i - (width/2), ScreenY + ScreenHeight - (height + height/2));
+        }
+
         //batch.draw(slot[0][1], ScreenX + width *  1 - (width/2), ScreenY + ScreenHeight - (height + height/2));
 
     }
@@ -87,7 +102,7 @@ public class Inventory extends Actor {
      * quand le nombre d'élement descend à 0.
      */
     public void delTileInInventory() {
-        Items currentSlot = inventory.get(currentTile);
+        Items currentSlot = inventory.get(currentItems);
         if(currentSlot.getAmount() == 1) {
             currentSlot.lastElement();
         } else {
@@ -111,12 +126,12 @@ public class Inventory extends Actor {
         }
     }*/
 
-    public static int getCurrentTile() {
-        return currentTile;
+    public static int getCurrentItems() {
+        return currentItems;
     }
 
-    public static void setCurrentTile(int tile) {
-        currentTile = tile;
+    public static void setCurrentItems(int tile) {
+        currentItems = tile;
     }
 
     public ArrayList<Items> getInventory() {
