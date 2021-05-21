@@ -39,7 +39,7 @@ public class Inventory extends Actor {
 
         slot = TextureRegion.split(game.getAssetManager().get("inventory/slot.png", Texture.class), width, height);
         items = TextureRegion.split(game.getAssetManager().get("inventory/itemsInventory.png", Texture.class), width, height);
-        inventory.get(1).changeContent(TileType.GRASS, 20);
+        //inventory.get(1).changeContent(TileType.GRASS, 20);
     }
 
     public void update(Camera camera, Stage stage){
@@ -71,14 +71,21 @@ public class Inventory extends Actor {
         }
 
         //On dessine les items dans la barre d'inventaire
+        int nbItem = 0;
         for (int i = 0; i < SLOTINVENTORYBAR; i++){
-            batch.draw(items[0][inventory.get(i).getIdTile()], ScreenX + width *  i - (width/2), ScreenY + ScreenHeight - (height + height/2));
+            batch.draw(items[0][inventory.get(nbItem).getIdTile()], ScreenX + width *  i - (width/2), ScreenY + ScreenHeight - (height + height/2));
             if (inventory.get(i).getAmount() != 0)
-                font.draw(batch, String.valueOf(inventory.get(i).getAmount()),ScreenX + width *  i, ScreenY + ScreenHeight - (height/7 + height));
+                font.draw(batch, String.valueOf(inventory.get(nbItem).getAmount()),ScreenX + width *  i, ScreenY + ScreenHeight - (height/7 + height));
+            nbItem++;
         }
         if (inventoryShow) {
-            for (int i = 0; i < SLOTINVENTORYBAR; i++){
-
+            for (int i = 1; i < 5; i++) {
+                for (int j = 0; j < SLOTINVENTORYBAR; j++) {
+                    batch.draw(items[0][inventory.get(nbItem).getIdTile()], ScreenX + width *  j - (width/2), ScreenY + ScreenHeight - (i*height+height + height/2));
+                    if (inventory.get(nbItem).getAmount() != 0)
+                        font.draw(batch, String.valueOf(inventory.get(nbItem).getAmount()),ScreenX + width *  j, ScreenY + ScreenHeight - (i*height + height/7 + height));
+                    nbItem++;
+                }
             }
         }
 
