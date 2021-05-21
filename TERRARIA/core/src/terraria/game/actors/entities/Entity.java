@@ -46,7 +46,7 @@ public class Entity extends Actor {
         float newY = pos.y;
         this.velocityY += gravity * deltaTime * getWeight();
 
-        if (!grounded){System.out.println(velocityY);}  //test
+        //if (!grounded){System.out.println(velocityY);}  //test
 
         newY += this.velocityY * deltaTime;
         if(gameMap.DoesRectCollideWithMap(pos.x, newY, (int)getWidth(), (int)getHeight())){
