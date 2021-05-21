@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import terraria.game.TerrariaGame;
+import terraria.game.actors.Inventory.Inventory;
 import terraria.game.actors.world.GeneratorMap.MapLoader;
 import terraria.game.actors.world.GeneratorMap.DataMap;
 
@@ -120,9 +121,10 @@ public class GameMap extends Actor {
         return false;
     }
 
-    public void addTile(Vector3 coordinate) {
+    public void addTile(Vector3 coordinate, Inventory inventory) {
         if (tilesInMap(coordinate)) {
-            getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = 3;
+            getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = inventory.getInventory().get(inventory.getCurrentItems()).getIdTile();
+            inventory.getInventory().get(inventory.getCurrentItems()).decrAmount();
         }
     }
 

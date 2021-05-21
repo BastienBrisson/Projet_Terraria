@@ -32,12 +32,20 @@ public class Items {
         return this.idTile;
     }
 
+    public void setIdTile(int id) {
+         this.idTile = id;
+    }
+
     public void incrAmount() {
         this.amount++;
     }
 
     public void decrAmount() {
-        this.amount--;
+        if (this.amount > 0) {
+            this.amount--;
+        } else {
+            this.setIdTile(0);
+        }
     }
 
     public void lastElement() {

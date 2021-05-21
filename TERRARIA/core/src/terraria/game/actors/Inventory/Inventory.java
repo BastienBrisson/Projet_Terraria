@@ -128,7 +128,7 @@ public class Inventory extends Actor {
         }
     }*/
 
-    public static int getCurrentItems() {
+    public int getCurrentItems() {
         return currentItems;
     }
 
