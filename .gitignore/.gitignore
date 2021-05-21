@@ -1,5 +1,6 @@
 
 /TERRARIA/core/assets/saves/
+build/*
 
 # Created by https://www.toptal.com/developers/gitignore/api/intellij,visualstudio,eclipse
 # Edit at https://www.toptal.com/developers/gitignore?templates=intellij,visualstudio,eclipse
