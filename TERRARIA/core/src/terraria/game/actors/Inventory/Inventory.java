@@ -32,7 +32,7 @@ public class Inventory extends Actor {
         font = new BitmapFont();
         this.inventory = new ArrayList<Items>();
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < SIZEINVENTORY; i++) {
             inventory.add(new Items());
         }
 
@@ -73,27 +73,23 @@ public class Inventory extends Actor {
      * Ajoute un élément à un slot, s'il existe un slot contenant déjà un élément
      * du même type et qu'il y a moins de 64 éléments dans ce slot. Dans le cas contraire
      * on va chercher s'il existe un slot vide pouvant acceuilir cet élement. 
-     * @param tile
+     * @param idTile
      * @return
      */
-    public boolean addTileInInventory(TileType tile) {
-        int index = -1, i = 0;
+    public boolean addTileInInventory(int idTile) {
         for(Items t : inventory) {
-            TileType currentInventoryTile = TileType.getTileTypeById(t.getIdTile());
-            if((currentInventoryTile.getName().compareTo(tile.getName()) == 0) && t.getAmount() < 64) {
+            if(idTile == t.getIdTile() && t.getAmount() < 64) {
                 t.incrAmount();
                 return true;
-            } else if(t.getIdTile() == 0) {
-                index = i;
             }
-            i++;
         }
 
-        if(index >= 0) {
-            Items item = inventory.get(index);
-            item.changeContent(tile, 1);
-            inventory.set(index, item);
-            return true;
+        for(Items t2 : inventory) {
+            if(t2.getIdTile() == 0) {
+                t2.setIdTile(idTile);
+                t2.incrAmount();
+                return true;
+            }
         }
 
         return false;

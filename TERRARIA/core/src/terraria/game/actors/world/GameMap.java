@@ -97,7 +97,8 @@ public class GameMap extends Actor {
         return new Vector3((int) (x / TileType.TILE_SIZE), (int) (getMapHeight() - (y / TileType.TILE_SIZE)), layer);
     }
 
-    public void destroyTile(Vector3 coordinate) {
+    public void destroyTile(Vector3 coordinate, Inventory inventaire) {
+        inventaire.addTileInInventory(getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x]);
         getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = 0;
         int idBlocSupp = getMap()[(int)coordinate.z][(int)coordinate.y-1][(int)coordinate.x];
         if (idBlocSupp == 12 || idBlocSupp == 13 || idBlocSupp == 14) {

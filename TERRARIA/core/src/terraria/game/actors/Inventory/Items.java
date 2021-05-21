@@ -43,6 +43,8 @@ public class Items {
     public void decrAmount() {
         if (this.amount > 0) {
             this.amount--;
+            if (amount==0)
+                this.setIdTile(0);
         } else {
             this.setIdTile(0);
         }

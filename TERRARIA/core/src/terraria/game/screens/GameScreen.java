@@ -185,11 +185,11 @@ public class GameScreen extends ScreenAdapter {
         Vector3 coordinate = gameMap.getTileCoordinateByLocation(1,pos.x, pos.y);
         if (coordinate != null) {
             if (gameMap.presentTile(coordinate) ) {
-                gameMap.destroyTile(coordinate);
+                gameMap.destroyTile(coordinate, inventory);
             } else {
                 gameMap.addTile(coordinate, inventory);
                 if (gameMap.DoesRectCollideWithMap(entities.get(0).getX(), entities.get(0).getY(), (int) entities.get(0).getWidth(), (int) entities.get(0).getHeight())) {
-                    gameMap.destroyTile(coordinate);
+                    gameMap.destroyTile(coordinate, inventory);
                 }
 
             }
