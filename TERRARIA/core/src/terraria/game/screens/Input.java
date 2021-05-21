@@ -52,6 +52,7 @@ public class Input implements InputProcessor {
         float ratio = screen.getStage().getViewport().getWorldWidth()/screen.getStage().getViewport().getWorldHeight();
 
         if(amountY == 1) {
+            System.out.println(ratio);
 
 
             if(this.zoomIndice < 2) {
@@ -61,8 +62,8 @@ public class Input implements InputProcessor {
                 float width = screen.getStage().getViewport().getWorldWidth();
 
 
-                this.screen.getStage().getViewport().setScreenWidth((int) (screen.getStage().getViewport().getScreenWidth() + (width * 0.1)));
-                this.screen.getStage().getViewport().setScreenHeight((int) (screen.getStage().getViewport().getScreenHeight() + ((width * 0.1)/ratio)));
+                this.screen.getStage().getViewport().setScreenWidth(( (screen.getStage().getViewport().getScreenWidth() + (int)(width * 0.1))));
+                this.screen.getStage().getViewport().setScreenHeight( (screen.getStage().getViewport().getScreenHeight() + (int)((width * 0.1)/ratio)));
 
                 zoomIndice += 1;
             }
@@ -74,8 +75,8 @@ public class Input implements InputProcessor {
 
                 float width = screen.getStage().getViewport().getWorldWidth();
 
-                this.screen.getStage().getViewport().setScreenWidth( (int) (screen.getStage().getViewport().getScreenWidth() - (width * 0.1)));
-                this.screen.getStage().getViewport().setScreenHeight((int) (screen.getStage().getViewport().getScreenHeight() - ((width * 0.1)/ratio)));
+                this.screen.getStage().getViewport().setScreenWidth( (screen.getStage().getViewport().getScreenWidth() - (int)(width * 0.1)));
+                this.screen.getStage().getViewport().setScreenHeight( (screen.getStage().getViewport().getScreenHeight() - (int)((width * 0.1)/ratio)));
 
                 zoomIndice -= 1;
             }
