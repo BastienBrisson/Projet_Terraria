@@ -125,7 +125,11 @@ public class GameScreen extends ScreenAdapter {
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-            //Permet l'ouverture de l'inventaire
+            if (inventory.inventoryShow) {
+                inventory.inventoryShow = false;
+            } else {
+                inventory.inventoryShow = true;
+            }
         }
 
         selectionItems();

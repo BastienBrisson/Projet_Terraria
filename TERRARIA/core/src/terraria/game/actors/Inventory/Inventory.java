@@ -21,6 +21,7 @@ public class Inventory extends Actor {
     private static int currentItems = 0;
     private ArrayList<Items> inventory; // inventaire complet
     BitmapFont font;
+    public Boolean inventoryShow = false;
 
     TextureRegion[][] slot;
     TextureRegion[][] items;
@@ -61,12 +62,26 @@ public class Inventory extends Actor {
             }
         }
 
+        if (inventoryShow) {
+            for (int i = 1; i < 5; i++) {
+                for (int j = 0; j < SLOTINVENTORYBAR; j++) {
+                    batch.draw(slot[0][0], ScreenX + width * j - (width / 2), ScreenY + ScreenHeight - (i*height + height + height / 2));
+                }
+            }
+        }
+
         //On dessine les items dans la barre d'inventaire
         for (int i = 0; i < SLOTINVENTORYBAR; i++){
             batch.draw(items[0][inventory.get(i).getIdTile()], ScreenX + width *  i - (width/2), ScreenY + ScreenHeight - (height + height/2));
             if (inventory.get(i).getAmount() != 0)
                 font.draw(batch, String.valueOf(inventory.get(i).getAmount()),ScreenX + width *  i, ScreenY + ScreenHeight - (height/7 + height));
         }
+        if (inventoryShow) {
+            for (int i = 0; i < SLOTINVENTORYBAR; i++){
+
+            }
+        }
+
     }
 
     /**
