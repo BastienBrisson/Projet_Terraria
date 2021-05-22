@@ -16,16 +16,19 @@ public class Player extends Entity {
 
     private static final int SPEED = 200, JUMP_VELOCITY = 5;
 
+    private static final double FALLDAMAGE_COEFF = -0.005;
+    private static float fallDamage;
+
     private PlayerHealth playerHealth;
     private boolean invulnerable;
-    private final long INVULNERABILITY_TIME = 1000000000;
-    private long invulnerabilityTimer = 0;
+    private final float INVULNERABILITY_TIME = 1f;  //1f = 1sec
+    private float invulnerabilityTimer = 0f;
     public static int MAXHEALTH = 10;
     Boolean tooHigh = false;
 
 
     private static int state = 0;
-    private static final int IDLE = 0, JUMPING = 1, RUNNING = 2;
+    private static final int IDLE = 0, JUMPING = 1, RUNNING = 2, HIT = 3;
 
     @Override
     public void create(EntitySnapshot snapshot, EntityType type, GameMap gameMap, TerrariaGame game) {
@@ -53,6 +56,7 @@ public class Player extends Entity {
                 case 0: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("playerAnimation/player"+i+".png", Texture.class)),2 , 0.5F));break;
                 case 1: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("playerAnimation/player"+i+".png", Texture.class)),1 , 0.5F));break;
                 case 2: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("playerAnimation/player"+i+".png", Texture.class)),6 , 0.5F));break;
+                case 3: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("playerAnimation/player"+i+".png", Texture.class)),2 , 0.1F));break;
             }
         }
     }
@@ -65,9 +69,10 @@ public class Player extends Entity {
      */
     @Override
     public void update(float deltaTime, float gravity, Camera camera, Stage stage) {
-
+        //Handle the camera
         camera.position.set(pos.x, pos.y + 32*5, 0);
 
+        //Handle the jump
         if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.Z)) && grounded) {
             this.velocityY += JUMP_VELOCITY * getWeight();
         }
@@ -75,52 +80,58 @@ public class Player extends Entity {
             this.velocityY += JUMP_VELOCITY * getWeight() * deltaTime;
         }
 
+        //Check if falling from too high
+        fallingCheck();
+
         super.update(deltaTime, gravity, camera, stage);   //Apply gravity
 
+        //Handle the controls
         if (Gdx.input.isKeyPressed(Keys.Q)) {
             moveX(-SPEED * deltaTime);
         }
         else if (Gdx.input.isKeyPressed(Keys.D)) {
             moveX(SPEED * deltaTime);
-        } else if(Gdx.input.isKeyPressed(Keys.E)) {
-            
+        } else if (Gdx.input.isKeyPressed(Keys.E)) {
+            //Open inventory
         }
 
-        //Gérer le temps d'invulnérabilité apres un coups
+        //Check the invulnerability frame
         if (invulnerable) {
-            System.out.println("invulnérable: "+invulnerabilityTimer);
-            invulnerabilityTimer -= deltaTime;
-            if (invulnerabilityTimer <= 0)
-                System.out.println("invulnerability end");
-            invulnerable = false;
+            invulnerabilityTimer += deltaTime;
+            if (invulnerabilityTimer > INVULNERABILITY_TIME) {
+                invulnerabilityTimer = 0f;
+                invulnerable = false;
+            }
         }
 
         //Check the state of the character
-        if (!grounded) state = JUMPING;
+        if (invulnerable) state = HIT;
+        else if (!grounded) state = JUMPING;
         else if (Gdx.input.isKeyPressed(Keys.Q) || Gdx.input.isKeyPressed(Keys.D)) state = RUNNING;
         else state = IDLE;
 
+        //Update health
         playerHealth.update(camera,stage);
-
-        //if fall from too high
-        fallFromTooHigh();
 
     }
 
-    public void takeAHit (int damage) {
-        //Lancer un temps d'invulnérabilité
+    public void takeAhit(double damage) {
         if (!invulnerable) {
-            //healthBar.applyDamage(1)
+            playerHealth.ApplyDamage(damage);
+            this.velocityY += 2 * getWeight();  //Knockback
             invulnerable = true;
-            System.out.println("touche!");
-            invulnerabilityTimer = INVULNERABILITY_TIME;
         }
     }
 
-    public void fallFromTooHigh(){
-
-        if( velocityY < -350){ tooHigh = true;}
-        if(isGrounded() && tooHigh){ playerHealth.ApplyDamage(2.12); tooHigh = false;}
+    public void fallingCheck() {
+        if (velocityY < -350) {
+            tooHigh = true;
+            fallDamage = velocityY;
+        }
+        if (isGrounded() && tooHigh) {
+            takeAhit(fallDamage * FALLDAMAGE_COEFF);
+            tooHigh = false;
+        }
     }
 
 
@@ -129,7 +140,6 @@ public class Player extends Entity {
         EntitySnapshot snapshot = super.getSaveSnapshot();
         snapshot.health = playerHealth.health;
         return snapshot;
-
     }
 
     @Override
@@ -143,6 +153,10 @@ public class Player extends Entity {
             case RUNNING:
                 texture = animations.get(2).getFrame();
                 animations.get(2).update( Gdx.graphics.getDeltaTime());
+                break;
+            case HIT:
+                texture = animations.get(3).getFrame();
+                animations.get(3).update( Gdx.graphics.getDeltaTime());
                 break;
             default :   //state == IDLE
                 texture = animations.get(0).getFrame();

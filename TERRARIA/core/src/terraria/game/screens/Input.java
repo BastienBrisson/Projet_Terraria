@@ -52,7 +52,7 @@ public class Input implements InputProcessor {
         float ratio = screen.getStage().getViewport().getWorldWidth()/screen.getStage().getViewport().getWorldHeight();
 
         if(amountY == 1) {
-            System.out.println(ratio);
+            //System.out.println(ratio);
 
 
             if(this.zoomIndice < 2) {

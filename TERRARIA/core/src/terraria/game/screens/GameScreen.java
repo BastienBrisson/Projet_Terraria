@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -17,12 +18,14 @@ import terraria.game.TerrariaGame;
 import terraria.game.actors.Inventory.Inventory;
 import terraria.game.actors.entities.*;
 import terraria.game.actors.entities.player.Player;
-import terraria.game.actors.entities.player.PlayerHealth;
 import terraria.game.actors.world.GameMap;
 import terraria.game.actors.world.GeneratorMap.MapLoader;
 import terraria.game.actors.world.ParallaxBackground;
+import terraria.game.actors.world.TileType;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 
 public class GameScreen extends ScreenAdapter {
@@ -91,7 +94,7 @@ public class GameScreen extends ScreenAdapter {
 
 
 
-        //spawnMushroom((int)player.pos.x+4* TileType.TILE_SIZE, (int)player.pos.y);
+        spawnMushroom((int)player.pos.x / TileType.TILE_SIZE, (int)player.pos.y / TileType.TILE_SIZE, 10);
 
     }
 
@@ -211,12 +214,41 @@ public class GameScreen extends ScreenAdapter {
         return camera;
     }
 
-    public void spawnMushroom (int posX, int posY) {
-        Mushroom entity = new Mushroom();
-        entity.create(posX, posY, EntityType.SHROOM, gameMap, game);
-        entities.add(entity);
-        stage.addActor(entity);
-        entity.setTarget(player);
+    /**
+     * Spawn un champi dans une case vide random comprise dans un carré de taille spawnRadius autour du joueur
+     * (à améliorer avec un return 0 ou 1 si y'avait aucun emplacement de spawn)
+     * @param playerX in game coordinates
+     * @param playerY in game coordinates
+     * @param spawnRadius in number of blocs
+     */
+    public void spawnMushroom (int playerX, int playerY, int spawnRadius) {
+        //Check all valid spots
+        List<Vector2> validPos = new ArrayList<Vector2>();
+        for (int x = playerX - spawnRadius; x <= playerX + spawnRadius; x++ ) {
+            for (int y = playerY - spawnRadius; y <= playerY + spawnRadius; y++ ) {
+                TileType tileType = gameMap.getTileTypeByCoordinate(1, x, y);
+                //Check if empty spot
+                if (tileType == null || !tileType.isCollidable()) {
+                    TileType underTile = gameMap.getTileTypeByCoordinate(1, x, y-1);
+                    //Check if solid ground
+                    if (underTile != null && underTile.isCollidable())
+                        validPos.add(new Vector2(x, y));
+                }
+            }
+        }
+
+        if (!validPos.isEmpty()) {
+            //Choose a random spawn point
+            Random rand = new Random();
+            Vector2 randomPos = validPos.get(rand.nextInt(validPos.size()));
+
+            Mushroom entity = new Mushroom();
+            entity.create((int)randomPos.x * TileType.TILE_SIZE, (int)randomPos.y * TileType.TILE_SIZE, EntityType.SHROOM, gameMap, game);
+            entities.add(entity);
+            stage.addActor(entity);
+            entity.setTarget(player);
+        }
+
     }
 
     @Override

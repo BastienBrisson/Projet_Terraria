@@ -22,7 +22,8 @@ public class PlayerHealth {
     }
 
     public void ApplyDamage(double damage) {
-        health = health - Math.round(damage*4f)/4f;
+        double newHealth = health - Math.round(damage*4f)/4f;
+        health = (newHealth > 0) ? newHealth : 0;
         //System.out.println(damage+" damage -> health = "+health);
     }
 

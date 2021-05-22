@@ -143,7 +143,7 @@ public class GameMap extends Actor {
         }
         for (int row = (int) (y / TileType.TILE_SIZE); row < Math.ceil((y + height ) / TileType.TILE_SIZE); row++) {
             for (int col = (int) (x / TileType.TILE_SIZE); col < Math.ceil((x +width ) / TileType.TILE_SIZE); col++) {
-                for (int layer = 0; layer < getLayers(); layer++) {
+                for (int layer = 0; layer < getMapLayers(); layer++) {
                     TileType type = getTileTypeByCoordinate(layer, col, row);
                     if (type != null && type.isCollidable()) {
                         return true;
@@ -155,27 +155,34 @@ public class GameMap extends Actor {
     }
 
     /**
-     * retourne le type d'une case en fonction de ses coordonnées
+     * retourne le type d'une case en fonction de sa localisation sur l'ecran (en pixel)
+     * @param layer
+     * @param x
+     * @param y
+     * @return
+     */
+    public TileType getTileTypeByLocation(int layer, float x, float y) {
+        return this.getTileTypeByCoordinate(layer, (int) (x / TileType.TILE_SIZE), (int) (y / TileType.TILE_SIZE));
+    }
+
+    /**
+     * retourne le type d'une case en fonction de ses coordonnées en jeu
      * @param layer
      * @param col
      * @param row
      * @return
      */
     public TileType getTileTypeByCoordinate(int layer, int col, int row) {
-        if (col < 0 || col >= getWidth() || row < 0 || row >= getHeight())
+        if (col < 0 || col >= getMapWidth() || row < 0 || row >= getMapHeight())
             return null;
 
-        int id = getMap()[layer][(int) (getHeight() - row - 1)][col];
+        int id = getMap()[layer][(getMapHeight() - row - 1)][col];
         if(id == 0){return null;}
         return TileType.getTileTypeById(id);
     }
 
-
-    public float getWidth() {return getMap()[0][0].length; }
-    public float getHeight() {return getMap()[0].length;}
-    public int getLayers() {return getMap().length;}
-    public int getPixelWidth(){return (int) (this.getWidth() * TileType.TILE_SIZE);}
-    public int getPixelHeight(){return (int) (this.getHeight() * TileType.TILE_SIZE); }
+    public int getPixelWidth(){return this.getMapWidth() * TileType.TILE_SIZE;}
+    public int getPixelHeight(){return this.getMapHeight() * TileType.TILE_SIZE; }
 
 
     @Override
@@ -189,7 +196,6 @@ public class GameMap extends Actor {
 
 
                         TileType type = getTileTypeByCoordinate(layer, col, row);
-                        TileType Lighttype = getTileTypeByCoordinate(2, col, row);
 
 
                         if (type != null) {

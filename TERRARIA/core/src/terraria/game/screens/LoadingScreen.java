@@ -29,7 +29,8 @@ public class LoadingScreen extends ScreenAdapter {
     private PlayerHealth playerHealth;
 
 
-    public static int TEXTURE_NUMBER_PLAYER = 3;
+    public static int TEXTURE_NUMBER_PLAYER = 4;
+    public static int TEXTURE_NUMBER_MUSHROOM = 3;
     public static int TEXTURE_NUMBER_PARALLAX_GAME = 3;
 
     private static final float PROGRESS_BAR_WIDTH = 500;
@@ -58,7 +59,10 @@ public class LoadingScreen extends ScreenAdapter {
             game.getAssetManager().load("playerAnimation/player"+i+".png", Texture.class);
 
         }
+        for(int i = 0; i < TEXTURE_NUMBER_MUSHROOM;i++){
+            game.getAssetManager().load("ennemies/mushroom"+i+".png", Texture.class);
 
+        }
 
         for (TileType tile : TileType.values()) {
             FileHandle texture = Gdx.files.internal("tiles/"+tile.getName()+".png");

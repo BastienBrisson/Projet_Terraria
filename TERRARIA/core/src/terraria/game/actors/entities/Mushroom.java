@@ -10,13 +10,14 @@ import com.badlogic.gdx.utils.Array;
 import terraria.game.TerrariaGame;
 import terraria.game.actors.entities.player.Player;
 import terraria.game.actors.world.GameMap;
+import terraria.game.actors.world.TileType;
 import terraria.game.screens.LoadingScreen;
 
 public class Mushroom extends Entity {
 
     Player target;
 
-    private static final int SPEED = 100, JUMP_VELOCITY = 5;
+    private static final int SPEED = 75, JUMP_VELOCITY = 6, RANGE = 10 * TileType.TILE_SIZE;
 
     private static int state = 0;
     private static final int IDLE = 0, RUNNING = 1, JUMPING = 2;
@@ -35,41 +36,57 @@ public class Mushroom extends Entity {
         animations = new Array<>();
         for(int i = 0; i < LoadingScreen.TEXTURE_NUMBER_PLAYER ; i++){
             switch (i){
-                case IDLE: animations.add(new Animation(new TextureRegion(new Texture("ennemies/mushroom"+IDLE+".png")),7 , 0.5F));break;
-                case RUNNING: animations.add(new Animation(new TextureRegion(new Texture("ennemies/mushroom"+RUNNING+".png")),8 , 0.5F));break;
-                case JUMPING: animations.add(new Animation(new TextureRegion(new Texture("ennemies/mushroom"+JUMPING+".png")),3 , 0.5F));break;
+                case IDLE: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("ennemies/mushroom"+i+".png", Texture.class)),7 , 0.5F));break;
+                case RUNNING: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("ennemies/mushroom"+i+".png", Texture.class)),8 , 0.5F));break;
+                case JUMPING: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("ennemies/mushroom"+i+".png", Texture.class)),1 , 0.5F));break;
             }
         }
     }
 
     @Override
     public void update(float deltaTime, float gravity, Camera camera, Stage stage) {
+
         if (target != null) {
-            float distance = target.pos.x - pos.x;
-            if (distance > getWidth()) {
-                //if (gameMap.getTileTypeByLocation(1, pos.x+ TileType.TILE_SIZE, pos.y).isCollidable() )
 
-                moveX(SPEED * deltaTime);
-                state = RUNNING;
+            float xDistance = target.pos.x - pos.x;
+            float yDistance = target.pos.y - pos.y;
 
+            //if player in range horizontally
+            if (xDistance < RANGE && xDistance > -RANGE) {
 
-            } else if (distance < -target.getWidth()) {
+                //run toward player
+                if (xDistance > getWidth()) {
+                    moveX(SPEED * deltaTime);
+                    state = RUNNING;
+                } else if (xDistance < -target.getWidth()) {
+                    moveX(-SPEED * deltaTime);
+                    state = RUNNING;
+                } else {
+                    if (yDistance < getHeight() && yDistance > -target.getHeight())    //player touched
+                        target.takeAhit(1);
+                    state = IDLE;
+                }
 
-                moveX(-SPEED * deltaTime);
-                state = RUNNING;
+                TileType frontTile =  flipX ? gameMap.getTileTypeByLocation(1, pos.x - TileType.TILE_SIZE, pos.y) : gameMap.getTileTypeByLocation(1, pos.x + getWidth() + TileType.TILE_SIZE, pos.y);
+                TileType frontGroundTile =  flipX ? gameMap.getTileTypeByLocation(1, pos.x - TileType.TILE_SIZE, pos.y - TileType.TILE_SIZE) : gameMap.getTileTypeByLocation(1, pos.x + getWidth() + TileType.TILE_SIZE, pos.y - TileType.TILE_SIZE);
+
+                //jump if block in front or if hole in front and player upward
+                if (grounded && (frontTile != null && frontTile.isCollidable()) || ((frontGroundTile == null || !frontGroundTile.isCollidable()) && yDistance >= 0))
+                    this.velocityY += JUMP_VELOCITY * getWeight();
 
             } else {
-
-                target.takeAHit(1);
                 state = IDLE;
-
             }
-
         } else {
+            //No target (never supposed to happen)
             state = IDLE;
         }
 
         super.update(deltaTime, gravity, camera, stage);   //Apply gravity
+
+        if (!grounded) state = JUMPING;
+        else if (grounded && state == JUMPING) state = IDLE;
+
     }
 
     @Override
