@@ -91,8 +91,6 @@ public class Player extends Entity {
         }
         else if (Gdx.input.isKeyPressed(Keys.D)) {
             moveX(SPEED * deltaTime);
-        } else if (Gdx.input.isKeyPressed(Keys.E)) {
-            //Open inventory
         }
 
         //Check the invulnerability frame
@@ -118,7 +116,8 @@ public class Player extends Entity {
     public void takeAhit(double damage) {
         if (!invulnerable) {
             playerHealth.ApplyDamage(damage);
-            this.velocityY += 2 * getWeight();  //Knockback
+            if (grounded)
+                this.velocityY += 2 * getWeight();  //Knockback
             invulnerable = true;
         }
     }
