@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import terraria.game.TerrariaGame;
+import terraria.game.actors.Inventory.Inventory;
 import terraria.game.actors.entities.*;
 import terraria.game.actors.world.GameMap;
 import com.badlogic.gdx.Gdx;
@@ -20,6 +21,7 @@ public class Player extends Entity {
     private static float fallDamage;
 
     private PlayerHealth playerHealth;
+    private Inventory inventory;
     private boolean invulnerable;
     private final float INVULNERABILITY_TIME = 1f;  //1f = 1sec
     private float invulnerabilityTimer = 0f;
@@ -35,14 +37,15 @@ public class Player extends Entity {
         super.create(snapshot, type, gameMap,game);
         TextureRegion[][] heart =  TextureRegion.split(game.getAssetManager().get("heart.png", Texture.class), 35, 35);
         this.playerHealth = new PlayerHealth(game, heart, snapshot.health);
-
-
+        this.inventory = new Inventory(game);
+        this.inventory.fillInventory(snapshot.inventory);
         init();
     }
     public void create(int posX, int posY, EntityType type, GameMap gameMap, TerrariaGame game) {
         super.create(posX,posY, type, gameMap,game);
         TextureRegion[][] heart =  TextureRegion.split(game.getAssetManager().get("heart.png", Texture.class), 35, 35);
         this.playerHealth = new PlayerHealth(game, heart, MAXHEALTH);
+        this.inventory = new Inventory(game);
         init();
     }
 
@@ -133,11 +136,15 @@ public class Player extends Entity {
         }
     }
 
+    public Inventory getInventory() {
+        return this.inventory;
+    }
 
     @Override
     public EntitySnapshot getSaveSnapshot() {
         EntitySnapshot snapshot = super.getSaveSnapshot();
         snapshot.health = playerHealth.health;
+        snapshot.inventory = inventory.getInventory();
         return snapshot;
     }
 

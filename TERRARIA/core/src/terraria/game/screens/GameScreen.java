@@ -79,8 +79,8 @@ public class GameScreen extends ScreenAdapter {
 
         player = (Player) entities.get(0);
 
-        inventory = new Inventory(stage, game);
-
+        //inventory = new Inventory(stage, game);
+        inventory = player.getInventory();
 
         //On ajoute nos acteurs//
         stage.addActor(parallaxBackground);

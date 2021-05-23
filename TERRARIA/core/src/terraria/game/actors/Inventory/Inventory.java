@@ -29,7 +29,7 @@ public class Inventory extends Actor {
     float ScreenX, ScreenY,ScreenWidth,ScreenHeight;
     public int  width = 50, height = 50;
 
-    public Inventory(Stage stage, TerrariaGame game) {
+    public Inventory(TerrariaGame game) {
         font = new BitmapFont();
         this.inventory = new ArrayList<Items>();
 
@@ -145,6 +145,14 @@ public class Inventory extends Actor {
             }
         }
     }*/
+
+    public void fillInventory(ArrayList<Items> inv) {
+        int indice = 0;
+        for(Items i : inv) {
+            this.inventory.set(indice, i);
+            indice++;
+        }
+    }
 
     public int getCurrentItems() {
         return currentItems;

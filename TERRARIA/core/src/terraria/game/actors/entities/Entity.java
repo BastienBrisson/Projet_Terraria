@@ -23,7 +23,7 @@ public class Entity extends Actor {
     protected boolean flipX = false;
 
     protected Array<Texture> textures;
-    protected Array<Animation> animations ;
+    protected Array<Animation> animations;
 
 
     public void create (EntitySnapshot snapshot, EntityType type, GameMap gameMap, TerrariaGame game) {

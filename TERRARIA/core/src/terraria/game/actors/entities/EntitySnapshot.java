@@ -1,5 +1,9 @@
 package terraria.game.actors.entities;
 
+import terraria.game.actors.Inventory.Inventory;
+import terraria.game.actors.Inventory.Items;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class EntitySnapshot {
@@ -7,6 +11,7 @@ public class EntitySnapshot {
     public String type;
     public float x, y;
     public double health;
+    public ArrayList<Items> inventory;
     public HashMap<String, String> data;
 
     public EntitySnapshot() {}
