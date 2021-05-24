@@ -16,6 +16,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import terraria.game.TerrariaGame;
 import terraria.game.actors.Inventory.Inventory;
+import terraria.game.actors.Inventory.Items;
+import terraria.game.actors.Inventory.ItemsGraphic;
 import terraria.game.actors.entities.*;
 import terraria.game.actors.entities.player.Player;
 import terraria.game.actors.world.GameMap;
@@ -86,6 +88,9 @@ public class GameScreen extends ScreenAdapter {
         stage.addActor(parallaxBackground);
         stage.addActor(gameMap);
         stage.addActor(inventory);
+        for(ItemsGraphic items : inventory.getGraphicItems() ){
+            stage.addActor(items);
+        }
 
         for(Entity entity : entities ){
             stage.addActor(entity);
@@ -155,10 +160,14 @@ public class GameScreen extends ScreenAdapter {
         this.parallaxBackground.update(camera, stage);
         this.gameMap.update(camera, stage);
         this.inventory.update(camera, stage);
+        for (ItemsGraphic items : inventory.getGraphicItems()) {
+            items.update(camera, stage, this.inventory.isInventoryOpen());
+        }
 
 
         stage.act(delta);
         stage.draw();
+
 
 
     }
@@ -204,6 +213,7 @@ public class GameScreen extends ScreenAdapter {
 
         stage.act();
         stage.draw();
+
 
         this.parallaxBackground.update(camera, stage);
         this.gameMap.update(camera, stage);

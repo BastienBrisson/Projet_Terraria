@@ -1,28 +1,62 @@
 package terraria.game.actors.Inventory;
 
+import terraria.game.TerrariaGame;
 import terraria.game.actors.world.TileType;
 
 public class Items {
 
 
     public static final int MAXELEMENT = 65;
+
+    public static final int SIZEINVENTORY = 50;
     private int amount;
     private int idTile;
 
-    public Items() {
+    int num;
+    int col;
+    int emplacement;
+
+    public Items(TerrariaGame game, int num) {
+        this.amount = 0;
+        this.idTile = 0;
+        this.num = num;
+        emplacement = num;
+        col = 0;
+        while (emplacement > 9) {
+            emplacement = emplacement - 10;
+            col++;
+        }
+    }
+
+    public Items(TerrariaGame game, TileType tile, int num) {
+        this.amount = 1;
+        this.idTile = tile.getId();
+        this.num = num;
+        emplacement = num;
+        col = 0;
+        while (emplacement > 10) {
+            emplacement = emplacement - 10;
+            col++;
+        }
+    }
+
+    public Items(TerrariaGame game, TileType tile, int amount, int num) {
+        this.amount = amount;
+        this.idTile = tile.getId();
+        this.num = num;
+        emplacement = num;
+        col = 0;
+        while (emplacement > 10) {
+            emplacement = emplacement - 10;
+            col++;
+        }
+    }
+
+    public Items(){
         this.amount = 0;
         this.idTile = 0;
     }
 
-    public Items(TileType tile) {
-        this.amount = 1;
-        this.idTile = tile.getId();
-    }
-
-    public Items(TileType tile, int amount) {
-        this.amount = amount;
-        this.idTile = tile.getId();
-    }
 
     public int getAmount() {
         return this.amount;

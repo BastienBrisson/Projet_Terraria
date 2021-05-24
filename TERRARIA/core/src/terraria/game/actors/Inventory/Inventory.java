@@ -20,26 +20,27 @@ public class Inventory extends Actor {
     public static final int SIZEINVENTORY = 50;
     private static int currentItems = 0;
     private ArrayList<Items> inventory; // inventaire complet
-    BitmapFont font;
+    private ArrayList<ItemsGraphic> itemsGraphic;
     public Boolean inventoryShow = false;
-
+    public TerrariaGame game;
     TextureRegion[][] slot;
-    TextureRegion[][] items;
+    public BitmapFont font;
+    int nbItems;
 
     float ScreenX, ScreenY,ScreenWidth,ScreenHeight;
     public int  width = 50, height = 50;
 
     public Inventory(TerrariaGame game) {
-        font = new BitmapFont();
+        this.game = game;
         this.inventory = new ArrayList<Items>();
-
+        this.itemsGraphic = new ArrayList<ItemsGraphic>();
+        this.font = new BitmapFont();
         for (int i = 0; i < SIZEINVENTORY; i++) {
-            inventory.add(new Items());
+            inventory.add(new Items(game, i));
+            itemsGraphic.add(new ItemsGraphic(game,inventoryShow, inventory.get(i)));
         }
 
         slot = TextureRegion.split(game.getAssetManager().get("inventory/slot.png", Texture.class), width, height);
-        items = TextureRegion.split(game.getAssetManager().get("inventory/itemsInventory.png", Texture.class), width, height);
-        //inventory.get(1).changeContent(TileType.GRASS, 20);
     }
 
     public void update(Camera camera, Stage stage){
@@ -52,7 +53,7 @@ public class Inventory extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-
+        nbItems = 0;
         //On dessine les slots de la barre d'inventaire
         for (int i = 0; i < SLOTINVENTORYBAR; i++){
             if (currentItems == i) {
@@ -60,34 +61,22 @@ public class Inventory extends Actor {
             } else {
                 batch.draw(slot[0][0], ScreenX + width *  i - (width/2), ScreenY + ScreenHeight - (height + height/2));
             }
+            if (this.inventory.get(nbItems).getAmount() != 0)
+                font.draw(batch, String.valueOf(this.inventory.get(nbItems).getAmount()),ScreenX + width *  i +width/4, ScreenY + ScreenHeight - (height/3 + height));
+            nbItems++;
         }
 
         if (inventoryShow) {
             for (int i = 1; i < 5; i++) {
                 for (int j = 0; j < SLOTINVENTORYBAR; j++) {
                     batch.draw(slot[0][0], ScreenX + width * j - (width / 2), ScreenY + ScreenHeight - (i*height + height + height / 2));
+                    if (this.inventory.get(nbItems).getAmount() != 0)
+                        font.draw(batch, String.valueOf(this.inventory.get(nbItems).getAmount()),ScreenX + width *  j+width/4, ScreenY + ScreenHeight - (i*height + height/3 + height));
+                    nbItems++;
                 }
             }
         }
 
-        //On dessine les items dans la barre d'inventaire
-        int nbItem = 0;
-        for (int i = 0; i < SLOTINVENTORYBAR; i++){
-            batch.draw(items[0][inventory.get(nbItem).getIdTile()], ScreenX + width *  i - (width/2), ScreenY + ScreenHeight - (height + height/2));
-            if (inventory.get(i).getAmount() != 0)
-                font.draw(batch, String.valueOf(inventory.get(nbItem).getAmount()),ScreenX + width *  i, ScreenY + ScreenHeight - (height/7 + height));
-            nbItem++;
-        }
-        if (inventoryShow) {
-            for (int i = 1; i < 5; i++) {
-                for (int j = 0; j < SLOTINVENTORYBAR; j++) {
-                    batch.draw(items[0][inventory.get(nbItem).getIdTile()], ScreenX + width *  j - (width/2), ScreenY + ScreenHeight - (i*height+height + height/2));
-                    if (inventory.get(nbItem).getAmount() != 0)
-                        font.draw(batch, String.valueOf(inventory.get(nbItem).getAmount()),ScreenX + width *  j, ScreenY + ScreenHeight - (i*height + height/7 + height));
-                    nbItem++;
-                }
-            }
-        }
 
     }
 
@@ -151,6 +140,7 @@ public class Inventory extends Actor {
         if (inv != null) {
             for(Items i : inv) {
                 this.inventory.set(indice, i);
+                this.getGraphicItems().set(indice, new ItemsGraphic(game, inventoryShow, this.inventory.get(indice)));
                 indice++;
             }
         }
@@ -168,4 +158,11 @@ public class Inventory extends Actor {
         return inventory;
     }
 
+    public ArrayList<ItemsGraphic> getGraphicItems() {
+        return itemsGraphic;
+    }
+
+    public boolean isInventoryOpen() {
+        return this.inventoryShow;
+    }
 }
