@@ -148,9 +148,11 @@ public class Inventory extends Actor {
 
     public void fillInventory(ArrayList<Items> inv) {
         int indice = 0;
-        for(Items i : inv) {
-            this.inventory.set(indice, i);
-            indice++;
+        if (inv != null) {
+            for(Items i : inv) {
+                this.inventory.set(indice, i);
+                indice++;
+            }
         }
     }
 
