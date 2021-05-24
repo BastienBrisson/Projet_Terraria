@@ -113,9 +113,10 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
+        this.camera.update();
+
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
 
 
         for (Entity entity : entities) {
@@ -140,7 +141,7 @@ public class GameScreen extends ScreenAdapter {
             }
         }
 
-        selectionItems();
+        //selectionItems();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             if (isMenuShow) {
@@ -153,10 +154,9 @@ public class GameScreen extends ScreenAdapter {
         if (isMenuShow) {
             exitButton.setPosition(camera.position.x,camera.position.y, Align.center);
         } else {
-            exitButton.setPosition(0,0, Align.center);
+            exitButton.setPosition(0, 0, Align.center);
         }
 
-        this.camera.update();
         this.parallaxBackground.update(camera, stage);
         this.gameMap.update(camera, stage);
         this.inventory.update(camera, stage);
@@ -172,18 +172,18 @@ public class GameScreen extends ScreenAdapter {
 
     }
 
-    public void selectionItems() {
+    /*public void selectionItems() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
             inventory.setCurrentItems(0);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)){
             inventory.setCurrentItems(1);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)){
             inventory.setCurrentItems(2);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4)){
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.APOSTROPHE)){
             inventory.setCurrentItems(3);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5)){
             inventory.setCurrentItems(4);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6)){
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.MINUS)){
             inventory.setCurrentItems(5);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_7)){
             inventory.setCurrentItems(6);
@@ -194,7 +194,7 @@ public class GameScreen extends ScreenAdapter {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0)){
             inventory.setCurrentItems(9);
         }
-    }
+    }*/
 
     public void blocAction() {
         Vector3 pos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
@@ -290,8 +290,4 @@ public class GameScreen extends ScreenAdapter {
     public Stage getStage(){
         return stage;
     }
-
-
-
-
 }
