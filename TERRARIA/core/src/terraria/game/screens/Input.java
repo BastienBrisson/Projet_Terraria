@@ -1,6 +1,9 @@
 package terraria.game.screens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import terraria.game.actors.Inventory.Inventory;
 
 public class Input implements InputProcessor {
 
@@ -42,45 +45,54 @@ public class Input implements InputProcessor {
     }
 
     @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
+    public boolean mouseMoved(int screenX, int screenY) { return true; }
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
+        if(Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.CONTROL_LEFT)) {
+            float ratio = screen.getStage().getViewport().getWorldWidth()/screen.getStage().getViewport().getWorldHeight();
 
-        float ratio = screen.getStage().getViewport().getWorldWidth()/screen.getStage().getViewport().getWorldHeight();
+            if(amountY == 1) {
+                //System.out.println(ratio);
+                if(this.zoomIndice < 2) {
 
-        if(amountY == 1) {
-            //System.out.println(ratio);
+                    screen.getCamera().zoom += 0.1f;
 
+                    float width = screen.getStage().getViewport().getWorldWidth();
 
-            if(this.zoomIndice < 2) {
+                    this.screen.getStage().getViewport().setScreenWidth(( (screen.getStage().getViewport().getScreenWidth() + (int)(width * 0.1))));
+                    this.screen.getStage().getViewport().setScreenHeight( (screen.getStage().getViewport().getScreenHeight() + (int)((width * 0.1)/ratio)));
 
-                screen.getCamera().zoom += 0.1f;
+                    zoomIndice += 1;
+                }
+            } else if(amountY == -1) {
+                if (this.zoomIndice > -3) {
+                    screen.getCamera().zoom -= 0.1f;
 
-                float width = screen.getStage().getViewport().getWorldWidth();
+                    float width = screen.getStage().getViewport().getWorldWidth();
 
+                    this.screen.getStage().getViewport().setScreenWidth( (screen.getStage().getViewport().getScreenWidth() - (int)(width * 0.1)));
+                    this.screen.getStage().getViewport().setScreenHeight( (screen.getStage().getViewport().getScreenHeight() - (int)((width * 0.1)/ratio)));
 
-                this.screen.getStage().getViewport().setScreenWidth(( (screen.getStage().getViewport().getScreenWidth() + (int)(width * 0.1))));
-                this.screen.getStage().getViewport().setScreenHeight( (screen.getStage().getViewport().getScreenHeight() + (int)((width * 0.1)/ratio)));
-
-                zoomIndice += 1;
+                    zoomIndice -= 1;
+                }
             }
-        } else if(amountY == -1) {
-            if (this.zoomIndice > -3) {
-
-
-                screen.getCamera().zoom -= 0.1f;
-
-                float width = screen.getStage().getViewport().getWorldWidth();
-
-                this.screen.getStage().getViewport().setScreenWidth( (screen.getStage().getViewport().getScreenWidth() - (int)(width * 0.1)));
-                this.screen.getStage().getViewport().setScreenHeight( (screen.getStage().getViewport().getScreenHeight() - (int)((width * 0.1)/ratio)));
-
-                zoomIndice -= 1;
+        } else {
+            if(amountY == 1) {
+                if(screen.inventory.getCurrentItems() == 9) {
+                    Inventory.setCurrentItems(0);
+                } else {
+                    Inventory.setCurrentItems(screen.inventory.getCurrentItems() + 1);
+                }
+            } else if(amountY == -1) {
+                if(screen.inventory.getCurrentItems() == 0) {
+                    Inventory.setCurrentItems(9);
+                } else {
+                    Inventory.setCurrentItems(screen.inventory.getCurrentItems() - 1);
+                }
             }
         }
-        return false;
+
+        return true;
     }
 }
