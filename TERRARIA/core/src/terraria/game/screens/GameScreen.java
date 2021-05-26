@@ -8,9 +8,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -39,6 +42,9 @@ public class GameScreen extends ScreenAdapter {
     //Acteurs//
     ParallaxBackground parallaxBackground;
     Inventory inventory;
+    ItemsGraphic clickedItem;
+    ItemsGraphic tmpItem;
+    ItemsGraphic tmpItem2;
 
     GameMap gameMap;
     ImageButton exitButton;
@@ -46,6 +52,8 @@ public class GameScreen extends ScreenAdapter {
 
     protected ArrayList<Entity> entities;
     Player player;
+
+    boolean holding = false;
 
     public GameScreen(final TerrariaGame game, ParallaxBackground parallaxBackground, final ArrayList<Entity> entities, final GameMap gameMap) {
 
@@ -90,6 +98,25 @@ public class GameScreen extends ScreenAdapter {
         stage.addActor(inventory);
         for(ItemsGraphic items : inventory.getGraphicItems() ){
             stage.addActor(items);
+
+
+
+            /*items.addListener(new ClickListener() {
+                public void clicked(InputEvent event, float x, float y) {
+                    ItemsGraphic items = (ItemsGraphic)event.getListenerActor();
+                    if (!holding) {
+                        holding = true;
+                        tmpItem = items;
+                        items.item.setInTransition();
+                    } else {
+                        holding = false;
+                        tmpItem2 = items;
+                        items.setItem(tmpItem.item);
+                        tmpItem.setItem(tmpItem2.item);
+                        tmpItem.item.setInTransition();
+                    }
+                }
+            });*/
         }
 
         for(Entity entity : entities ){
@@ -129,8 +156,8 @@ public class GameScreen extends ScreenAdapter {
         }
 
         if (Gdx.input.justTouched()) {
-            if (!isMenuShow)
-                blocAction();
+            //if (!isMenuShow)
+                //blocAction();
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
@@ -165,7 +192,7 @@ public class GameScreen extends ScreenAdapter {
         }
 
 
-        stage.act(delta);
+        stage.act();
         stage.draw();
 
 

@@ -11,6 +11,7 @@ public class Items {
     public static final int SIZEINVENTORY = 50;
     private int amount;
     private int idTile;
+    private boolean inTransition= false;
 
     int num;
     int col;
@@ -26,6 +27,8 @@ public class Items {
             emplacement = emplacement - 10;
             col++;
         }
+
+
     }
 
     public Items(TerrariaGame game, TileType tile, int num) {
@@ -84,6 +87,10 @@ public class Items {
         }
     }
 
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
     public void lastElement() {
         this.amount--;
         this.idTile = 0;
@@ -100,4 +107,5 @@ public class Items {
         }
         return false;
     }
+
 }

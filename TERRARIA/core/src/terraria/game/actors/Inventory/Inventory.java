@@ -3,13 +3,20 @@ package terraria.game.actors.Inventory;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
+import org.graalvm.compiler.nodes.gc.G1ArrayRangePostWriteBarrier;
 import terraria.game.TerrariaGame;
 import terraria.game.actors.world.TileType;
 
@@ -26,6 +33,7 @@ public class Inventory extends Actor {
     TextureRegion[][] slot;
     public BitmapFont font;
     int nbItems;
+    private DragAndDrop dragAndDrop = new DragAndDrop();
 
     float ScreenX, ScreenY,ScreenWidth,ScreenHeight;
     public int  width = 50, height = 50;
@@ -37,10 +45,43 @@ public class Inventory extends Actor {
         this.font = new BitmapFont();
         for (int i = 0; i < SIZEINVENTORY; i++) {
             inventory.add(new Items(game, i));
-            itemsGraphic.add(new ItemsGraphic(game,inventoryShow, inventory.get(i)));
+            itemsGraphic.add(new ItemsGraphic(game,inventoryShow, inventory.get(i), this, dragAndDrop));
+            final ItemsGraphic items = itemsGraphic.get(i);
+            slot = TextureRegion.split(game.getAssetManager().get("inventory/slot.png", Texture.class), width, height);
+
+
+            /*DragAndDrop dragAndDrop = new DragAndDrop();
+            dragAndDrop.addSource(new DragAndDrop.Source(itemsGraphic.get(i)) {
+                final DragAndDrop.Payload payload = new DragAndDrop.Payload();
+                @Override
+                public DragAndDrop.Payload dragStart(InputEvent event, float x, float y, int pointer) {
+                    payload.setDragActor(getActor());
+                    payload.setObject("etest");
+                    //payload.setObject(this);
+                    //payload.setValidDragActor(getActor());
+                    System.out.println("Accepted: " + payload.getObject() + " " + x + ", " + y);
+                    return payload;
+                }
+            });
+            dragAndDrop.addTarget(new DragAndDrop.Target(this) {
+                public boolean drag (DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
+                    getActor().setColor(Color.GREEN);
+                    System.out.println("Accepted: " + payload.getObject() + " " + x + ", " + y);
+                    return true;
+                }
+
+                public void reset (DragAndDrop.Source source, DragAndDrop.Payload payload) {
+                    getActor().setColor(Color.WHITE);
+                }
+
+                public void drop (DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
+                    System.out.println("Accepted: " + payload.getObject() + " " + x + ", " + y);
+                }
+            });*/
+
         }
 
-        slot = TextureRegion.split(game.getAssetManager().get("inventory/slot.png", Texture.class), width, height);
+
     }
 
     public void update(Camera camera, Stage stage){
@@ -61,7 +102,7 @@ public class Inventory extends Actor {
             } else {
                 batch.draw(slot[0][0], ScreenX + width *  i - (width/2), ScreenY + ScreenHeight - (height + height/2));
             }
-            if (this.inventory.get(nbItems).getAmount() != 0)
+            if (this.inventory.get(nbItems).getAmount() != 0 && !this.itemsGraphic.get(nbItems).isMooving())
                 font.draw(batch, String.valueOf(this.inventory.get(nbItems).getAmount()),ScreenX + width *  i +width/4, ScreenY + ScreenHeight - (height/3 + height));
             nbItems++;
         }
@@ -70,7 +111,7 @@ public class Inventory extends Actor {
             for (int i = 1; i < 5; i++) {
                 for (int j = 0; j < SLOTINVENTORYBAR; j++) {
                     batch.draw(slot[0][0], ScreenX + width * j - (width / 2), ScreenY + ScreenHeight - (i*height + height + height / 2));
-                    if (this.inventory.get(nbItems).getAmount() != 0)
+                    if (this.inventory.get(nbItems).getAmount() != 0 && !this.itemsGraphic.get(nbItems).isMooving())
                         font.draw(batch, String.valueOf(this.inventory.get(nbItems).getAmount()),ScreenX + width *  j+width/4, ScreenY + ScreenHeight - (i*height + height/3 + height));
                     nbItems++;
                 }
@@ -106,6 +147,7 @@ public class Inventory extends Actor {
         return false;
     }
 
+
     /**
      * Enlève un élément de l'inventaire et supprime complètement l'élément du slot
      * quand le nombre d'élement descend à 0.
@@ -140,7 +182,7 @@ public class Inventory extends Actor {
         if (inv != null) {
             for(Items i : inv) {
                 this.inventory.set(indice, i);
-                this.getGraphicItems().set(indice, new ItemsGraphic(game, inventoryShow, this.inventory.get(indice)));
+                this.getGraphicItems().set(indice, new ItemsGraphic(game, inventoryShow, this.inventory.get(indice),this, dragAndDrop));
                 indice++;
             }
         }
