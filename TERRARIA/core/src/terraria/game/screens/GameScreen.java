@@ -118,37 +118,13 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-
         for (Entity entity : entities) {
             entity.update(delta, -9.8f, camera, stage);
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
-            EntityLoader.saveEntities("test", entities);
-            MapLoader.saveMap(gameMap.getId(), gameMap.getName(), gameMap.getMap(), gameMap.getStartingPoint());
         }
 
         if (Gdx.input.justTouched()) {
             if (!isMenuShow)
                 blocAction();
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-            if (inventory.inventoryShow) {
-                inventory.inventoryShow = false;
-            } else {
-                inventory.inventoryShow = true;
-            }
-        }
-
-        //selectionItems();
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            if (isMenuShow) {
-                isMenuShow = false;
-            } else {
-                isMenuShow = true;
-            }
         }
         
         if (isMenuShow) {
@@ -164,37 +140,10 @@ public class GameScreen extends ScreenAdapter {
             items.update(camera, stage, this.inventory.isInventoryOpen());
         }
 
-
         stage.act(delta);
         stage.draw();
 
-
-
     }
-
-    /*public void selectionItems() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
-            inventory.setCurrentItems(0);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)){
-            inventory.setCurrentItems(1);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)){
-            inventory.setCurrentItems(2);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.APOSTROPHE)){
-            inventory.setCurrentItems(3);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5)){
-            inventory.setCurrentItems(4);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.MINUS)){
-            inventory.setCurrentItems(5);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_7)){
-            inventory.setCurrentItems(6);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_8)){
-            inventory.setCurrentItems(7);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_9)){
-            inventory.setCurrentItems(8);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0)){
-            inventory.setCurrentItems(9);
-        }
-    }*/
 
     public void blocAction() {
         Vector3 pos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
