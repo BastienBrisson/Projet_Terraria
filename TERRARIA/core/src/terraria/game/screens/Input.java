@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import terraria.game.actors.Inventory.Inventory;
+import terraria.game.actors.entities.EntityLoader;
+import terraria.game.actors.world.GeneratorMap.MapLoader;
 
 public class Input implements InputProcessor {
 
@@ -16,7 +18,29 @@ public class Input implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        return false;
+        switch (keycode) {
+            case com.badlogic.gdx.Input.Keys.S:
+                EntityLoader.saveEntities("test", this.screen.entities);
+                MapLoader.saveMap(this.screen.gameMap.getId(), this.screen.gameMap.getName(), this.screen.gameMap.getMap(), this.screen.gameMap.getStartingPoint());
+                break;
+
+            case com.badlogic.gdx.Input.Keys.E:
+                if (this.screen.inventory.inventoryShow) {
+                    this.screen.inventory.inventoryShow = false;
+                } else {
+                    this.screen.inventory.inventoryShow = true;
+                }
+                break;
+
+            case com.badlogic.gdx.Input.Keys.ESCAPE:
+                if (this.screen.isMenuShow) {
+                    this.screen.isMenuShow = false;
+                } else {
+                    this.screen.isMenuShow = true;
+                }
+                break;
+        }
+        return true;
     }
 
     @Override
