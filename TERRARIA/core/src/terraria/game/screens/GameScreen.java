@@ -42,9 +42,6 @@ public class GameScreen extends ScreenAdapter {
     //Acteurs//
     ParallaxBackground parallaxBackground;
     Inventory inventory;
-    ItemsGraphic clickedItem;
-    ItemsGraphic tmpItem;
-    ItemsGraphic tmpItem2;
 
     GameMap gameMap;
     ImageButton exitButton;
@@ -52,8 +49,6 @@ public class GameScreen extends ScreenAdapter {
 
     protected ArrayList<Entity> entities;
     Player player;
-
-    boolean holding = false;
 
     public GameScreen(final TerrariaGame game, ParallaxBackground parallaxBackground, final ArrayList<Entity> entities, final GameMap gameMap) {
 
@@ -98,25 +93,6 @@ public class GameScreen extends ScreenAdapter {
         stage.addActor(inventory);
         for(ItemsGraphic items : inventory.getGraphicItems() ){
             stage.addActor(items);
-
-
-
-            /*items.addListener(new ClickListener() {
-                public void clicked(InputEvent event, float x, float y) {
-                    ItemsGraphic items = (ItemsGraphic)event.getListenerActor();
-                    if (!holding) {
-                        holding = true;
-                        tmpItem = items;
-                        items.item.setInTransition();
-                    } else {
-                        holding = false;
-                        tmpItem2 = items;
-                        items.setItem(tmpItem.item);
-                        tmpItem.setItem(tmpItem2.item);
-                        tmpItem.item.setInTransition();
-                    }
-                }
-            });*/
         }
 
         for(Entity entity : entities ){
@@ -150,32 +126,9 @@ public class GameScreen extends ScreenAdapter {
             entity.update(delta, -9.8f, camera, stage);
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
-            EntityLoader.saveEntities("test", entities);
-            MapLoader.saveMap(gameMap.getId(), gameMap.getName(), gameMap.getMap(), gameMap.getStartingPoint());
-        }
-
         if (Gdx.input.justTouched()) {
-            //if (!isMenuShow)
-                //blocAction();
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-            if (inventory.inventoryShow) {
-                inventory.inventoryShow = false;
-            } else {
-                inventory.inventoryShow = true;
-            }
-        }
-
-        //selectionItems();
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            if (isMenuShow) {
-                isMenuShow = false;
-            } else {
-                isMenuShow = true;
-            }
+            if (!isMenuShow)
+                blocAction();
         }
         
         if (isMenuShow) {
@@ -191,11 +144,8 @@ public class GameScreen extends ScreenAdapter {
             items.update(camera, stage, this.inventory.isInventoryOpen());
         }
 
-
-        stage.act();
+        stage.act(delta);
         stage.draw();
-
-
 
     }
 
