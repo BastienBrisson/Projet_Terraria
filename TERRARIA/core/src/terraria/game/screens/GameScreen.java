@@ -82,8 +82,6 @@ public class GameScreen extends ScreenAdapter {
         parallaxBackground.setSize(stage.getViewport().getScreenWidth(),stage.getViewport().getScreenHeight());
         parallaxBackground.setSpeed(1);
 
-
-
         player = (Player) entities.get(0);
 
         //inventory = new Inventory(stage, game);
@@ -101,8 +99,6 @@ public class GameScreen extends ScreenAdapter {
             stage.addActor(entity);
         }
         stage.addActor(exitButton);
-
-
 
         spawnMushroom((int)player.pos.x / TileType.TILE_SIZE, (int)player.pos.y / TileType.TILE_SIZE, 10);
 
@@ -122,7 +118,6 @@ public class GameScreen extends ScreenAdapter {
 
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
 
         for (Entity entity : entities) {
             entity.update(delta, -9.8f, camera, stage);
@@ -145,8 +140,6 @@ public class GameScreen extends ScreenAdapter {
         for (ItemsGraphic items : inventory.getGraphicItems()) {
             items.update(camera, stage, this.inventory.isInventoryOpen());
         }
-
-
 
         stage.act(delta);
         stage.draw();
@@ -194,7 +187,6 @@ public class GameScreen extends ScreenAdapter {
 
         stage.act();
         stage.draw();
-
 
         this.parallaxBackground.update(camera, stage);
         this.gameMap.update(camera, stage);

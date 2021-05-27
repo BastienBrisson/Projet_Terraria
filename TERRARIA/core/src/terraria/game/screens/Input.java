@@ -50,6 +50,40 @@ public class Input implements InputProcessor {
 
     @Override
     public boolean keyTyped(char character) {
+        switch (character) {
+            case '&':
+                Inventory.setCurrentItems(0);
+                break;
+            case 'é':
+                Inventory.setCurrentItems(1);
+                break;
+            case '"':
+                Inventory.setCurrentItems(2);
+                break;
+            case '\'':
+                Inventory.setCurrentItems(3);
+                break;
+            case '(':
+                Inventory.setCurrentItems(4);
+                break;
+            case '-':
+                Inventory.setCurrentItems(5);
+                break;
+            case 'è':
+                Inventory.setCurrentItems(6);
+                break;
+            case '_':
+                Inventory.setCurrentItems(7);
+                break;
+            case 'ç':
+                Inventory.setCurrentItems(8);
+                break;
+            case 'à':
+                Inventory.setCurrentItems(9);
+                break;
+            default:
+                break;
+        }
         return false;
     }
 
