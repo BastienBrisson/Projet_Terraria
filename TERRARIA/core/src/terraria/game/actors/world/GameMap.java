@@ -102,7 +102,7 @@ public class GameMap extends Actor {
         inventaire.addTileInInventory(getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x]);
         getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = 0;
         int idBlocSupp = getMap()[(int)coordinate.z][(int)coordinate.y-1][(int)coordinate.x];
-        if (idBlocSupp == 12 || idBlocSupp == 13 || idBlocSupp == 14) {
+        if (idBlocSupp == 11 || idBlocSupp == 12 || idBlocSupp == 13) {
             getMap()[(int)coordinate.z][(int)coordinate.y-1][(int)coordinate.x] = 0;
 
         }
@@ -126,8 +126,8 @@ public class GameMap extends Actor {
 
     public void addTile(Vector3 coordinate, Inventory inventory) {
         if (tilesInMap(coordinate)) {
-            getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = inventory.getInventory().get(inventory.getCurrentItems()).getIdTile();
-            inventory.getInventory().get(inventory.getCurrentItems()).decrAmount();
+            getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile();
+            inventory.getItemsList().get(inventory.getCurrentItems()).decrAmount();
         }
     }
 

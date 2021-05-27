@@ -129,7 +129,7 @@ public class GameScreen extends ScreenAdapter {
         }
 
         if (Gdx.input.justTouched()) {
-            if (!isMenuShow && !inventory.inventoryShow)
+            if (!isMenuShow && !inventory.isInventoryShow())
                 blocAction();
         }
         

@@ -3,85 +3,47 @@ package terraria.game.actors.Inventory;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
-import org.graalvm.compiler.nodes.gc.G1ArrayRangePostWriteBarrier;
 import terraria.game.TerrariaGame;
-import terraria.game.actors.world.TileType;
-
 
 public class Inventory extends Actor {
 
-    public static final int SLOTINVENTORYBAR = 10;
-    public static final int SIZEINVENTORY = 50;
-    private static int currentItems = 0;
-    private ArrayList<Items> inventory; // inventaire complet
-    private ArrayList<ItemsGraphic> itemsGraphic;
-    public Boolean inventoryShow = false;
-    public TerrariaGame game;
-    TextureRegion[][] slot;
-    public BitmapFont font;
-    int nbItems;
-    private DragAndDrop dragAndDrop = new DragAndDrop();
+    private TerrariaGame game;
+    private static final int SLOTINVENTORYBAR = 10;     //Nombre d'objet dans la barre d'inventaire
+    private static final int SIZEINVENTORY = 50;        //Nombre d'objet total de l'inventaire
+    private static int currentItems = 0;                //Numéro de l'items actuellement sélectionné
+    private ArrayList<Items> itemsList;                 //La liste des objets de l'inventaire
+    private ArrayList<ItemsGraphic> itemsGraphic;       //La liste la classe qui gère les textures des objets de l'inventaire
+    private boolean inventoryShow;                      //Boolean qui détermine si l'inventaire est affiché ou non
+    private TextureRegion[][] slot;                     //Texture de chaque slot d'inventaire
+    private TextureRegion[][] hoverTexture;                  //Texture quand on passe la souris sur un slot en drag & drop
 
-    float ScreenX, ScreenY,ScreenWidth,ScreenHeight;
-    public int  width = 50, height = 50;
+    private DragAndDrop dragAndDrop;                    //Drag & Drop de l'inventaire
+    private float ScreenX, ScreenY,ScreenWidth,ScreenHeight;     //Taille de l'écran
+    private int  width = 50, height = 50;                //Taille d'un slot
 
     public Inventory(TerrariaGame game) {
         this.game = game;
-        this.inventory = new ArrayList<Items>();
-        this.itemsGraphic = new ArrayList<ItemsGraphic>();
-        this.font = new BitmapFont();
+        this.itemsList = new ArrayList<>();
+        this.itemsGraphic = new ArrayList<>();
+
+        this.dragAndDrop = new DragAndDrop();
+        this.inventoryShow = false;
+        this.slot = TextureRegion.split(game.getAssetManager().get("inventory/slot.png", Texture.class), width, height);
+        this.hoverTexture = TextureRegion.split(game.getAssetManager().get("inventory/hover.png", Texture.class), width, height);
+        //On crée les items de l'inventaire
         for (int i = 0; i < SIZEINVENTORY; i++) {
-            inventory.add(new Items(game, i));
-            itemsGraphic.add(new ItemsGraphic(game,inventoryShow, inventory.get(i), this, dragAndDrop));
-            final ItemsGraphic items = itemsGraphic.get(i);
-            slot = TextureRegion.split(game.getAssetManager().get("inventory/slot.png", Texture.class), width, height);
-
-
-            /*DragAndDrop dragAndDrop = new DragAndDrop();
-            dragAndDrop.addSource(new DragAndDrop.Source(itemsGraphic.get(i)) {
-                final DragAndDrop.Payload payload = new DragAndDrop.Payload();
-                @Override
-                public DragAndDrop.Payload dragStart(InputEvent event, float x, float y, int pointer) {
-                    payload.setDragActor(getActor());
-                    payload.setObject("etest");
-                    //payload.setObject(this);
-                    //payload.setValidDragActor(getActor());
-                    System.out.println("Accepted: " + payload.getObject() + " " + x + ", " + y);
-                    return payload;
-                }
-            });
-            dragAndDrop.addTarget(new DragAndDrop.Target(this) {
-                public boolean drag (DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
-                    getActor().setColor(Color.GREEN);
-                    System.out.println("Accepted: " + payload.getObject() + " " + x + ", " + y);
-                    return true;
-                }
-
-                public void reset (DragAndDrop.Source source, DragAndDrop.Payload payload) {
-                    getActor().setColor(Color.WHITE);
-                }
-
-                public void drop (DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
-                    System.out.println("Accepted: " + payload.getObject() + " " + x + ", " + y);
-                }
-            });*/
+            itemsList.add(new Items(i));
+            itemsGraphic.add(new ItemsGraphic(game, itemsList.get(i), this, dragAndDrop));
 
         }
-
-
     }
 
     public void update(Camera camera, Stage stage){
@@ -94,7 +56,7 @@ public class Inventory extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        nbItems = 0;
+        int nbItems = 0;
         //On dessine les slots de la barre d'inventaire
         for (int i = 0; i < SLOTINVENTORYBAR; i++){
             if (currentItems == i) {
@@ -102,17 +64,18 @@ public class Inventory extends Actor {
             } else {
                 batch.draw(slot[0][0], ScreenX + width *  i - (width/2), ScreenY + ScreenHeight - (height + height/2));
             }
-            if (this.inventory.get(nbItems).getAmount() != 0 && !this.itemsGraphic.get(nbItems).isMooving())
-                font.draw(batch, String.valueOf(this.inventory.get(nbItems).getAmount()),ScreenX + width *  i +width/4, ScreenY + ScreenHeight - (height/3 + height));
+            if (itemsGraphic.get(i).isHover())
+                batch.draw(hoverTexture[0][0], ScreenX + width *  itemsGraphic.get(i).getYPosition() - (width/2), ScreenY + ScreenHeight - (itemsGraphic.get(i).getXPosition()*height+height+height/2));
             nbItems++;
         }
 
+        //Si l'inventaire est affiché
         if (inventoryShow) {
             for (int i = 1; i < 5; i++) {
                 for (int j = 0; j < SLOTINVENTORYBAR; j++) {
                     batch.draw(slot[0][0], ScreenX + width * j - (width / 2), ScreenY + ScreenHeight - (i*height + height + height / 2));
-                    if (this.inventory.get(nbItems).getAmount() != 0 && !this.itemsGraphic.get(nbItems).isMooving())
-                        font.draw(batch, String.valueOf(this.inventory.get(nbItems).getAmount()),ScreenX + width *  j+width/4, ScreenY + ScreenHeight - (i*height + height/3 + height));
+                    if (itemsGraphic.get(nbItems).isHover())
+                        batch.draw(hoverTexture[0][0], ScreenX + width *  j - (width/2), ScreenY + ScreenHeight - (i*height+height+height/2));
                     nbItems++;
                 }
             }
@@ -129,14 +92,13 @@ public class Inventory extends Actor {
      * @return
      */
     public boolean addTileInInventory(int idTile) {
-        for(Items t : inventory) {
+        for(Items t : itemsList) {
             if(idTile == t.getIdTile() && t.getAmount() < 64) {
                 t.incrAmount();
                 return true;
             }
         }
-
-        for(Items t2 : inventory) {
+        for(Items t2 : itemsList) {
             if(t2.getIdTile() == 0) {
                 t2.setIdTile(idTile);
                 t2.incrAmount();
@@ -153,36 +115,20 @@ public class Inventory extends Actor {
      * quand le nombre d'élement descend à 0.
      */
     public void delTileInInventory() {
-        Items currentSlot = inventory.get(currentItems);
+        Items currentSlot = itemsList.get(currentItems);
         if(currentSlot.getAmount() == 1) {
             currentSlot.lastElement();
         } else {
             currentSlot.decrAmount();
         }
-        //updateInventoryBar();
     }
-
-    /**
-     * Permet de mettre à jour les éléments de la barre d'inventaire
-     * à partir de l'inventaire complet 
-     */
-    /*public void updateInventoryBar() {
-        TileSlot slot;
-        for(int i = 0; i < 10; i++) {
-            slot = inventory.get(i);
-            if(!slot.compareTo(inventoryBar.get(i))) {
-                inventoryBar.get(i).setCoordinate(slot.getX(), slot.getY());
-                inventoryBar.get(i).setTileStack(slot.getTileStack());
-            }
-        }
-    }*/
 
     public void fillInventory(ArrayList<Items> inv) {
         int indice = 0;
         if (inv != null) {
             for(Items i : inv) {
-                this.inventory.set(indice, i);
-                this.getGraphicItems().set(indice, new ItemsGraphic(game, inventoryShow, this.inventory.get(indice),this, dragAndDrop));
+                this.itemsList.set(indice, i);
+                this.getGraphicItems().set(indice, new ItemsGraphic(game, this.itemsList.get(indice),this, dragAndDrop));
                 indice++;
             }
         }
@@ -196,8 +142,8 @@ public class Inventory extends Actor {
         currentItems = tile;
     }
 
-    public ArrayList<Items> getInventory() {
-        return inventory;
+    public ArrayList<Items> getItemsList() {
+        return itemsList;
     }
 
     public ArrayList<ItemsGraphic> getGraphicItems() {
@@ -206,5 +152,29 @@ public class Inventory extends Actor {
 
     public boolean isInventoryOpen() {
         return this.inventoryShow;
+    }
+
+    public boolean isInventoryShow() {
+        return inventoryShow;
+    }
+
+    public void setInventoryShow(boolean inventoryShow) {
+        this.inventoryShow = inventoryShow;
+    }
+
+    public int getWidthTile() {
+        return width;
+    }
+
+    public void setWidthTile(int width) {
+        this.width = width;
+    }
+
+    public int getHeightTile() {
+        return height;
+    }
+
+    public void setHeightTile(int height) {
+        this.height = height;
     }
 }

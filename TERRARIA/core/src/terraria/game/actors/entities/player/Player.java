@@ -12,7 +12,6 @@ import terraria.game.actors.world.GameMap;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
-import terraria.game.actors.world.GeneratorMap.MapLoader;
 import terraria.game.actors.world.TileType;
 import terraria.game.screens.LoadingScreen;
 
@@ -150,7 +149,7 @@ public class Player extends Entity {
     public EntitySnapshot getSaveSnapshot() {
         EntitySnapshot snapshot = super.getSaveSnapshot();
         snapshot.health = playerHealth.health;
-        snapshot.inventory = inventory.getInventory();
+        snapshot.inventory = inventory.getItemsList();
         return snapshot;
     }
 

@@ -25,10 +25,10 @@ public class Input implements InputProcessor {
                 break;
 
             case com.badlogic.gdx.Input.Keys.E:
-                if (this.screen.inventory.inventoryShow) {
-                    this.screen.inventory.inventoryShow = false;
+                if (this.screen.inventory.isInventoryShow()) {
+                    this.screen.inventory.setInventoryShow(false);
                 } else {
-                    this.screen.inventory.inventoryShow = true;
+                    this.screen.inventory.setInventoryShow(true);
                 }
                 break;
 
