@@ -27,6 +27,7 @@ public class GeneratorSubSoil {
             int i = 0;
 
             if(row >= LimitOfRocks){mapData.map[0][row][col] = TileType.CAVE_BACKGROUND.getId();}
+            else{ mapData.map[0][row][col] = TileType.CAVE_DIRT_BACKGROUND.getId();}
 
             if((noiseTab[i] > 0.7 && noiseTab[i] < 1.3)   && HeightLimitOfCaves) {
 

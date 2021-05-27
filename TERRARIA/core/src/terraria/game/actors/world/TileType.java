@@ -21,16 +21,17 @@ public enum TileType {
     WEED(11, false, "weed"),
     LOG(12, false, "log"),
     PEBBLE(13, false,"pebble"),
+    CAVE_DIRT_BACKGROUND(14,false,"cave_dirt"),
 
-    LIGHTSOURCE0(22, false,"light"),
-    LIGHTSOURCE1(21, false,"light"),
-    LIGHTSOURCE2(20, false,"light"),
-    LIGHTSOURCE3(19, false,"light"),
-    LIGHTSOURCE4(18, false,"light"),
-    LIGHTSOURCE5(17, false,"light"),
-    LIGHTSOURCE6(16, false,"light"),
-    LIGHTSOURCE7(15, false,"light"),
-    NOLIGHT(14, false,"light");
+    LIGHTSOURCE0(108, false,"light"),
+    LIGHTSOURCE1(107, false,"light"),
+    LIGHTSOURCE2(106, false,"light"),
+    LIGHTSOURCE3(105, false,"light"),
+    LIGHTSOURCE4(104, false,"light"),
+    LIGHTSOURCE5(103, false,"light"),
+    LIGHTSOURCE6(102, false,"light"),
+    LIGHTSOURCE7(101, false,"light"),
+    NOLIGHT(100, false,"light");
 
 
 

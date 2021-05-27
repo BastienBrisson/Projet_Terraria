@@ -87,18 +87,12 @@ public class MapLoader {
             float LimitOfRocks = PerlinNoise.PerlinNoise1D((float) (random * 0.1), 0.60f, 1);
             LimitOfRocks = (float) MettreALEchelleNoise(LimitOfRocks, 40, 10);//14.2
 
-
             if (col == WIDTH / 2) {
                 starting((int) LimitOfGrasses, (int) LimitOfRocks, random, col, mapData);
-
-
-
             }
 
             new GeneratorSoil().GenerateSoil((int) LimitOfGrasses, (int) LimitOfRocks, col, mapData, random);
             new GeneratorSubSoil().GenerateSubSoil((int) LimitOfGrasses, (int) LimitOfRocks, col, mapData, random);
-
-
             random++;
         }
 
@@ -106,8 +100,6 @@ public class MapLoader {
         return mapData;
 
     }
-
-
 
 
 
