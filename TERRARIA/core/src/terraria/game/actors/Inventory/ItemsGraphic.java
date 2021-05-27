@@ -28,7 +28,7 @@ public class ItemsGraphic extends Actor {
     private int x;                   //Le numéro de la ligne ou est placé l'item dans l'affichage l'inventaire
     private int y;                   //Le numéro de la colonne ou est placé l'item dans l'affichage de l'inventaire
 
-    public ItemsGraphic(TerrariaGame game, final Items item, Inventory inventory, DragAndDrop dragAndDrop) {
+    public ItemsGraphic(TerrariaGame game, final Items item, final Inventory inventory, DragAndDrop dragAndDrop) {
         this.item = item;
         this.inventory = inventory;
         this.moving = false;
@@ -61,6 +61,7 @@ public class ItemsGraphic extends Actor {
         });
         dragAndDrop.addTarget(new DragAndDrop.Target(this) {
             public boolean drag (DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
+                ItemsGraphic items = (ItemsGraphic) payload.getObject();
                 setHover(true);
                 return true;
             }
@@ -98,10 +99,11 @@ public class ItemsGraphic extends Actor {
             if (item.getAmount() != 0)
                 font.draw(batch, String.valueOf(item.getAmount()),cam.x-ScreenWidth/2+Gdx.input.getX()+inventory.getWidthTile()/4+inventory.getWidthTile()/2,  cam.y+ScreenHeight/2-Gdx.input.getY()+inventory.getHeightTile()/3);
         } else {
-            if (x < 1)
+            if (x < 1) {
                 batch.draw(itemsTexture[0][item.getIdTile()], OriginX + inventory.getWidthTile() *  y - (inventory.getWidthTile()/2), OriginY + ScreenHeight - (x*inventory.getHeightTile()+inventory.getHeightTile() + inventory.getHeightTile()/2));
                 if (item.getAmount() != 0)
                     font.draw(batch, String.valueOf(item.getAmount()), OriginX + inventory.getWidthTile() *  y+inventory.getWidthTile()/4, OriginY + ScreenHeight - (x*inventory.getHeightTile() + inventory.getHeightTile()/3 + inventory.getHeightTile()));
+            }
             if (inventory.isInventoryShow()) {
                 batch.draw(itemsTexture[0][item.getIdTile()], OriginX + inventory.getWidthTile() *  y - (inventory.getWidthTile()/2), OriginY + ScreenHeight - (x*inventory.getHeightTile()+inventory.getHeightTile() + inventory.getHeightTile()/2));
                 if (item.getAmount() != 0)
