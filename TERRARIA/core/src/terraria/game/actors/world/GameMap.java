@@ -83,6 +83,7 @@ public class GameMap extends Actor {
         ScreenY = (int)vec.y -  stage.getViewport().getScreenHeight()/2;
         ScreenWidth =   stage.getViewport().getScreenWidth();
         ScreenHeigth = stage.getViewport().getScreenHeight();
+
     }
 
 
@@ -103,6 +104,7 @@ public class GameMap extends Actor {
         int idBlocSupp = getMap()[(int)coordinate.z][(int)coordinate.y-1][(int)coordinate.x];
         if (idBlocSupp == 12 || idBlocSupp == 13 || idBlocSupp == 14) {
             getMap()[(int)coordinate.z][(int)coordinate.y-1][(int)coordinate.x] = 0;
+
         }
     }
 
@@ -184,11 +186,20 @@ public class GameMap extends Actor {
     public int getPixelWidth(){return this.getMapWidth() * TileType.TILE_SIZE;}
     public int getPixelHeight(){return this.getMapHeight() * TileType.TILE_SIZE; }
 
+    public void applyFiltre(Batch batch, int col, int row, int numFiltre){
+        int srcFunc = batch.getBlendSrcFunc();
+        int dstFunc = batch.getBlendDstFunc();
+        batch.enableBlending();
+        batch.setBlendFunction(Gdx.gl20.GL_ZERO, Gdx.gl20.GL_SRC_COLOR);
+        batch.draw(filtre[0][numFiltre], col * TileType.TILE_SIZE, row * TileType.TILE_SIZE);
+        batch.setBlendFunction(srcFunc, dstFunc);
+    }
+
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
 
-        for (int layer = 0; layer < getMap().length ; layer++) {
+        for (int layer = 0; layer < getMap().length; layer++) {
             for (int row = 0; row < getMap()[0].length; row++) {
                 for (int col = 0; col < getMap()[0][0].length; col++) {
 
@@ -198,7 +209,7 @@ public class GameMap extends Actor {
                         TileType type = getTileTypeByCoordinate(layer, col, row);
 
 
-                        if (type != null) {
+                            if (type != null) {
 
                             switch (type) {
 
@@ -217,22 +228,18 @@ public class GameMap extends Actor {
                                 case GRASS:
                                 case MOSSY_STONE:
                                     batch.draw(tilesTextures.get(type.getId()), col * TileType.TILE_SIZE, row * TileType.TILE_SIZE);
-
-                                    /*int srcFunc = batch.getBlendSrcFunc();
-                                    int dstFunc = batch.getBlendDstFunc();
-                                    batch.enableBlending();
-                                    batch.setBlendFunction(Gdx.gl20.GL_DST_COLOR, Gdx.gl20.GL_SRC_ALPHA);
-                                    batch.draw(filtre[0][0], col * TileType.TILE_SIZE, row * TileType.TILE_SIZE);
-                                    batch.draw(filtre[0][1], col * TileType.TILE_SIZE, (row - 1) * TileType.TILE_SIZE);
-                                    batch.draw(filtre[0][2], col * TileType.TILE_SIZE, (row - 2) * TileType.TILE_SIZE);
-                                    batch.setBlendFunction(srcFunc, dstFunc);*/
-
                                     break;
 
-                                case FILTRE0:
-                                case FILTRE1:
-                                case DARK_BACKGROUND:
-                                case FILTRE2:break;
+
+                                case LIGHTSOURCE0: applyFiltre(batch,col,  row, 0); break;
+                                case LIGHTSOURCE1: applyFiltre(batch,col,  row, 1); break;
+                                case LIGHTSOURCE2: applyFiltre(batch,col,  row, 2);break;
+                                case LIGHTSOURCE3: applyFiltre(batch,col,  row, 3); break;
+                                case LIGHTSOURCE4: applyFiltre(batch,col,  row, 4); break;
+                                case LIGHTSOURCE5: applyFiltre(batch,col,  row, 5); break;
+                                case LIGHTSOURCE6: applyFiltre(batch,col,  row, 6); break;
+                                case LIGHTSOURCE7: applyFiltre(batch,col,  row, 7); break;
+                                case NOLIGHT: applyFiltre(batch,col,  row, 8); break;
 
 
                                 default:
@@ -247,5 +254,7 @@ public class GameMap extends Actor {
             }
         }
     }
+
+
 }
 

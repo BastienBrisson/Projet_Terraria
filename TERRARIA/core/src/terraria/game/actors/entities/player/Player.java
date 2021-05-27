@@ -7,10 +7,13 @@ import com.badlogic.gdx.utils.Array;
 import terraria.game.TerrariaGame;
 import terraria.game.actors.Inventory.Inventory;
 import terraria.game.actors.entities.*;
+import terraria.game.actors.world.CalculatorLight;
 import terraria.game.actors.world.GameMap;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
+import terraria.game.actors.world.GeneratorMap.MapLoader;
+import terraria.game.actors.world.TileType;
 import terraria.game.screens.LoadingScreen;
 
 public class Player extends Entity {
@@ -113,6 +116,9 @@ public class Player extends Entity {
 
         //Update health
         playerHealth.update(camera,stage);
+
+        //Update light
+        CalculatorLight.calculatorLightSource( (int)((pos.x +getWidth()/2)/ TileType.TILE_SIZE ), (int)(gameMap.getMapHeight() - ((pos.y + getHeight()/2)/ TileType.TILE_SIZE)), gameMap.getMap());
 
     }
 

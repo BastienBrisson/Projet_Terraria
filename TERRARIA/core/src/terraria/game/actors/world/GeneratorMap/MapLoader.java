@@ -4,6 +4,7 @@ package terraria.game.actors.world.GeneratorMap;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
+import terraria.game.actors.world.CalculatorLight;
 import terraria.game.actors.world.GeneratorMap.Noise.*;
 import terraria.game.actors.world.TileType;
 import java.util.Random;
@@ -86,52 +87,28 @@ public class MapLoader {
             float LimitOfRocks = PerlinNoise.PerlinNoise1D((float) (random * 0.1), 0.60f, 1);
             LimitOfRocks = (float) MettreALEchelleNoise(LimitOfRocks, 40, 10);//14.2
 
-            if (col == WIDTH / 2) {
-                starting((int)LimitOfGrasses,  (int)LimitOfRocks, random,  col,mapData);
-                System.out.println("current + 0 :  "+(int)LimitOfGrasses + "  " + (int)LimitOfRocks + "\n");
-            }
-            if (col == WIDTH / 2 + 1){
-                System.out.println("current + 1 :  "+(int)LimitOfGrasses + "  " + (int)LimitOfRocks + "\n");
-            }
-            if (col == WIDTH / 2 + 2){
-                System.out.println("current + 2 :  "+(int)LimitOfGrasses + "  " + (int)LimitOfRocks + "\n");
-            }
-            if (col == WIDTH / 2 + 3){
-                System.out.println("current + 3 :  "+(int)LimitOfGrasses + "  " + (int)LimitOfRocks + "\n");
-            }
 
+            if (col == WIDTH / 2) {
+                starting((int) LimitOfGrasses, (int) LimitOfRocks, random, col, mapData);
+
+
+
+            }
 
             new GeneratorSoil().GenerateSoil((int) LimitOfGrasses, (int) LimitOfRocks, col, mapData, random);
             new GeneratorSubSoil().GenerateSubSoil((int) LimitOfGrasses, (int) LimitOfRocks, col, mapData, random);
-            generatorLightMap(mapData, (int) LimitOfGrasses, (int) LimitOfRocks, col);
+
 
             random++;
         }
 
+        CalculatorLight.calculatorLightMap(mapData.map, MapLoader.HEIGHT, MapLoader.WIDTH, 0, 0);
         return mapData;
 
     }
 
-    protected static void generatorLightMap(DataMap mapData, int LimitOfGrasses, int LimitOfRocks, int col) {
 
-        int row;
-        if (LimitOfGrasses < LimitOfRocks) {
-            row = LimitOfGrasses;
-        } else {
-            row = LimitOfRocks;
-        }
-        mapData.map[2][row][col] = TileType.FILTRE2.getId();
-        row++;
-        mapData.map[2][row][col] = TileType.FILTRE1.getId();
-        row++;
-        mapData.map[2][row][col] = TileType.FILTRE0.getId();
-        row++;
 
-        while (row < HEIGHT) {
-            mapData.map[2][row][col] = TileType.DARK_BACKGROUND.getId();
-            row++;
-        }
-    }
 
 
     public static float MettreALEchelleNoise(float noise, double amplitude, double AxeVertical) {

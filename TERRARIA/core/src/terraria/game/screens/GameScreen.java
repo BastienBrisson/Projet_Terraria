@@ -82,6 +82,8 @@ public class GameScreen extends ScreenAdapter {
         parallaxBackground.setSize(stage.getViewport().getScreenWidth(),stage.getViewport().getScreenHeight());
         parallaxBackground.setSpeed(1);
 
+
+
         player = (Player) entities.get(0);
 
         //inventory = new Inventory(stage, game);
@@ -143,6 +145,8 @@ public class GameScreen extends ScreenAdapter {
         for (ItemsGraphic items : inventory.getGraphicItems()) {
             items.update(camera, stage, this.inventory.isInventoryOpen());
         }
+
+
 
         stage.act(delta);
         stage.draw();

@@ -17,14 +17,21 @@ public enum TileType {
     IRON(8, true, "iron"),
     LAVA(9, true, "lava"),
     MOSSY_STONE(10, true, "mossy_stone"),
-    DARK_BACKGROUND(11, false, "dark_bg"),
 
-    WEED(12, false, "weed"),
-    LOG(13, false, "log"),
-    PEBBLE(14, false,"pebble"),
-    FILTRE0(15, false, "light_filter"),
-    FILTRE1(16, false,"light_filter"),
-    FILTRE2(17, false, "light_filter");
+    WEED(11, false, "weed"),
+    LOG(12, false, "log"),
+    PEBBLE(13, false,"pebble"),
+
+    LIGHTSOURCE0(22, false,"light"),
+    LIGHTSOURCE1(21, false,"light"),
+    LIGHTSOURCE2(20, false,"light"),
+    LIGHTSOURCE3(19, false,"light"),
+    LIGHTSOURCE4(18, false,"light"),
+    LIGHTSOURCE5(17, false,"light"),
+    LIGHTSOURCE6(16, false,"light"),
+    LIGHTSOURCE7(15, false,"light"),
+    NOLIGHT(14, false,"light");
+
 
 
 
