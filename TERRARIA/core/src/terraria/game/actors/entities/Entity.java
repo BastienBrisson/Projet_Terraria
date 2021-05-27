@@ -8,9 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import terraria.game.TerrariaGame;
 import terraria.game.actors.world.GameMap;
-import terraria.game.actors.world.TileType;
-import terraria.game.screens.GameScreen;
-import terraria.game.screens.LoadingScreen;
 
 public class Entity extends Actor {
 
@@ -49,7 +46,7 @@ public class Entity extends Actor {
         //if (!grounded){System.out.println(velocityY);}  //test
 
         newY += this.velocityY * deltaTime;
-        if(gameMap.DoesRectCollideWithMap(pos.x, newY, (int)getWidth(), (int)getHeight())){
+        if(gameMap.doesRectCollideWithMap(pos.x, newY, (int)getWidth(), (int)getHeight())){
             if(velocityY < 0){
                 this.pos.y = (float)Math.floor(pos.y);
                 grounded = true;
@@ -77,7 +74,7 @@ public class Entity extends Actor {
 
         //Check if movement possible
         float newX = this.pos.x + amount;
-        if(!gameMap.DoesRectCollideWithMap(newX, this.pos.y, (int)getWidth(), (int)getHeight())){
+        if(!gameMap.doesRectCollideWithMap(newX, this.pos.y, (int)getWidth(), (int)getHeight())){
             this.pos.x = newX;
         }
     }

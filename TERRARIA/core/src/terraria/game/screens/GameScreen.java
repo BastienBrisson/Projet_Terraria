@@ -1,25 +1,21 @@
 package terraria.game.screens;
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import terraria.game.TerrariaGame;
 import terraria.game.actors.Inventory.Inventory;
-import terraria.game.actors.Inventory.Items;
 import terraria.game.actors.Inventory.ItemsGraphic;
 import terraria.game.actors.entities.*;
 import terraria.game.actors.entities.player.Player;
@@ -83,8 +79,6 @@ public class GameScreen extends ScreenAdapter {
         parallaxBackground.setSpeed(1);
 
         player = (Player) entities.get(0);
-
-        //inventory = new Inventory(stage, game);
         inventory = player.getInventory();
 
         //On ajoute nos acteurs//
@@ -100,7 +94,7 @@ public class GameScreen extends ScreenAdapter {
         }
         stage.addActor(exitButton);
 
-        spawnMushroom((int)player.pos.x / TileType.TILE_SIZE, (int)player.pos.y / TileType.TILE_SIZE, 10);
+        //spawnMushroom((int)player.pos.x / TileType.TILE_SIZE, (int)player.pos.y / TileType.TILE_SIZE, 10);
 
     }
 
@@ -119,26 +113,27 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        for (Entity entity : entities) {
-            entity.update(delta, -9.8f, camera, stage);
-        }
+        if (!isMenuShow && !inventory.isInventoryShow() && Gdx.input.justTouched())
+            blocAction();
 
-        if (Gdx.input.justTouched()) {
-            if (!isMenuShow && !inventory.isInventoryShow())
-                blocAction();
-        }
-        
+        //Handle pause Menu
         if (isMenuShow) {
             exitButton.setPosition(camera.position.x,camera.position.y, Align.center);
         } else {
             exitButton.setPosition(0, 0, Align.center);
         }
 
-        this.parallaxBackground.update(camera, stage);
-        this.gameMap.update(camera, stage);
-        this.inventory.update(camera, stage);
+        //Update all actors
+        for (Entity entity : entities) {
+            entity.update(delta, -9.8f, camera, stage);
+        }
+
+        parallaxBackground.update(camera, stage);
+        gameMap.update(camera, stage);
+        inventory.update(camera, stage);
+
         for (ItemsGraphic items : inventory.getGraphicItems()) {
-            items.update(camera, stage, this.inventory.isInventoryOpen());
+            items.update(camera, stage, inventory.isInventoryOpen());
         }
 
         stage.act(delta);
@@ -146,51 +141,24 @@ public class GameScreen extends ScreenAdapter {
 
     }
 
-    /*public void selectionItems() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
-            inventory.setCurrentItems(0);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)){
-            inventory.setCurrentItems(1);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)){
-            inventory.setCurrentItems(2);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.APOSTROPHE)){
-            inventory.setCurrentItems(3);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5)){
-            inventory.setCurrentItems(4);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.MINUS)){
-            inventory.setCurrentItems(5);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_7)){
-            inventory.setCurrentItems(6);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_8)){
-            inventory.setCurrentItems(7);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_9)){
-            inventory.setCurrentItems(8);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0)){
-            inventory.setCurrentItems(9);
-        }
-    }*/
-
     public void blocAction() {
         Vector3 pos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-        Vector3 coordinate = gameMap.getTileCoordinateByLocation(1,pos.x, pos.y);
-        if (coordinate != null) {
-            if (gameMap.presentTile(coordinate) ) {
-                gameMap.destroyTile(coordinate, inventory);
-            } else {
-                gameMap.addTile(coordinate, inventory);
-                if (gameMap.DoesRectCollideWithMap(entities.get(0).getX(), entities.get(0).getY(), (int) entities.get(0).getWidth(), (int) entities.get(0).getHeight())) {
-                    gameMap.destroyTile(coordinate, inventory);
-                }
+        Vector3 coordinate = gameMap.getTileCoordinateByLocation(1, pos.x, pos.y);
 
+        if (coordinate != null) {
+            if (Gdx.input.isButtonPressed(Buttons.LEFT)){
+                //destroy block
+                gameMap.destroyTile(coordinate, inventory);
+            } else if (Gdx.input.isButtonPressed(Buttons.RIGHT)) {
+                //put block
+                gameMap.addTile(coordinate, inventory);
+                //Check if no entity in the way
+                for (Entity entity : entities) {
+                    if (gameMap.doesRectCollideWithMap(entity.getX(), entity.getY(), (int) entity.getWidth(), (int) entity.getHeight()))
+                        gameMap.destroyTile(coordinate, inventory);
+                }
             }
         }
-
-        stage.act();
-        stage.draw();
-
-        this.parallaxBackground.update(camera, stage);
-        this.gameMap.update(camera, stage);
-
     }
 
     public OrthographicCamera getCamera() {
@@ -225,11 +193,11 @@ public class GameScreen extends ScreenAdapter {
             Random rand = new Random();
             Vector2 randomPos = validPos.get(rand.nextInt(validPos.size()));
 
-            //Mushroom entity = new Mushroom();
-            //entity.create((int)randomPos.x * TileType.TILE_SIZE, (int)randomPos.y * TileType.TILE_SIZE, EntityType.SHROOM, gameMap, game);
-            //entities.add(entity);
-            //stage.addActor(entity);
-            //entity.setTarget(player);
+            Mushroom entity = new Mushroom();
+            entity.create((int)randomPos.x * TileType.TILE_SIZE, (int)randomPos.y * TileType.TILE_SIZE, EntityType.SHROOM, gameMap, game);
+            entities.add(entity);
+            stage.addActor(entity);
+            entity.setTarget(player);
         }
 
     }

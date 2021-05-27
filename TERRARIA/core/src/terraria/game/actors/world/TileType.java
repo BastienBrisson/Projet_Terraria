@@ -17,11 +17,13 @@ public enum TileType {
     IRON(8, true, "iron"),
     LAVA(9, true, "lava"),
     MOSSY_STONE(10, true, "mossy_stone"),
+    CAVE_DIRT_BACKGROUND(14,false,"cave_dirt"),
 
     WEED(11, false, "weed"),
     LOG(12, false, "log"),
     PEBBLE(13, false,"pebble"),
-    CAVE_DIRT_BACKGROUND(14,false,"cave_dirt"),
+
+    PLANKS(15, true,"planks"),
 
     LIGHTSOURCE0(108, false,"light"),
     LIGHTSOURCE1(107, false,"light"),

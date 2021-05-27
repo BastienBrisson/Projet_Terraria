@@ -1,6 +1,5 @@
 package terraria.game.screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
@@ -9,7 +8,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -41,7 +39,6 @@ public class MainMenuScreen extends ScreenAdapter {
         camera = (OrthographicCamera) stage.getViewport().getCamera();
 
         //Initialize menu's buttons
-
         game.getAssetManager().load("background/play.png", Texture.class);
         game.getAssetManager().load("background/playPressed.png",Texture.class);
         game.getAssetManager().load("background/exit.png",Texture.class);

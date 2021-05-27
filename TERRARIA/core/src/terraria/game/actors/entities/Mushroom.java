@@ -70,13 +70,9 @@ public class Mushroom extends Entity {
                 TileType frontTile =  flipX ? gameMap.getTileTypeByLocation(1, pos.x - TileType.TILE_SIZE, pos.y) : gameMap.getTileTypeByLocation(1, pos.x + getWidth() + TileType.TILE_SIZE, pos.y);
                 TileType frontGroundTile =  flipX ? gameMap.getTileTypeByLocation(1, pos.x - TileType.TILE_SIZE, pos.y - TileType.TILE_SIZE) : gameMap.getTileTypeByLocation(1, pos.x + getWidth() + TileType.TILE_SIZE, pos.y - TileType.TILE_SIZE);
 
-                //jump if block in front
-                if (grounded && frontTile != null && frontTile.isCollidable())
+                //jump if block in front or if hole in front and player upward
+                if ( grounded && ( ( frontTile != null && frontTile.isCollidable() ) || ( (frontGroundTile == null || !frontGroundTile.isCollidable()) && yDistance >= 0 )  ) )
                     this.velocityY += JUMP_VELOCITY * getWeight();
-                //jump dif hole in front and player upward
-                if (grounded && (frontGroundTile == null || !frontGroundTile.isCollidable()) && yDistance >= 0)
-                    this.velocityY += JUMP_VELOCITY * getWeight();
-
 
             } else {
                 state = IDLE;

@@ -1,7 +1,6 @@
 package terraria.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import terraria.game.screens.MainMenuScreen;
 
 public class TerrariaGame extends Game {
