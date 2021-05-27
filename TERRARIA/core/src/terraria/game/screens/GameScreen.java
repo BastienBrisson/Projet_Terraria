@@ -127,7 +127,7 @@ public class GameScreen extends ScreenAdapter {
         }
 
         if (Gdx.input.justTouched()) {
-            if (!isMenuShow)
+            if (!isMenuShow && !inventory.inventoryShow)
                 blocAction();
         }
         
@@ -229,11 +229,11 @@ public class GameScreen extends ScreenAdapter {
             Random rand = new Random();
             Vector2 randomPos = validPos.get(rand.nextInt(validPos.size()));
 
-            Mushroom entity = new Mushroom();
-            entity.create((int)randomPos.x * TileType.TILE_SIZE, (int)randomPos.y * TileType.TILE_SIZE, EntityType.SHROOM, gameMap, game);
-            entities.add(entity);
-            stage.addActor(entity);
-            entity.setTarget(player);
+            //Mushroom entity = new Mushroom();
+            //entity.create((int)randomPos.x * TileType.TILE_SIZE, (int)randomPos.y * TileType.TILE_SIZE, EntityType.SHROOM, gameMap, game);
+            //entities.add(entity);
+            //stage.addActor(entity);
+            //entity.setTarget(player);
         }
 
     }
