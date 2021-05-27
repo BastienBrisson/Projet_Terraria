@@ -21,6 +21,7 @@ public enum TileType {
     WEED(11, false, "weed"),
     LOG(12, false, "log"),
     PEBBLE(13, false,"pebble"),
+    CAVE_DIRT_BACKGROUND(14,false,"cave_dirt"),
 
     LIGHTSOURCE0(108, false,"light"),
     LIGHTSOURCE1(107, false,"light"),
