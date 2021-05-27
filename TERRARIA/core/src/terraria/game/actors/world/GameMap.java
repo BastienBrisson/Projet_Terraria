@@ -102,7 +102,7 @@ public class GameMap extends Actor {
         inventaire.addTileInInventory(getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x]);
         getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = 0;
         int idBlocSupp = getMap()[(int)coordinate.z][(int)coordinate.y-1][(int)coordinate.x];
-        if (idBlocSupp == 12 || idBlocSupp == 13 || idBlocSupp == 11 ) {
+        if (idBlocSupp == TileType.WEED.getId() || idBlocSupp == TileType.LOG.getId()|| idBlocSupp == TileType.PEBBLE.getId() ) {
             getMap()[(int)coordinate.z][(int)coordinate.y-1][(int)coordinate.x] = 0;
 
         }

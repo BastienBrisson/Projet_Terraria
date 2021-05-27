@@ -9,11 +9,20 @@ public class CalculatorLight {
 
         for(int j = originX; j < width; j++) {
             for (int i = height - 1; i >= originY; --i) {
-
                 map[2][i][j] = TileType.NOLIGHT.getId();
-                if (map[0][i][j] == 0 && (map[1][i][j] == 0 || map[1][i][j] == 11 || map[1][i][j] == 13 || map[1][i][j] == 12)) {
-                    calculatorLightSource(j, i +1, map);
+            }
+        }
 
+        for(int j = originX; j < width; j++) {
+            for (int i = height - 1; i >= originY; --i) {
+
+
+                if ((map[0][i][j] == 0 && (map[1][i][j] == 0 || map[1][i][j] == TileType.WEED.getId() || map[1][i][j] == TileType.LOG.getId() || map[1][i][j] == TileType.PEBBLE.getId() ))) {
+                   calculatorLightSource(j, i +1, map);
+
+                }
+                else if(map[1][i][j] ==  TileType.LAVA.getId()){
+                    calculatorLightSource(j, i, map);
                 }
             }
         }
@@ -39,8 +48,10 @@ public class CalculatorLight {
                             map[2][row - i][col + (MAXDEGRADE + 2) - j] = (j - i) + (TileType.NOLIGHT.getId() -1);
                     }
                 }
-                if( map[2][row][col +  (MAXDEGRADE + 2) - j]  < j + (TileType.NOLIGHT.getId() -1)) {
-                    map[2][row][col + (MAXDEGRADE + 2) - j] = j + (TileType.NOLIGHT.getId() -1);
+                if(row< MapLoader.HEIGHT) {
+                    if (map[2][row][col + (MAXDEGRADE + 2) - j] < j + (TileType.NOLIGHT.getId() - 1)) {
+                        map[2][row][col + (MAXDEGRADE + 2) - j] = j + (TileType.NOLIGHT.getId() - 1);
+                    }
                 }
             }
 
@@ -63,8 +74,10 @@ public class CalculatorLight {
                     }
 
                 }
-                if(map[2][row][col + j - (MAXDEGRADE + 2)]  < j + (TileType.NOLIGHT.getId() -1)) {
-                    map[2][row][col + j - (MAXDEGRADE + 2)] = j  + (TileType.NOLIGHT.getId() -1);
+                if(row< MapLoader.HEIGHT) {
+                    if (map[2][row][col + j - (MAXDEGRADE + 2)] < j + (TileType.NOLIGHT.getId() - 1)) {
+                        map[2][row][col + j - (MAXDEGRADE + 2)] = j + (TileType.NOLIGHT.getId() - 1);
+                    }
                 }
             }
 
