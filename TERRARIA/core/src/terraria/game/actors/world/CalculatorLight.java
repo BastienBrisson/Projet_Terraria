@@ -29,18 +29,18 @@ public class CalculatorLight {
                 for (int i = 1; i < j; ++i) {
 
                     if (row + i < MapLoader.HEIGHT) {
-                        if(map[2][row + i][col + (MAXDEGRADE + 2) - j] < (j - i) + 13){
-                            map[2][row + i][col + (MAXDEGRADE + 2) - j] = (j - i) + 13;
+                        if(map[2][row + i][col + (MAXDEGRADE + 2) - j] < (j - i) + (TileType.NOLIGHT.getId() -1)){
+                            map[2][row + i][col + (MAXDEGRADE + 2) - j] = (j - i) + (TileType.NOLIGHT.getId() -1);
                         }
                     }
 
                     if (row - i >= 0) {
-                        if(map[2][row - i][col + (MAXDEGRADE + 2) - j] < (j - i) + 13)
-                            map[2][row - i][col + (MAXDEGRADE + 2) - j] = (j - i) + 13;
+                        if(map[2][row - i][col + (MAXDEGRADE + 2) - j] < (j - i) + (TileType.NOLIGHT.getId() -1))
+                            map[2][row - i][col + (MAXDEGRADE + 2) - j] = (j - i) + (TileType.NOLIGHT.getId() -1);
                     }
                 }
-                if( map[2][row][col +  (MAXDEGRADE + 2) - j]  < j + 13) {
-                    map[2][row][col + (MAXDEGRADE + 2) - j] = j + 13;
+                if( map[2][row][col +  (MAXDEGRADE + 2) - j]  < j + (TileType.NOLIGHT.getId() -1)) {
+                    map[2][row][col + (MAXDEGRADE + 2) - j] = j + (TileType.NOLIGHT.getId() -1);
                 }
             }
 
@@ -51,20 +51,20 @@ public class CalculatorLight {
                 for (int i = 1; i < j; ++i) {
 
                     if (row + i < MapLoader.HEIGHT) {
-                        if( map[2][row + i][col + j - (MAXDEGRADE + 2)] < (j - i) + 13 ) {
-                            map[2][row + i][col + j - (MAXDEGRADE + 2)] = (j - i) + 13;
+                        if( map[2][row + i][col + j - (MAXDEGRADE + 2)] < (j - i) + (TileType.NOLIGHT.getId() -1) ) {
+                            map[2][row + i][col + j - (MAXDEGRADE + 2)] = (j - i) + (TileType.NOLIGHT.getId() -1);
                         }
                     }
 
                     if (row - i >= 0) {
-                        if(map[2][row - i][col + j - (MAXDEGRADE + 2)]  < (j - i) + 13) {
-                            map[2][row - i][col + j - (MAXDEGRADE + 2)] = (j - i) + 13;
+                        if(map[2][row - i][col + j - (MAXDEGRADE + 2)]  < (j - i) + (TileType.NOLIGHT.getId() -1)) {
+                            map[2][row - i][col + j - (MAXDEGRADE + 2)] = (j - i) + (TileType.NOLIGHT.getId() -1);
                         }
                     }
 
                 }
-                if(map[2][row][col + j - (MAXDEGRADE + 2)]  < j + 13) {
-                    map[2][row][col + j - (MAXDEGRADE + 2)] = j  + 13;
+                if(map[2][row][col + j - (MAXDEGRADE + 2)]  < j + (TileType.NOLIGHT.getId() -1)) {
+                    map[2][row][col + j - (MAXDEGRADE + 2)] = j  + (TileType.NOLIGHT.getId() -1);
                 }
             }
 

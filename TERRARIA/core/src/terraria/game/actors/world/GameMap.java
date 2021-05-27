@@ -231,7 +231,7 @@ public class GameMap extends Actor {
                                     break;
 
 
-                                case LIGHTSOURCE0: applyFiltre(batch,col,  row, 0); break;
+                                case LIGHTSOURCE0: break;
                                 case LIGHTSOURCE1: applyFiltre(batch,col,  row, 1); break;
                                 case LIGHTSOURCE2: applyFiltre(batch,col,  row, 2);break;
                                 case LIGHTSOURCE3: applyFiltre(batch,col,  row, 3); break;
