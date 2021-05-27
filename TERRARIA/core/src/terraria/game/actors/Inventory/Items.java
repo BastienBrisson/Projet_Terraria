@@ -1,65 +1,23 @@
 package terraria.game.actors.Inventory;
 
-import terraria.game.TerrariaGame;
-import terraria.game.actors.world.TileType;
-
 public class Items {
 
+    private int idTile;             //l'id de ce item
+    private int amount;             //le quantitié de ce item
+    private int num;                //Le numéro de l'item dans l'inventaire
 
-    public static final int MAXELEMENT = 65;
 
-    public static final int SIZEINVENTORY = 50;
-    private int amount;
-    private int idTile;
-    private boolean inTransition= false;
-
-    int num;
-    int col;
-    int emplacement;
-
-    public Items(TerrariaGame game, int num) {
-        this.amount = 0;
+    public Items(int num) {
         this.idTile = 0;
+        this.amount = 0;
         this.num = num;
-        emplacement = num;
-        col = 0;
-        while (emplacement > 9) {
-            emplacement = emplacement - 10;
-            col++;
-        }
-
-
-    }
-
-    public Items(TerrariaGame game, TileType tile, int num) {
-        this.amount = 1;
-        this.idTile = tile.getId();
-        this.num = num;
-        emplacement = num;
-        col = 0;
-        while (emplacement > 10) {
-            emplacement = emplacement - 10;
-            col++;
-        }
-    }
-
-    public Items(TerrariaGame game, TileType tile, int amount, int num) {
-        this.amount = amount;
-        this.idTile = tile.getId();
-        this.num = num;
-        emplacement = num;
-        col = 0;
-        while (emplacement > 10) {
-            emplacement = emplacement - 10;
-            col++;
-        }
     }
 
     public Items(){
-        this.amount = 0;
         this.idTile = 0;
+        this.amount = 0;
+        this.num = 0;
     }
-
 
     public int getAmount() {
         return this.amount;
@@ -96,16 +54,6 @@ public class Items {
         this.idTile = 0;
     }
 
-    public void changeContent(TileType tile, int amount) {
-        this.amount = amount;
-        this.idTile = tile.getId();
-    }
-
-    public boolean compareTo(Items item) {
-        if(this.amount == item.amount && this.idTile == item.idTile) {
-            return true;
-        }
-        return false;
-    }
-
+    public int getNum() { return num; }
+    public void setNum(int num) { this.num = num; }
 }

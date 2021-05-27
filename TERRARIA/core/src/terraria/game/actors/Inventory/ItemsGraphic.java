@@ -1,45 +1,46 @@
 package terraria.game.actors.Inventory;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import terraria.game.TerrariaGame;
 
 
 public class ItemsGraphic extends Actor {
 
-    public TextureRegion[][] itemsTexture;
-    public TextureRegion[][] hoverTexture;
-    public Items item;
-    float ScreenX, ScreenY,ScreenWidth,ScreenHeight;
-    public int  width = 50, height = 50;
-    public static final int SLOTINVENTORYBAR = 10;
-    boolean menu;
+    private TextureRegion[][] itemsTexture;                  //Texture des items de l'inventaire
+    private Items item;                                      //L'item qui est associé a ce graphic
+    private float OriginX, OriginY,ScreenWidth,ScreenHeight;
+    private static final int SLOTINVENTORYBAR = 10;
     private Inventory inventory;
-    private DragAndDrop dragAndDrop;
-    private boolean mooving = false;
-    private boolean hover;
-    Vector3 cam;
+    private boolean moving;                                 //Si l'item est en train d'être déplacé
+    private boolean hover;                                  //Si l'item est survolé en drag & drop
+    private Vector3 cam;
+    private BitmapFont font;                            //Police d'écriture
+    private int x;                   //Le numéro de la ligne ou est placé l'item dans l'affichage l'inventaire
+    private int y;                   //Le numéro de la colonne ou est placé l'item dans l'affichage de l'inventaire
 
-    public ItemsGraphic(TerrariaGame game, boolean menu, final Items item, Inventory inventory, final DragAndDrop dragAndDrop) {
-        this.menu = menu;
+    public ItemsGraphic(TerrariaGame game, final Items item, final Inventory inventory, DragAndDrop dragAndDrop) {
         this.item = item;
         this.inventory = inventory;
-        hoverTexture = TextureRegion.split(game.getAssetManager().get("inventory/hover.png", Texture.class), width, height);
-        itemsTexture = TextureRegion.split(game.getAssetManager().get("inventory/itemsInventory.png", Texture.class), width, height);
-        this.dragAndDrop = dragAndDrop;
+        this.moving = false;
+        this.font = new BitmapFont();
+        //A partir du numéro de l'item il calcul sa position X et Y dans l'affichage de l'inventaire
+        this.y = this.item.getNum();
+        this.x = 0;
+        while (this.y > 9) {
+            this.y = this.y - 10;
+            this.x++;
+        }
+        this.itemsTexture = TextureRegion.split(game.getAssetManager().get("inventory/itemsInventory.png", Texture.class), inventory.getWidthTile(), inventory.getHeightTile());
         dragAndDrop.addSource(new DragAndDrop.Source(this) {
             DragAndDrop.Payload payload = new DragAndDrop.Payload();
             @Override
@@ -60,49 +61,53 @@ public class ItemsGraphic extends Actor {
         });
         dragAndDrop.addTarget(new DragAndDrop.Target(this) {
             public boolean drag (DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
+                ItemsGraphic items = (ItemsGraphic) payload.getObject();
                 setHover(true);
                 return true;
             }
 
             public void reset (DragAndDrop.Source source, DragAndDrop.Payload payload) {
-                ItemsGraphic items = (ItemsGraphic) payload.getObject();
                 setHover(false);
             }
 
             public void drop (DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
-                ItemsGraphic items = (ItemsGraphic) payload.getObject();
+                ItemsGraphic itemOrigin = (ItemsGraphic) payload.getObject();
                 int IdTmp = item.getIdTile();
                 int amountTmp = item.getAmount();
-                setItem(items.item);
-                items.item.setIdTile(IdTmp);
-                items.item.setAmount(amountTmp);
+                setItem(itemOrigin.item);
+                itemOrigin.item.setIdTile(IdTmp);
+                itemOrigin.item.setAmount(amountTmp);
             }
         });
     }
 
     public void update(Camera camera, Stage stage, boolean menu){
         cam = camera.position;
-        ScreenX =  cam.x + stage.getViewport().getScreenWidth()/2 - SLOTINVENTORYBAR * width;
-        ScreenY = cam.y - stage.getViewport().getScreenHeight()/2;
-        ScreenWidth =   stage.getViewport().getScreenWidth();
+        OriginX =  cam.x + stage.getViewport().getScreenWidth()/2 - SLOTINVENTORYBAR * inventory.getWidthTile();
+        OriginY = cam.y - stage.getViewport().getScreenHeight()/2;
+        ScreenWidth = stage.getViewport().getScreenWidth();
         ScreenHeight = stage.getViewport().getScreenHeight();
-        this.menu = menu;
-        setBounds(ScreenX + width *  item.emplacement - (width/2), ScreenY + ScreenHeight - (item.col*height+height + height/2), 50, 50);
+        this.inventory.setInventoryShow(menu);
+        setBounds(OriginX + inventory.getWidthTile() *  y - (inventory.getWidthTile()/2), OriginY + ScreenHeight - (x*inventory.getHeightTile()+inventory.getHeightTile() + inventory.getHeightTile()/2), 50, 50);
 
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        if (hover) {
-            batch.draw(hoverTexture[0][0], ScreenX + width *  item.emplacement - (width/2), ScreenY + ScreenHeight - (item.col*height+height + height/2));
-        }
-        if (mooving) {
+        if (moving) {
             batch.draw(itemsTexture[0][item.getIdTile()], cam.x-ScreenWidth/2+Gdx.input.getX(),  cam.y+ScreenHeight/2-Gdx.input.getY());
+            if (item.getAmount() != 0)
+                font.draw(batch, String.valueOf(item.getAmount()),cam.x-ScreenWidth/2+Gdx.input.getX()+inventory.getWidthTile()/4+inventory.getWidthTile()/2,  cam.y+ScreenHeight/2-Gdx.input.getY()+inventory.getHeightTile()/3);
         } else {
-            if (item.col < 1)
-                batch.draw(itemsTexture[0][item.getIdTile()], ScreenX + width *  item.emplacement - (width/2), ScreenY + ScreenHeight - (item.col*height+height + height/2));
-            if (menu) {
-                batch.draw(itemsTexture[0][item.getIdTile()], ScreenX + width *  item.emplacement - (width/2), ScreenY + ScreenHeight - (item.col*height+height + height/2));
+            if (x < 1) {
+                batch.draw(itemsTexture[0][item.getIdTile()], OriginX + inventory.getWidthTile() *  y - (inventory.getWidthTile()/2), OriginY + ScreenHeight - (x*inventory.getHeightTile()+inventory.getHeightTile() + inventory.getHeightTile()/2));
+                if (item.getAmount() != 0)
+                    font.draw(batch, String.valueOf(item.getAmount()), OriginX + inventory.getWidthTile() *  y+inventory.getWidthTile()/4, OriginY + ScreenHeight - (x*inventory.getHeightTile() + inventory.getHeightTile()/3 + inventory.getHeightTile()));
+            }
+            if (inventory.isInventoryShow()) {
+                batch.draw(itemsTexture[0][item.getIdTile()], OriginX + inventory.getWidthTile() *  y - (inventory.getWidthTile()/2), OriginY + ScreenHeight - (x*inventory.getHeightTile()+inventory.getHeightTile() + inventory.getHeightTile()/2));
+                if (item.getAmount() != 0)
+                    font.draw(batch, String.valueOf(item.getAmount()), OriginX + inventory.getWidthTile() *  y+inventory.getWidthTile()/4, OriginY + ScreenHeight - (x*inventory.getHeightTile() + inventory.getHeightTile()/3 + inventory.getHeightTile()));
             }
         }
 
@@ -113,15 +118,32 @@ public class ItemsGraphic extends Actor {
         this.item.setAmount(items.getAmount());
     }
 
-    public void setMoving(boolean mooving) {
-        this.mooving = mooving;
+    public void setMoving(boolean moving) {
+        this.moving = moving;
     }
 
-    public boolean isMooving() {
-        return mooving;
+    public boolean isMoving() {
+        return moving;
     }
 
     public void setHover(boolean hover) {
         this.hover = hover;
+    }
+    public boolean isHover() {return hover;}
+
+    public int getXPosition() {
+        return x;
+    }
+
+    public void setXPosition(int x) {
+        this.x = x;
+    }
+
+    public int getYPosition() {
+        return y;
+    }
+
+    public void setYPosition(int y) {
+        this.y = y;
     }
 }

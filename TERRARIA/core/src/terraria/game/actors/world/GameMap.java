@@ -126,8 +126,8 @@ public class GameMap extends Actor {
 
     public void addTile(Vector3 coordinate, Inventory inventory) {
         if (tilesInMap(coordinate)) {
-            getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = inventory.getInventory().get(inventory.getCurrentItems()).getIdTile();
-            inventory.getInventory().get(inventory.getCurrentItems()).decrAmount();
+            getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile();
+            inventory.getItemsList().get(inventory.getCurrentItems()).decrAmount();
         }
     }
 
