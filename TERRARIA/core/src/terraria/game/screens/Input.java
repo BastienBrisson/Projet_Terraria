@@ -39,6 +39,8 @@ public class Input implements InputProcessor {
                     this.screen.isMenuShow = true;
                 }
                 break;
+            default:
+                break;
         }
         return true;
     }

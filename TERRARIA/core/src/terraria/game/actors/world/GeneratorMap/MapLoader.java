@@ -77,22 +77,25 @@ public class MapLoader {
 
         Random rand = new Random();
         int random = rand.nextInt(1000);
-        System.out.println("random : " + random);
+        //System.out.println("random : " + random);
 
         for (int col = 0; col < WIDTH; col++) {
 
 
             float LimitOfGrasses = PerlinNoise.PerlinNoise1D((float) (random * 0.1), 0.25f, 1);
-            LimitOfGrasses = (float) MettreALEchelleNoise(LimitOfGrasses, 16, 16); //16
+            LimitOfGrasses = (float) noiseScaling(LimitOfGrasses, 16, 16); //16
             float LimitOfRocks = PerlinNoise.PerlinNoise1D((float) (random * 0.1), 0.60f, 1);
-            LimitOfRocks = (float) MettreALEchelleNoise(LimitOfRocks, 40, 10);//14.2
+            LimitOfRocks = (float) noiseScaling(LimitOfRocks, 40, 10);//14.2
 
-            if (col == WIDTH / 2) {
+
+            if (col == WIDTH / 2)
                 starting((int) LimitOfGrasses, (int) LimitOfRocks, random, col, mapData);
-            }
 
-            new GeneratorSoil().GenerateSoil((int) LimitOfGrasses, (int) LimitOfRocks, col, mapData, random);
-            new GeneratorSubSoil().GenerateSubSoil((int) LimitOfGrasses, (int) LimitOfRocks, col, mapData, random);
+
+            new GeneratorSoil().generateSoil((int) LimitOfGrasses, (int) LimitOfRocks, col, mapData, random);
+            new GeneratorSubSoil().generateSubSoil((int) LimitOfGrasses, (int) LimitOfRocks, col, mapData, random);
+
+
             random++;
         }
 
@@ -103,7 +106,9 @@ public class MapLoader {
 
 
 
-    public static float MettreALEchelleNoise(float noise, double amplitude, double AxeVertical) {
+
+
+    public static float noiseScaling(float noise, double amplitude, double AxeVertical) {
         noise = noise + 1;
         noise = (float) (noise * (amplitude) / 2);
         noise = (float) (noise + HEIGHT / 2 + (AxeVertical));
@@ -118,10 +123,10 @@ public class MapLoader {
         while (!starting) {
 
 
-            int nextLimitOfGrasses = (int) MettreALEchelleNoise(PerlinNoise.PerlinNoise1D((float) ((random + i) * 0.1), 0.25f, 1), 16, 16); //16
-            int nextLimitOfRocks = (int) MettreALEchelleNoise(PerlinNoise.PerlinNoise1D((float) ((random + i) * 0.1), 0.60f, 1), 40, 10);//14.2
+            int nextLimitOfGrasses = (int) noiseScaling(PerlinNoise.PerlinNoise1D((float) ((random + i) * 0.1), 0.25f, 1), 16, 16); //16
+            int nextLimitOfRocks = (int) noiseScaling(PerlinNoise.PerlinNoise1D((float) ((random + i) * 0.1), 0.60f, 1), 40, 10);//14.2
 
-            System.out.println("next : " + i +" "+ (int)nextLimitOfGrasses + "  " + (int)nextLimitOfRocks + "\n");
+            //System.out.println("next : " + i +" "+ (int)nextLimitOfGrasses + "  " + (int)nextLimitOfRocks + "\n");
 
             if (LimitOfGrasses < LimitOfRocks) {
 

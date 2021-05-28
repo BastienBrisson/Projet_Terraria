@@ -22,6 +22,7 @@ public class GameMap extends Actor {
     private HashMap<Integer, Texture> tilesTextures;
     private TextureRegion[][] plant;
     private TextureRegion [][] trees;
+    private Texture sapling;
     private TextureRegion [][] pebble;
     private TextureRegion [][] filtre;
 
@@ -29,7 +30,7 @@ public class GameMap extends Actor {
     public Camera camera;
     private DataMap dataMap;
 
-    int ScreenX, ScreenY,ScreenWidth,ScreenHeigth;
+    public int ScreenX, ScreenY,ScreenWidth,ScreenHeigth;
 
 
     public GameMap(TerrariaGame game) {
@@ -48,9 +49,9 @@ public class GameMap extends Actor {
         }
 
         //Load map elements' textures
-
         plant = TextureRegion.split( game.getAssetManager().get("herbes.png", Texture.class), TileType.TILE_SIZE, TileType.TILE_SIZE);
         trees =  TextureRegion.split(game.getAssetManager().get("arbres/arbreTest.png", Texture.class), 202, 375 );
+        sapling =  game.getAssetManager().get("arbres/sapling.png", Texture.class);
         pebble =  TextureRegion.split(game.getAssetManager().get("cailloux.png", Texture.class), TileType.TILE_SIZE, TileType.TILE_SIZE);
         filtre = TextureRegion.split(game.getAssetManager().get("filtre.png", Texture.class), TileType.TILE_SIZE, TileType.TILE_SIZE);
     }
@@ -88,7 +89,7 @@ public class GameMap extends Actor {
 
 
     /**
-     * Donne quelle tuille est à cette location
+     * Donne les coordonnées (dans la matrice) de la tuile à cette position de souris
      * @param layer
      * @param x
      * @param y
@@ -98,36 +99,84 @@ public class GameMap extends Actor {
         return new Vector3((int) (x / TileType.TILE_SIZE), (int) (getMapHeight() - (y / TileType.TILE_SIZE)), layer);
     }
 
-    public void destroyTile(Vector3 coordinate, Inventory inventaire) {
-        inventaire.addTileInInventory(getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x]);
-        getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = 0;
-        int idBlocSupp = getMap()[(int)coordinate.z][(int)coordinate.y-1][(int)coordinate.x];
-        if (idBlocSupp == TileType.WEED.getId() || idBlocSupp == TileType.LOG.getId()|| idBlocSupp == TileType.PEBBLE.getId() ) {
-            getMap()[(int)coordinate.z][(int)coordinate.y-1][(int)coordinate.x] = 0;
-
-        }
-    }
-
     public boolean presentTile(Vector3 coordinate) {
-        if (tilesInMap(coordinate))  {
-            if (getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] != 0) {
+        if (tileInMap(coordinate))  {
+            if (getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] != 0)
                 return true;
-            }
         }
         return false;
     }
 
-    public boolean tilesInMap(Vector3 coordinate) {
+    public boolean tileInMap(Vector3 coordinate) {
         if (coordinate.x > 0 && coordinate.x < getMapWidth() && coordinate.y > 0 && coordinate.y < getMapHeight())  {
             return true;
         }
         return false;
     }
 
+    public void destroyTile(Vector3 coordinate, Inventory inventory) {
+        if (presentTile(coordinate)) {
+            boolean breakable = true;
+            int treeSize = 0;
+
+            int idBloc = getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x];
+            int idBlocSupp = getMap()[(int)coordinate.z][(int)coordinate.y-1][(int)coordinate.x];
+
+            if (idBloc == TileType.LOG.getId()) {
+                //on détruit tout l'arbre et on note sa taille
+                treeSize = 1;
+                int y = (int)coordinate.y - 1;
+                while ( getMap()[(int)coordinate.z][y][(int)coordinate.x] == TileType.LOG.getId() ) {
+                    getMap()[(int)coordinate.z][y][(int)coordinate.x] = 0;
+                    y--;
+                    treeSize++;
+                }
+                y = (int)coordinate.y + 1;
+                while ( getMap()[(int)coordinate.z][y][(int)coordinate.x] == TileType.LOG.getId() ) {
+                    getMap()[(int)coordinate.z][y][(int)coordinate.x] = 0;
+                    y++;
+                    treeSize++;
+                }
+
+            } else if (idBlocSupp == TileType.LOG.getId() || idBloc == TileType.LAVA.getId()) {
+                //bloc indestructible
+                breakable = false;
+
+            } else if (idBlocSupp == TileType.WEED.getId() || idBlocSupp == TileType.PEBBLE.getId() || idBlocSupp == TileType.SAPLING.getId()) {
+                //On récupère les éléments posés sur le bloc
+                getMap()[(int)coordinate.z][(int)coordinate.y-1][(int)coordinate.x] = 0;
+                inventory.addTileInInventory(idBlocSupp);
+            }
+
+            if ( breakable ) {
+                if (treeSize > 0) { //Une fonction pour rajouter plusieurs items dans l'inventaire serait cool
+                    inventory.addTileInInventory(TileType.SAPLING.getId());
+                    inventory.addTileInInventory(TileType.SAPLING.getId());
+                    for (int i = 0; i < treeSize*2; i++)
+                        inventory.addTileInInventory(TileType.PLANKS.getId());
+                } else
+                    inventory.addTileInInventory(idBloc);
+
+                getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = 0;
+            }
+
+        }
+    }
+
     public void addTile(Vector3 coordinate, Inventory inventory) {
-        if (tilesInMap(coordinate)) {
-            getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile();
-            inventory.getItemsList().get(inventory.getCurrentItems()).decrAmount();
+        if (tileInMap(coordinate) && !presentTile(coordinate)) {
+
+            int type = inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile();
+            if (type == TileType.WEED.getId() || type == TileType.SAPLING.getId()) {
+                if (getMap()[(int)coordinate.z][(int)coordinate.y+1][(int)coordinate.x] == TileType.GRASS.getId()) {
+                    getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = type;
+                    inventory.getItemsList().get(inventory.getCurrentItems()).decrAmount();
+                }
+            } else {
+                getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = type;
+                inventory.getItemsList().get(inventory.getCurrentItems()).decrAmount();
+            }
+
         }
     }
 
@@ -139,7 +188,7 @@ public class GameMap extends Actor {
      * @param height
      * @return
      */
-    public boolean DoesRectCollideWithMap(float x, float y, int width, int height){
+    public boolean doesRectCollideWithMap(float x, float y, int width, int height){
         if (x < 0 || y < 0 || x + width > getPixelWidth() || y + height > getPixelHeight()){
             return true;
         }
@@ -186,7 +235,7 @@ public class GameMap extends Actor {
     public int getPixelWidth(){return this.getMapWidth() * TileType.TILE_SIZE;}
     public int getPixelHeight(){return this.getMapHeight() * TileType.TILE_SIZE; }
 
-    public void applyFiltre(Batch batch, int col, int row, int numFiltre){
+    public void applyFilter(Batch batch, int col, int row, int numFiltre){
         int srcFunc = batch.getBlendSrcFunc();
         int dstFunc = batch.getBlendDstFunc();
         batch.enableBlending();
@@ -211,40 +260,38 @@ public class GameMap extends Actor {
 
                             if (type != null) {
 
-                            switch (type) {
+                                switch (type) {
 
-                                case LOG:
-                                    if (getTileTypeByCoordinate(layer, col, row - 1) == TileType.GRASS)
-                                        batch.draw(trees[0][col % 13], col * TileType.TILE_SIZE - 85, row * TileType.TILE_SIZE);
-                                    break;
-                                case PEBBLE:
-                                    batch.draw(pebble[0][col % 8], col * TileType.TILE_SIZE, row * TileType.TILE_SIZE);
-                                    break;
-
-                                case WEED:
-                                    batch.draw(plant[0][col % 4], col * TileType.TILE_SIZE, row * TileType.TILE_SIZE);
-                                    break;
-
-                                case GRASS:
-                                case MOSSY_STONE:
-                                    batch.draw(tilesTextures.get(type.getId()), col * TileType.TILE_SIZE, row * TileType.TILE_SIZE);
-                                    break;
+                                    case LOG:
+                                        //applyFilter(batch,col,  row, 4);
+                                        if (getTileTypeByCoordinate(layer, col, row - 1) == TileType.GRASS)
+                                            batch.draw(trees[0][col % 13], col * TileType.TILE_SIZE - 85, row * TileType.TILE_SIZE);
+                                        break;
+                                    case PEBBLE:
+                                        batch.draw(pebble[0][col % 8], col * TileType.TILE_SIZE, row * TileType.TILE_SIZE);
+                                        break;
+                                    case WEED:
+                                        batch.draw(plant[0][col % 4], col * TileType.TILE_SIZE, row * TileType.TILE_SIZE);
+                                        break;
+                                    case SAPLING:
+                                        batch.draw(sapling, col * TileType.TILE_SIZE, row * TileType.TILE_SIZE);
+                                        break;
 
 
-                                case LIGHTSOURCE0: break;
-                                case LIGHTSOURCE1: applyFiltre(batch,col,  row, 1); break;
-                                case LIGHTSOURCE2: applyFiltre(batch,col,  row, 2);break;
-                                case LIGHTSOURCE3: applyFiltre(batch,col,  row, 3); break;
-                                case LIGHTSOURCE4: applyFiltre(batch,col,  row, 4); break;
-                                case LIGHTSOURCE5: applyFiltre(batch,col,  row, 5); break;
-                                case LIGHTSOURCE6: applyFiltre(batch,col,  row, 6); break;
-                                case LIGHTSOURCE7: applyFiltre(batch,col,  row, 7); break;
-                                case NOLIGHT: applyFiltre(batch,col,  row, 8); break;
+                                    case LIGHTSOURCE0: break;
+                                    case LIGHTSOURCE1: applyFilter(batch,col,  row, 1); break;
+                                    case LIGHTSOURCE2: applyFilter(batch,col,  row, 2);break;
+                                    case LIGHTSOURCE3: applyFilter(batch,col,  row, 3); break;
+                                    case LIGHTSOURCE4: applyFilter(batch,col,  row, 4); break;
+                                    case LIGHTSOURCE5: applyFilter(batch,col,  row, 5); break;
+                                    case LIGHTSOURCE6: applyFilter(batch,col,  row, 6); break;
+                                    case LIGHTSOURCE7: applyFilter(batch,col,  row, 7); break;
+                                    case NOLIGHT: applyFilter(batch,col,  row, 8); break;
 
 
-                                default:
-                                    batch.draw(tilesTextures.get(type.getId()), col * TileType.TILE_SIZE, row * TileType.TILE_SIZE);
-                                    break;
+                                    default:
+                                        batch.draw(tilesTextures.get(type.getId()), col * TileType.TILE_SIZE, row * TileType.TILE_SIZE);
+                                        break;
                             }
 
 

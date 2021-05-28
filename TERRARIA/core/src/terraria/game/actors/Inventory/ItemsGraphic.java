@@ -61,7 +61,6 @@ public class ItemsGraphic extends Actor {
         });
         dragAndDrop.addTarget(new DragAndDrop.Target(this) {
             public boolean drag (DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
-                ItemsGraphic items = (ItemsGraphic) payload.getObject();
                 setHover(true);
                 return true;
             }

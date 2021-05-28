@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class GeneratorSoil {
 
-    protected  static void GenerateSoil(int LimitOfGrasses, int LimitOfRocks, int col, DataMap mapData, int random){
+    protected  static void generateSoil(int LimitOfGrasses, int LimitOfRocks, int col, DataMap mapData, int random){
         mapData.map[1][LimitOfGrasses][col] = TileType.GRASS.getId();
         mapData.map[1][LimitOfRocks][col] = TileType.MOSSY_STONE.getId();
 
@@ -16,7 +16,7 @@ public class GeneratorSoil {
 
         Random rand = new Random();
         if (treeVal >= treeValLast && treeVal >= treeValNext && treeVal > -0.6 && LimitOfGrasses < LimitOfRocks) {
-            GenerateTrees(LimitOfGrasses-1,col,mapData);
+            generateTrees(LimitOfGrasses-1,col,mapData);
         }
 
         else{
@@ -44,24 +44,36 @@ public class GeneratorSoil {
         }
     }
 
-    public static void GenerateTrees(int row, int col, DataMap mapData){
+    public static void generateTrees(int row, int col, DataMap mapData){
+        int treeHeight = 0;
 
-        Random rand = new Random();
-        int random = rand.nextInt(3);
-        int TreeHeight = 0;
-
-        switch(random){
+        switch(col % 13) {
             case 0:
-                TreeHeight = 4;
+            case 11:
+                treeHeight = 8;
                 break;
             case 1:
-                TreeHeight = 5;
+            case 5:
+            case 6:
+            case 10:
+                treeHeight = 4;
                 break;
             case 2:
-                TreeHeight = 6;
+            case 9:
+                treeHeight = 5;
+                break;
+            case 3:
+            case 4:
+            case 7:
+            case 8:
+                treeHeight = 6;
+                break;
+            case 12:
+                treeHeight = 3;
                 break;
         }
-        for(int i = 0; i < TreeHeight; i++){
+
+        for(int i = 0; i < treeHeight; i++){
             mapData.map[1][row - i][col] = TileType.LOG.getId();
         }
     }

@@ -5,7 +5,7 @@ import terraria.game.actors.world.TileType;
 
 public class GeneratorSubSoil {
 
-    public  static void GenerateSubSoil(int LimitOfGrasses, int LimitOfRocks, int col, DataMap mapData, int random){
+    public  static void generateSubSoil(int LimitOfGrasses, int LimitOfRocks, int col, DataMap mapData, int random){
 
         int row;
         if(LimitOfGrasses < LimitOfRocks){

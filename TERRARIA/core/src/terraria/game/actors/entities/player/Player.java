@@ -2,6 +2,7 @@ package terraria.game.actors.entities.player;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import terraria.game.TerrariaGame;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import terraria.game.actors.world.TileType;
 import terraria.game.screens.LoadingScreen;
+import java.awt.MouseInfo;
 
 public class Player extends Entity {
 
@@ -28,6 +30,7 @@ public class Player extends Entity {
     private final float INVULNERABILITY_TIME = 1f;  //1f = 1sec
     private float invulnerabilityTimer = 0f;
     public static int MAXHEALTH = 10;
+    private Vector3 worldCoordinates = new Vector3(0,0,0);
     Boolean tooHigh = false;
 
 
@@ -42,6 +45,7 @@ public class Player extends Entity {
         this.inventory = new Inventory(game);
         this.inventory.fillInventory(snapshot.inventory);
         init();
+
     }
     public void create(int posX, int posY, EntityType type, GameMap gameMap, TerrariaGame game) {
         super.create(posX,posY, type, gameMap,game);
@@ -75,7 +79,36 @@ public class Player extends Entity {
     @Override
     public void update(float deltaTime, float gravity, Camera camera, Stage stage) {
         //Handle the camera
-        camera.position.set(pos.x, pos.y + 32*5, 0);
+
+        if (Gdx.input.getX() <= 25) {
+            if (pos.x - camera.position.x  < 100) {
+                camera.position.set(camera.position.x - SPEED * deltaTime, pos.y + 32 * 5, camera.position.z);
+            }
+            if (pos.x - camera.position.x > 200) {
+                camera.position.set(pos.x - 200, pos.y+ 32*5, camera.position.z);
+            }
+        } else if (Gdx.input.getX() > gameMap.ScreenWidth - 25) {
+            if (camera.position.x - pos.x  < 100) {
+                camera.position.set(camera.position.x + SPEED * deltaTime, pos.y+ 32*5, camera.position.z);
+            }
+            if (camera.position.x - pos.x > 200) {
+                camera.position.set(pos.x + 200, pos.y+ 32*5, camera.position.z);
+            }
+        } else {
+            if (camera.position.x < pos.x - SPEED * deltaTime)  {
+                camera.position.set(camera.position.x + SPEED * deltaTime, pos.y+ 32*5, camera.position.z);
+            } else if (camera.position.x > pos.x + SPEED * deltaTime){
+                camera.position.set(camera.position.x - SPEED * deltaTime, pos.y + 32*5, 0);
+            } else {
+                camera.position.set(pos.x , pos.y + 32*5, 0);
+            }
+            if (camera.position.x - pos.x > 250 || pos.x - camera.position.x > 250){
+                camera.position.set(pos.x , pos.y + 32*5, 0);
+            }
+        }
+
+        camera.unproject(worldCoordinates);
+
 
         //Handle the jump
         if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.Z)) && grounded) {
@@ -97,6 +130,8 @@ public class Player extends Entity {
         else if (Gdx.input.isKeyPressed(Keys.D)) {
             moveX(SPEED * deltaTime);
         }
+
+
 
         //Check the invulnerability frame
         if (invulnerable) {
