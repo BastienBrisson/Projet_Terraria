@@ -29,7 +29,7 @@ public class GameMap extends Actor {
     public Camera camera;
     private DataMap dataMap;
 
-    int ScreenX, ScreenY,ScreenWidth,ScreenHeigth;
+    public int ScreenX, ScreenY,ScreenWidth,ScreenHeigth;
 
 
     public GameMap(TerrariaGame game) {

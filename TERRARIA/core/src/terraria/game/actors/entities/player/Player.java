@@ -2,6 +2,7 @@ package terraria.game.actors.entities.player;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import terraria.game.TerrariaGame;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import terraria.game.actors.world.TileType;
 import terraria.game.screens.LoadingScreen;
+import java.awt.MouseInfo;
 
 public class Player extends Entity {
 
@@ -28,6 +30,7 @@ public class Player extends Entity {
     private final float INVULNERABILITY_TIME = 1f;  //1f = 1sec
     private float invulnerabilityTimer = 0f;
     public static int MAXHEALTH = 10;
+    private Vector3 worldCoordinates = new Vector3(0,0,0);
     Boolean tooHigh = false;
 
 
@@ -76,6 +79,7 @@ public class Player extends Entity {
     public void update(float deltaTime, float gravity, Camera camera, Stage stage) {
         //Handle the camera
         camera.position.set(pos.x, pos.y + 32*5, 0);
+        camera.unproject(worldCoordinates);
 
         //Handle the jump
         if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.Z)) && grounded) {
@@ -96,6 +100,12 @@ public class Player extends Entity {
         }
         else if (Gdx.input.isKeyPressed(Keys.D)) {
             moveX(SPEED * deltaTime);
+        }
+
+        if(MouseInfo.getPointerInfo().getLocation().x <= 10) {
+            camera.translate( -(gameMap.getMapWidth() / 2) - 32 * 12, 0, 0);
+        } else if(MouseInfo.getPointerInfo().getLocation().x >= gameMap.ScreenWidth - 10 && MouseInfo.getPointerInfo().getLocation().x < gameMap.ScreenWidth + 1) {
+            camera.translate(gameMap.getMapWidth() / 2 + 32 * 13, 0, 0);
         }
 
         //Check the invulnerability frame
