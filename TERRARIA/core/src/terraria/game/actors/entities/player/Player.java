@@ -45,6 +45,7 @@ public class Player extends Entity {
         this.inventory = new Inventory(game);
         this.inventory.fillInventory(snapshot.inventory);
         init();
+
     }
     public void create(int posX, int posY, EntityType type, GameMap gameMap, TerrariaGame game) {
         super.create(posX,posY, type, gameMap,game);
@@ -78,8 +79,36 @@ public class Player extends Entity {
     @Override
     public void update(float deltaTime, float gravity, Camera camera, Stage stage) {
         //Handle the camera
-        camera.position.set(pos.x, pos.y + 32*5, 0);
+
+        if (Gdx.input.getX() <= 25) {
+            if (pos.x - camera.position.x  < 100) {
+                camera.position.set(camera.position.x - SPEED * deltaTime, pos.y + 32 * 5, camera.position.z);
+            }
+            if (pos.x - camera.position.x > 200) {
+                camera.position.set(pos.x - 200, pos.y+ 32*5, camera.position.z);
+            }
+        } else if (Gdx.input.getX() > gameMap.ScreenWidth - 25) {
+            if (camera.position.x - pos.x  < 100) {
+                camera.position.set(camera.position.x + SPEED * deltaTime, pos.y+ 32*5, camera.position.z);
+            }
+            if (camera.position.x - pos.x > 200) {
+                camera.position.set(pos.x + 200, pos.y+ 32*5, camera.position.z);
+            }
+        } else {
+            if (camera.position.x < pos.x - SPEED * deltaTime)  {
+                camera.position.set(camera.position.x + SPEED * deltaTime, pos.y+ 32*5, camera.position.z);
+            } else if (camera.position.x > pos.x + SPEED * deltaTime){
+                camera.position.set(camera.position.x - SPEED * deltaTime, pos.y + 32*5, 0);
+            } else {
+                camera.position.set(pos.x , pos.y + 32*5, 0);
+            }
+            if (camera.position.x - pos.x > 250 || pos.x - camera.position.x > 250){
+                camera.position.set(pos.x , pos.y + 32*5, 0);
+            }
+        }
+
         camera.unproject(worldCoordinates);
+
 
         //Handle the jump
         if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.Z)) && grounded) {
@@ -102,11 +131,7 @@ public class Player extends Entity {
             moveX(SPEED * deltaTime);
         }
 
-        if(MouseInfo.getPointerInfo().getLocation().x <= 10) {
-            camera.translate( -(gameMap.getMapWidth() / 2) - 32 * 12, 0, 0);
-        } else if(MouseInfo.getPointerInfo().getLocation().x >= gameMap.ScreenWidth - 10 && MouseInfo.getPointerInfo().getLocation().x < gameMap.ScreenWidth + 1) {
-            camera.translate(gameMap.getMapWidth() / 2 + 32 * 13, 0, 0);
-        }
+
 
         //Check the invulnerability frame
         if (invulnerable) {
