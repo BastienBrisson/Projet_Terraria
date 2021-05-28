@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import terraria.game.TerrariaGame;
 import terraria.game.actors.Inventory.Inventory;
+import terraria.game.actors.entities.Animation;
 import terraria.game.actors.world.GeneratorMap.MapLoader;
 import terraria.game.actors.world.GeneratorMap.DataMap;
 
@@ -29,12 +30,19 @@ public class GameMap extends Actor {
     TerrariaGame game;
     public Camera camera;
     private DataMap dataMap;
+    private Animation breakingAnimation;
+
+    boolean breakable;
+    Vector3 breakingCoordinate;
+    int treeSize;
+    Inventory inventory;
 
     public int ScreenX, ScreenY,ScreenWidth,ScreenHeigth;
 
 
     public GameMap(TerrariaGame game) {
         this.game = game;
+        breakable = false;
 
         //Create a new map or load it if it already exists
         dataMap = MapLoader.loadMap("test", "My Grass Lands!");
@@ -54,6 +62,8 @@ public class GameMap extends Actor {
         sapling =  game.getAssetManager().get("arbres/sapling.png", Texture.class);
         pebble =  TextureRegion.split(game.getAssetManager().get("cailloux.png", Texture.class), TileType.TILE_SIZE, TileType.TILE_SIZE);
         filtre = TextureRegion.split(game.getAssetManager().get("filtre.png", Texture.class), TileType.TILE_SIZE, TileType.TILE_SIZE);
+        breakingAnimation =  new Animation(new TextureRegion(game.getAssetManager().get("breaking.png", Texture.class)),6 , 1);
+
     }
 
 
@@ -113,54 +123,66 @@ public class GameMap extends Actor {
         }
         return false;
     }
-
-    public void destroyTile(Vector3 coordinate, Inventory inventory) {
+    public void initDestroyTile(Vector3 coordinate, Inventory inventory){
         if (presentTile(coordinate)) {
-            boolean breakable = true;
-            int treeSize = 0;
+            breakable = true;
+            breakingCoordinate = coordinate;
+            this.inventory = inventory;
+            treeSize = 0;
 
-            int idBloc = getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x];
-            int idBlocSupp = getMap()[(int)coordinate.z][(int)coordinate.y-1][(int)coordinate.x];
+            int idBloc = getMap()[(int) coordinate.z][(int) coordinate.y][(int) coordinate.x];
+            int idBlocSupp = getMap()[(int) coordinate.z][(int) coordinate.y - 1][(int) coordinate.x];
 
             if (idBloc == TileType.LOG.getId()) {
                 //on détruit tout l'arbre et on note sa taille
                 treeSize = 1;
-                int y = (int)coordinate.y - 1;
-                while ( getMap()[(int)coordinate.z][y][(int)coordinate.x] == TileType.LOG.getId() ) {
-                    getMap()[(int)coordinate.z][y][(int)coordinate.x] = 0;
+                int y = (int) coordinate.y - 1;
+                while (getMap()[(int) coordinate.z][y][(int) coordinate.x] == TileType.LOG.getId()) {
+                    getMap()[(int) coordinate.z][y][(int) coordinate.x] = 0;
                     y--;
                     treeSize++;
                 }
-                y = (int)coordinate.y + 1;
-                while ( getMap()[(int)coordinate.z][y][(int)coordinate.x] == TileType.LOG.getId() ) {
-                    getMap()[(int)coordinate.z][y][(int)coordinate.x] = 0;
+                y = (int) coordinate.y + 1;
+                while (getMap()[(int) coordinate.z][y][(int) coordinate.x] == TileType.LOG.getId()) {
+                    getMap()[(int) coordinate.z][y][(int) coordinate.x] = 0;
                     y++;
                     treeSize++;
                 }
 
-            } else if (idBlocSupp == TileType.LOG.getId() || idBloc == TileType.LAVA.getId()) {
+            }
+            if (idBlocSupp == TileType.LOG.getId() || idBloc == TileType.LAVA.getId()) {
                 //bloc indestructible
                 breakable = false;
+            } else {
+                breakable = true;
+            }
+        }
+    }
 
-            } else if (idBlocSupp == TileType.WEED.getId() || idBlocSupp == TileType.PEBBLE.getId() || idBlocSupp == TileType.SAPLING.getId()) {
+    public void destroyTile(Vector3 coordinate, Inventory inventory){
+
+        int idBloc = getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x];
+        int idBlocSupp = getMap()[(int)coordinate.z][(int)coordinate.y-1][(int)coordinate.x];
+
+            if (idBlocSupp == TileType.WEED.getId() || idBlocSupp == TileType.PEBBLE.getId() || idBlocSupp == TileType.SAPLING.getId()) {
                 //On récupère les éléments posés sur le bloc
                 getMap()[(int)coordinate.z][(int)coordinate.y-1][(int)coordinate.x] = 0;
                 inventory.addTileInInventory(idBlocSupp);
             }
 
-            if ( breakable ) {
-                if (treeSize > 0) { //Une fonction pour rajouter plusieurs items dans l'inventaire serait cool
-                    inventory.addTileInInventory(TileType.SAPLING.getId());
-                    inventory.addTileInInventory(TileType.SAPLING.getId());
-                    for (int i = 0; i < treeSize*2; i++)
-                        inventory.addTileInInventory(TileType.PLANKS.getId());
-                } else
-                    inventory.addTileInInventory(idBloc);
 
-                getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = 0;
-            }
+            if (treeSize > 0) { //Une fonction pour rajouter plusieurs items dans l'inventaire serait cool
+                inventory.addTileInInventory(TileType.SAPLING.getId());
+                inventory.addTileInInventory(TileType.SAPLING.getId());
+                for (int i = 0; i < treeSize*2; i++)
+                    inventory.addTileInInventory(TileType.PLANKS.getId());
+            } else
+                inventory.addTileInInventory(idBloc);
 
-        }
+            getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = 0;
+
+
+
     }
 
     public void addTile(Vector3 coordinate, Inventory inventory) {
@@ -244,9 +266,18 @@ public class GameMap extends Actor {
         batch.setBlendFunction(srcFunc, dstFunc);
     }
 
+    public void drawBreaking(Batch batch){
+        if(breakable){
 
+            breakingAnimation.update(Gdx.graphics.getDeltaTime());
+            batch.draw(breakingAnimation.getFrame(), breakingCoordinate.x * TileType.TILE_SIZE, getPixelHeight() - (breakingCoordinate.y +1) * TileType.TILE_SIZE );
+            if(breakingAnimation.frame > 4){ breakable = false; destroyTile(breakingCoordinate, inventory); breakingAnimation.frame = 0;}
+
+        }
+    }
     @Override
     public void draw(Batch batch, float parentAlpha) {
+
 
         for (int layer = 0; layer < getMap().length; layer++) {
             for (int row = 0; row < getMap()[0].length; row++) {
@@ -300,6 +331,7 @@ public class GameMap extends Actor {
                 }
             }
         }
+        drawBreaking(batch);
     }
 
 

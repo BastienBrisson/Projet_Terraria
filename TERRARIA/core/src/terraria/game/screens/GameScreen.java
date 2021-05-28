@@ -148,7 +148,7 @@ public class GameScreen extends ScreenAdapter {
         if (coordinate != null) {
             if (Gdx.input.isButtonPressed(Buttons.LEFT)){
                 //destroy block
-                gameMap.destroyTile(coordinate, inventory);
+                gameMap.initDestroyTile(coordinate, inventory);
             } else if (Gdx.input.isButtonPressed(Buttons.RIGHT)) {
                 //put block
                 gameMap.addTile(coordinate, inventory);

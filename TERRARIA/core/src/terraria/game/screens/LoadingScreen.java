@@ -80,6 +80,8 @@ public class LoadingScreen extends ScreenAdapter {
         game.getAssetManager().load("inventory/itemsInventory.png",Texture.class);
         game.getAssetManager().load("inventory/hover.png",Texture.class);
 
+        game.getAssetManager().load("breaking.png",Texture.class);
+
     }
     /**
      * Called when the screen should render itself.
