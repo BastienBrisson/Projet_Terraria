@@ -256,7 +256,7 @@ public class GameMap extends Actor {
                                 switch (type) {
 
                                     case LOG:
-                                        applyFilter(batch,col,  row, 4);
+                                        //applyFilter(batch,col,  row, 4);
                                         if (getTileTypeByCoordinate(layer, col, row - 1) == TileType.GRASS)
                                             batch.draw(trees[0][col % 13], col * TileType.TILE_SIZE - 85, row * TileType.TILE_SIZE);
                                         break;
