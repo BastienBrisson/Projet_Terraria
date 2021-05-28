@@ -22,6 +22,7 @@ public class GameMap extends Actor {
     private HashMap<Integer, Texture> tilesTextures;
     private TextureRegion[][] plant;
     private TextureRegion [][] trees;
+    private Texture sapling;
     private TextureRegion [][] pebble;
     private TextureRegion [][] filtre;
 
@@ -50,6 +51,7 @@ public class GameMap extends Actor {
         //Load map elements' textures
         plant = TextureRegion.split( game.getAssetManager().get("herbes.png", Texture.class), TileType.TILE_SIZE, TileType.TILE_SIZE);
         trees =  TextureRegion.split(game.getAssetManager().get("arbres/arbreTest.png", Texture.class), 202, 375 );
+        sapling =  game.getAssetManager().get("arbres/sapling.png", Texture.class);
         pebble =  TextureRegion.split(game.getAssetManager().get("cailloux.png", Texture.class), TileType.TILE_SIZE, TileType.TILE_SIZE);
         filtre = TextureRegion.split(game.getAssetManager().get("filtre.png", Texture.class), TileType.TILE_SIZE, TileType.TILE_SIZE);
     }
@@ -140,14 +142,16 @@ public class GameMap extends Actor {
                 //bloc indestructible
                 breakable = false;
 
-            } else if (idBlocSupp == TileType.WEED.getId() || idBlocSupp == TileType.PEBBLE.getId()) {
+            } else if (idBlocSupp == TileType.WEED.getId() || idBlocSupp == TileType.PEBBLE.getId() || idBlocSupp == TileType.SAPLING.getId()) {
                 //On récupère les éléments posés sur le bloc
                 getMap()[(int)coordinate.z][(int)coordinate.y-1][(int)coordinate.x] = 0;
                 inventory.addTileInInventory(idBlocSupp);
             }
 
             if ( breakable ) {
-                if (treeSize > 0) {
+                if (treeSize > 0) { //Une fonction pour rajouter plusieurs items dans l'inventaire serait cool
+                    inventory.addTileInInventory(TileType.SAPLING.getId());
+                    inventory.addTileInInventory(TileType.SAPLING.getId());
                     for (int i = 0; i < treeSize*2; i++)
                         inventory.addTileInInventory(TileType.PLANKS.getId());
                 } else
@@ -160,16 +164,19 @@ public class GameMap extends Actor {
     }
 
     public void addTile(Vector3 coordinate, Inventory inventory) {
-        if (tileInMap(coordinate) ) {
-            int idBloc = getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x];
-            if (idBloc == TileType.WEED.getId() || idBloc == TileType.PEBBLE.getId()) {
-                getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile();
-                inventory.getItemsList().get(inventory.getCurrentItems()).decrAmount();
-                inventory.addTileInInventory(idBloc);
-            } else if (!presentTile(coordinate)) {
-                getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile();
+        if (tileInMap(coordinate) && !presentTile(coordinate)) {
+
+            int type = inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile();
+            if (type == TileType.WEED.getId() || type == TileType.SAPLING.getId()) {
+                if (getMap()[(int)coordinate.z][(int)coordinate.y+1][(int)coordinate.x] == TileType.GRASS.getId()) {
+                    getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = type;
+                    inventory.getItemsList().get(inventory.getCurrentItems()).decrAmount();
+                }
+            } else {
+                getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = type;
                 inventory.getItemsList().get(inventory.getCurrentItems()).decrAmount();
             }
+
         }
     }
 
@@ -265,6 +272,9 @@ public class GameMap extends Actor {
                                         break;
                                     case WEED:
                                         batch.draw(plant[0][col % 4], col * TileType.TILE_SIZE, row * TileType.TILE_SIZE);
+                                        break;
+                                    case SAPLING:
+                                        batch.draw(sapling, col * TileType.TILE_SIZE, row * TileType.TILE_SIZE);
                                         break;
 
 

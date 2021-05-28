@@ -72,6 +72,7 @@ public class LoadingScreen extends ScreenAdapter {
 
         game.getAssetManager().load("herbes.png", Texture.class);
         game.getAssetManager().load("arbres/arbreTest.png", Texture.class);
+        game.getAssetManager().load("arbres/sapling.png", Texture.class);
         game.getAssetManager().load("cailloux.png",Texture.class );
         game.getAssetManager().load("filtre.png", Texture.class);
         game.getAssetManager().load("heart.png",Texture.class);

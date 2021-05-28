@@ -22,6 +22,7 @@ public enum TileType {
     WEED(11, false, "weed"),
     LOG(12, false, "log"),
     PEBBLE(13, false,"pebble"),
+    SAPLING(16, false, "sapling"),
 
     PLANKS(15, true,"planks"),
 
