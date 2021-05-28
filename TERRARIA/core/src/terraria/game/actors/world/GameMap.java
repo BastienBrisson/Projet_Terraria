@@ -1,6 +1,7 @@
 package terraria.game.actors.world;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
@@ -33,7 +34,7 @@ public class GameMap extends Actor {
     private Animation breakingAnimation;
 
     boolean breakable;
-    Vector3 breakingCoordinate;
+    Vector3 breakingCoordinate = new Vector3();
     Inventory inventory;
 
     public int ScreenX, ScreenY,ScreenWidth,ScreenHeigth;
@@ -126,6 +127,7 @@ public class GameMap extends Actor {
         if (presentTile(coordinate)) {
             breakable = true;
             breakingCoordinate = coordinate;
+
             this.inventory = inventory;
 
             if (getMap()[(int) coordinate.z][(int) coordinate.y][(int) coordinate.x] == TileType.LAVA.getId()) {
@@ -143,6 +145,10 @@ public class GameMap extends Actor {
             batch.draw(breakingAnimation.getFrame(), breakingCoordinate.x * TileType.TILE_SIZE, getPixelHeight() - (breakingCoordinate.y +1) * TileType.TILE_SIZE );
             if(breakingAnimation.frame > 4){ breakable = false; destroyTile(breakingCoordinate, inventory); breakingAnimation.frame = 0;}
 
+            if( !Gdx.input.isButtonPressed(Input.Buttons.LEFT) ||  Gdx.input.getDeltaX() != 0 || Gdx.input.getDeltaY() != 0){
+                breakable = false; breakingAnimation.frame = 0;
+
+            }
         }
     }
 

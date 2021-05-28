@@ -113,7 +113,7 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if (!isMenuShow && !inventory.isInventoryShow() && Gdx.input.justTouched())
+        if (!isMenuShow && !inventory.isInventoryShow() && Gdx.input.isTouched())
             blocAction();
 
         //Handle pause Menu
