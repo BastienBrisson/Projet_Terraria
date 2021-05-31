@@ -81,32 +81,61 @@ public class Player extends Entity {
         //Handle the camera
 
         if (Gdx.input.getX() <= 25) {
+
             if (pos.x - camera.position.x  < 100) {
-                camera.position.set(camera.position.x - SPEED * deltaTime, pos.y + 32 * 5, camera.position.z);
+                camera.position.set(camera.position.x - SPEED * deltaTime, pos.y, camera.position.z);
             }
             if (pos.x - camera.position.x > 200) {
-                camera.position.set(pos.x - 200, pos.y+ 32*5, camera.position.z);
+                camera.position.set(pos.x - 200, pos.y, camera.position.z);
             }
+
         } else if (Gdx.input.getX() > gameMap.ScreenWidth - 25) {
+
             if (camera.position.x - pos.x  < 100) {
-                camera.position.set(camera.position.x + SPEED * deltaTime, pos.y+ 32*5, camera.position.z);
+                camera.position.set(camera.position.x + SPEED * deltaTime, pos.y, camera.position.z);
             }
             if (camera.position.x - pos.x > 200) {
-                camera.position.set(pos.x + 200, pos.y+ 32*5, camera.position.z);
+                camera.position.set(pos.x + 200, pos.y, camera.position.z);
             }
+
+        } else if(Gdx.input.getY() <= 25) {
+
+            if(camera.position.y - pos.y < 100) {
+                camera.position.set(pos.x, (camera.position.y + SPEED * deltaTime), camera.position.z);
+            }
+            if(camera.position.y - pos.y > 200) {
+                camera.position.set(pos.x, pos.y + 200, camera.position.z);
+            }
+
+        } else if(Gdx.input.getY() > gameMap.ScreenHeigth - 25) {
+
+            if(pos.y - camera.position.y < 100) {
+                camera.position.set(pos.x, (camera.position.y - SPEED * deltaTime), camera.position.z);
+            }
+            if(pos.y - camera.position.y > 200) {
+                camera.position.set(pos.x, pos.y - 200, camera.position.z);
+            }
+
         } else {
+
             if (camera.position.x < pos.x - SPEED * deltaTime)  {
-                camera.position.set(camera.position.x + SPEED * deltaTime, pos.y+ 32*5, camera.position.z);
+                camera.position.set(camera.position.x + SPEED * deltaTime, pos.y, camera.position.z);
             } else if (camera.position.x > pos.x + SPEED * deltaTime){
-                camera.position.set(camera.position.x - SPEED * deltaTime, pos.y + 32*5, 0);
+                camera.position.set(camera.position.x - SPEED * deltaTime, pos.y, 0);
+
+            } else if (camera.position.y < pos.y - SPEED * deltaTime) {
+                camera.position.set(pos.x, camera.position.y + SPEED * deltaTime, camera.position.z);
+            } else if (camera.position.y > pos.y + SPEED * deltaTime) {
+                camera.position.set(pos.x, camera.position.y - SPEED * deltaTime, camera.position.z);
+
             } else {
-                camera.position.set(pos.x , pos.y + 32*5, 0);
+                camera.position.set(pos.x , pos.y, 0);
             }
+
             if (camera.position.x - pos.x > 250 || pos.x - camera.position.x > 250){
-                camera.position.set(pos.x , pos.y + 32*5, 0);
+                camera.position.set(pos.x , pos.y, 0);
             }
         }
-
         camera.unproject(worldCoordinates);
 
 
