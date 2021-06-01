@@ -34,6 +34,7 @@ public class GameScreen extends ScreenAdapter {
     public TerrariaGame game;
     private Stage stage;
     private OrthographicCamera camera;
+    private float gratity;
 
     //Acteurs//
     ParallaxBackground parallaxBackground;
@@ -47,12 +48,11 @@ public class GameScreen extends ScreenAdapter {
     Player player;
 
     public GameScreen(final TerrariaGame game, ParallaxBackground parallaxBackground, final ArrayList<Entity> entities, final GameMap gameMap) {
-
+        this.gratity = -9.8f;
         this.game = game;
         this.parallaxBackground = parallaxBackground;
         this.entities = entities;
         this.gameMap = gameMap;
-
 
         //Initialisation du stage et de la camera//
         stage = new Stage(new ScreenViewport());
@@ -88,7 +88,6 @@ public class GameScreen extends ScreenAdapter {
         for(ItemsGraphic items : inventory.getGraphicItems() ){
             stage.addActor(items);
         }
-
         for(Entity entity : entities ){
             stage.addActor(entity);
         }
@@ -124,14 +123,12 @@ public class GameScreen extends ScreenAdapter {
         }
 
         //Update all actors
-        for (Entity entity : entities) {
-            entity.update(delta, -9.8f, camera, stage);
-        }
-
-        parallaxBackground.update(camera, stage);
         gameMap.update(camera, stage);
+        for (Entity entity : entities) {
+            entity.update(delta, this.gratity, camera, stage);
+        }
+        parallaxBackground.update(camera, stage);
         inventory.update(camera, stage);
-
         for (ItemsGraphic items : inventory.getGraphicItems()) {
             items.update(camera, stage, inventory.isInventoryOpen());
         }

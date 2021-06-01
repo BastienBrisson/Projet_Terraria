@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import terraria.game.TerrariaGame;
+import terraria.game.actors.world.TileType;
 
 public class Inventory extends Actor {
 
@@ -21,6 +22,7 @@ public class Inventory extends Actor {
     private static int currentItems = 0;                //Numéro de l'items actuellement sélectionné
     private ArrayList<Items> itemsList;                 //La liste des objets de l'inventaire
     private ArrayList<ItemsGraphic> itemsGraphic;       //La liste la classe qui gère les textures des objets de l'inventaire
+    private ArrayList<Items> countItems;
     private boolean inventoryShow;                      //Boolean qui détermine si l'inventaire est affiché ou non
     private TextureRegion[][] slot;                     //Texture de chaque slot d'inventaire
     private TextureRegion[][] hoverTexture;                  //Texture quand on passe la souris sur un slot en drag & drop
@@ -33,7 +35,7 @@ public class Inventory extends Actor {
         this.game = game;
         this.itemsList = new ArrayList<>();
         this.itemsGraphic = new ArrayList<>();
-
+        this.countItems = new ArrayList<>();
         this.dragAndDrop = new DragAndDrop();
         this.inventoryShow = false;
         this.slot = TextureRegion.split(game.getAssetManager().get("inventory/slot.png", Texture.class), width, height);
@@ -44,6 +46,10 @@ public class Inventory extends Actor {
             itemsGraphic.add(new ItemsGraphic(game, itemsList.get(i), this, dragAndDrop));
 
         }
+        for (int i = 0; i < 50; i ++) {
+            countItems.add(new Items(i, i));
+        }
+        countItems();
     }
 
     public void update(Camera camera, Stage stage){
@@ -52,6 +58,16 @@ public class Inventory extends Actor {
         ScreenY = vec.y - stage.getViewport().getScreenHeight()/2;
         ScreenWidth =   stage.getViewport().getScreenWidth();
         ScreenHeight = stage.getViewport().getScreenHeight();
+        countItems();
+        /*System.out.println("debut");
+        for(Items item : countItems) {
+            System.out.println(TileType.getTileTypeById(item.getIdTile())+"  : "+item.getAmount());
+        }
+        System.out.println("fin");*/
+
+        if (inventoryShow) {
+            craftableItem();
+        }
     }
 
     @Override
@@ -176,5 +192,25 @@ public class Inventory extends Actor {
 
     public void setHeightTile(int height) {
         this.height = height;
+    }
+
+    public void countItems() {
+        for (Items item : this.countItems) {
+            this.countItems.get(item.getNum()).setAmount(0);
+        }
+        for (Items item : itemsList) {
+            countItems.get(item.getIdTile()).addAmount(item.getAmount());
+        }
+    }
+
+    public ArrayList<Items> craftableItem() {
+        ArrayList<Items> craftableItemList = new ArrayList<>();
+        for (Items item : countItems) {
+            if (item.getIdTile() == 15 && item.getAmount() > 4) {
+                craftableItemList.add(item);
+                //System.out.println("craftable");
+            }
+        }
+        return craftableItemList;
     }
 }

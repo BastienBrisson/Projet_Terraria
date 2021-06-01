@@ -13,6 +13,12 @@ public class Items {
         this.num = num;
     }
 
+    public Items(int num, int id) {
+        this.idTile = id;
+        this.amount = 0;
+        this.num = num;
+    }
+
     public Items(){
         this.idTile = 0;
         this.amount = 0;
@@ -33,6 +39,10 @@ public class Items {
 
     public void incrAmount() {
         this.amount++;
+    }
+
+    public void addAmount(int amount) {
+        this.amount+=amount;
     }
 
     public void decrAmount() {
