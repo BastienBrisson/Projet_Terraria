@@ -18,6 +18,7 @@ public class Entity extends Actor {
     protected GameMap gameMap;
     protected boolean grounded = false;
     protected boolean flipX = false;
+    public double health;
 
     protected Array<Texture> textures;
     protected Array<Animation> animations;
@@ -28,6 +29,7 @@ public class Entity extends Actor {
         this.type = type;
         this.gameMap = gameMap;
         this.game = game;
+        setX(pos.x); setY(pos.y); setWidth(type.width); setHeight(type.height);
     }
 
     public void create (int posX, int posY, EntityType type, GameMap gameMap, TerrariaGame game) {
@@ -35,8 +37,8 @@ public class Entity extends Actor {
         this.type = type;
         this.gameMap = gameMap;
         this.game = game;
+        setX(pos.x); setY(pos.y); setWidth(type.width); setHeight(type.height);
     }
-
 
     public void update(float deltaTime, float gravity, Camera camera, Stage stage) {
         //Apply gravity
@@ -49,12 +51,14 @@ public class Entity extends Actor {
         if(gameMap.doesRectCollideWithMap(pos.x, newY, (int)getWidth(), (int)getHeight())){
             if(velocityY < 0){
                 this.pos.y = (float)Math.floor(pos.y);
+                setY(pos.y);
                 grounded = true;
             }
             this.velocityY = 0;
         }
         else{
             this.pos.y = newY;
+            setY(pos.y);
             grounded = false;
         }
     }
@@ -76,12 +80,10 @@ public class Entity extends Actor {
         float newX = this.pos.x + amount;
         if(!gameMap.doesRectCollideWithMap(newX, this.pos.y, (int)getWidth(), (int)getHeight())){
             this.pos.x = newX;
+            setX(pos.x);
         }
     }
 
-    public Vector2 getPos() {
-        return pos;
-    }
     public float getX () {
         return pos.x;
     }
@@ -100,9 +102,9 @@ public class Entity extends Actor {
     public float getWeight() {
         return type.weight;
     }
-
-    public Array<Texture> getArrayTextures(){return textures;}
-    public Array<Animation> getArrayAnimations(){return animations;}
-
+    public EntityType getType() {
+        return type;
+    }
+    public double getHealth() { return health; };
 
 }

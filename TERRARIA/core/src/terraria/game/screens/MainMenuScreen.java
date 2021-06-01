@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -57,11 +57,11 @@ public class MainMenuScreen extends ScreenAdapter {
 
         playButton = new ImageButton( new TextureRegionDrawable(play), new TextureRegionDrawable(playPressed));
         playButton.setPosition(stage.getViewport().getScreenWidth()/2,stage.getViewport().getScreenHeight()/2, Align.center);
-        playButton.addListener(new ActorGestureListener() {
+        playButton.addListener(new ClickListener() {
 
             @Override
-            public void tap(InputEvent event, float x, float y, int count, int button) {
-                super.tap(event, x, y, count, button);
+            public void clicked(InputEvent event, float x, float y)  {
+                super.clicked(event, x, y);
                 startGame();
                 dispose();
 
@@ -73,11 +73,11 @@ public class MainMenuScreen extends ScreenAdapter {
 
         exitButton = new ImageButton( new TextureRegionDrawable(exit), new TextureRegionDrawable(exitPressed));
         exitButton.setPosition(stage.getViewport().getScreenWidth()/2,(stage.getViewport().getScreenHeight()/2)-play.getRegionHeight(), Align.center);
-        exitButton.addListener(new ActorGestureListener() {
+        exitButton.addListener(new ClickListener() {
 
             @Override
-            public void tap(InputEvent event, float x, float y, int count, int button) {
-                super.tap(event, x, y, count, button);
+            public void clicked(InputEvent event, float x, float y)  {
+                super.clicked(event, x, y);
                 dispose();
                 game.dispose();
                 Gdx.app.exit();

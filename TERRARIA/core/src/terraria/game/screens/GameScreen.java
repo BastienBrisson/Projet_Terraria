@@ -25,6 +25,7 @@ import terraria.game.actors.world.ParallaxBackground;
 import terraria.game.actors.world.TileType;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -34,7 +35,7 @@ public class GameScreen extends ScreenAdapter {
     public TerrariaGame game;
     private Stage stage;
     private OrthographicCamera camera;
-    private float gratity;
+    private static float gravity = -9.8f;
 
     //Acteurs//
     ParallaxBackground parallaxBackground;
@@ -48,7 +49,6 @@ public class GameScreen extends ScreenAdapter {
     Player player;
 
     public GameScreen(final TerrariaGame game, ParallaxBackground parallaxBackground, final ArrayList<Entity> entities, final GameMap gameMap) {
-        this.gratity = -9.8f;
         this.game = game;
         this.parallaxBackground = parallaxBackground;
         this.entities = entities;
@@ -88,12 +88,17 @@ public class GameScreen extends ScreenAdapter {
         for(ItemsGraphic items : inventory.getGraphicItems() ){
             stage.addActor(items);
         }
+
         for(Entity entity : entities ){
             stage.addActor(entity);
+            //All monsters focus the player
+            if (entity.getType() == EntityType.SHROOM) {
+                Mushroom monster = (Mushroom) entity;
+                monster.setTarget(player);
+            }
         }
-        stage.addActor(exitButton);
 
-        //spawnMushroom((int)player.pos.x / TileType.TILE_SIZE, (int)player.pos.y / TileType.TILE_SIZE, 10);
+        stage.addActor(exitButton);
 
     }
 
@@ -124,9 +129,18 @@ public class GameScreen extends ScreenAdapter {
 
         //Update all actors
         gameMap.update(camera, stage);
-        for (Entity entity : entities) {
-            entity.update(delta, this.gratity, camera, stage);
+
+        Iterator<Entity> it = entities.iterator();
+        Entity entity;
+        while (it.hasNext()) {
+            entity = it.next();
+            entity.update(delta, gravity, camera, stage);
+            if (entity.getHealth() <= 0) {  //if entity dead
+                entity.remove();            //remove it from stage
+                it.remove();                //stop updating it
+            }
         }
+
         parallaxBackground.update(camera, stage);
         inventory.update(camera, stage);
         for (ItemsGraphic items : inventory.getGraphicItems()) {

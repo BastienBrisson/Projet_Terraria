@@ -30,7 +30,7 @@ public class LoadingScreen extends ScreenAdapter {
 
 
     public static int TEXTURE_NUMBER_PLAYER = 4;
-    public static int TEXTURE_NUMBER_MUSHROOM = 3;
+    public static int TEXTURE_NUMBER_MUSHROOM = 4;
     public static int TEXTURE_NUMBER_PARALLAX_GAME = 3;
 
     private static final float PROGRESS_BAR_WIDTH = 500;

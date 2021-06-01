@@ -15,24 +15,22 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import terraria.game.actors.world.TileType;
 import terraria.game.screens.LoadingScreen;
-import java.awt.MouseInfo;
 
 public class Player extends Entity {
 
-    private static final int SPEED = 200, JUMP_VELOCITY = 5;
+    private static final int SPEED = 200, JUMP_VELOCITY = 5, RANGE = 5, SPAWN_RADIUS = 15;
 
     private static final double FALLDAMAGE_COEFF = -0.005;
     private static float fallDamage;
 
     private PlayerHealth playerHealth;
     private Inventory inventory;
-    private boolean invulnerable;
+    private boolean invulnerable = false;
     private final float INVULNERABILITY_TIME = 1f;  //1f = 1sec
     private float invulnerabilityTimer = 0f;
     public static int MAXHEALTH = 10;
     private Vector3 worldCoordinates = new Vector3(0,0,0);
     Boolean tooHigh = false;
-
 
     private static int state = 0;
     private static final int IDLE = 0, JUMPING = 1, RUNNING = 2, HIT = 3;
@@ -57,8 +55,6 @@ public class Player extends Entity {
 
 
     public void init(){
-
-        invulnerable = false;
         animations = new Array<>();
         for(int i = 0; i < LoadingScreen.TEXTURE_NUMBER_PLAYER ; i++){
             switch (i){
@@ -160,8 +156,6 @@ public class Player extends Entity {
             moveX(SPEED * deltaTime);
         }
 
-
-
         //Check the invulnerability frame
         if (invulnerable) {
             invulnerabilityTimer += deltaTime;
@@ -188,8 +182,7 @@ public class Player extends Entity {
     public void takeAhit(double damage) {
         if (!invulnerable) {
             playerHealth.ApplyDamage(damage);
-            if (grounded)
-                this.velocityY += 2 * getWeight();  //Knockback
+            //if (grounded) velocityY += 2 * getWeight();  //Knockback
             invulnerable = true;
         }
     }
@@ -242,4 +235,12 @@ public class Player extends Entity {
         batch.draw(texture, flipX ? pos.x+getWidth() : pos.x, pos.y, flipX ? -getWidth() : getWidth(), getHeight());
         playerHealth.draw(batch,parentAlpha);
     }
+
+    public static int getRange() {
+        return RANGE;
+    }
+    public static int getSpawnRadius() {
+        return SPAWN_RADIUS;
+    }
+    public double getHealth() { return playerHealth.health; }
 }

@@ -2,10 +2,12 @@ package terraria.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.Input.Keys;
 import terraria.game.actors.Inventory.Inventory;
 import terraria.game.actors.entities.EntityLoader;
+import terraria.game.actors.entities.player.Player;
 import terraria.game.actors.world.GeneratorMap.MapLoader;
+import terraria.game.actors.world.TileType;
 
 public class Input implements InputProcessor {
 
@@ -19,12 +21,12 @@ public class Input implements InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         switch (keycode) {
-            case com.badlogic.gdx.Input.Keys.S:
+            case Keys.ALT_RIGHT:   //Non définitif
                 EntityLoader.saveEntities("test", this.screen.entities);
                 MapLoader.saveMap(this.screen.gameMap.getId(), this.screen.gameMap.getName(), this.screen.gameMap.getMap(), this.screen.gameMap.getStartingPoint());
                 break;
 
-            case com.badlogic.gdx.Input.Keys.E:
+            case Keys.E:
                 if (this.screen.inventory.isInventoryShow()) {
                     this.screen.inventory.setInventoryShow(false);
                 } else {
@@ -32,13 +34,19 @@ public class Input implements InputProcessor {
                 }
                 break;
 
-            case com.badlogic.gdx.Input.Keys.ESCAPE:
+            case Keys.ESCAPE:
                 if (this.screen.isMenuShow) {
                     this.screen.isMenuShow = false;
                 } else {
                     this.screen.isMenuShow = true;
                 }
                 break;
+
+            case Keys.M:    //Non définitif
+                Player player = screen.player;
+                screen.spawnMushroom((int)player.pos.x / TileType.TILE_SIZE, (int)player.pos.y / TileType.TILE_SIZE, player.getSpawnRadius());
+                break;
+
             default:
                 break;
         }

@@ -12,13 +12,12 @@ import java.util.HashMap;
 public enum EntityType {
 
     PLAYER("player", Player.class, 40, 40, 52 ),
-    SHROOM("mushroom", Mushroom.class, 20, 32, 32);
+    SHROOM("monster", Mushroom.class, 20, 31, 31);
 
     private String id;
     private Class loaderClass;
     public float weight;
-    public float  width, height;
-
+    public float width, height;
 
     private EntityType(String id, Class loaderClass, float weight, float width, float height) {
         this.id = id;
@@ -32,7 +31,6 @@ public enum EntityType {
     public String getId() {
         return id;
     }
-
 
     public static Entity createEntityUsingSnapshot (EntitySnapshot entitySnapshot, GameMap gameMap, TerrariaGame game) {
         EntityType type = entityTypes.get(entitySnapshot.type);
