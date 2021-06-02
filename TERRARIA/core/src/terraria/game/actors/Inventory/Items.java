@@ -15,7 +15,7 @@ public class Items {
 
     public Items(int num, int id) {
         this.idTile = id;
-        this.amount = 0;
+        this.amount = 1;
         this.num = num;
     }
 

@@ -27,19 +27,28 @@ public class ItemsGraphic extends Actor {
     private BitmapFont font;                            //Police d'écriture
     private int x;                   //Le numéro de la ligne ou est placé l'item dans l'affichage l'inventaire
     private int y;                   //Le numéro de la colonne ou est placé l'item dans l'affichage de l'inventaire
+    private boolean craftableItem;
 
     public ItemsGraphic(TerrariaGame game, final Items item, final Inventory inventory, DragAndDrop dragAndDrop) {
         this.item = item;
         this.inventory = inventory;
         this.moving = false;
+        this.craftableItem = false;
         this.font = new BitmapFont();
-        //A partir du numéro de l'item il calcul sa position X et Y dans l'affichage de l'inventaire
-        this.y = this.item.getNum();
-        this.x = 0;
-        while (this.y > 9) {
-            this.y = this.y - 10;
-            this.x++;
+        if (item.getNum() > 50) {
+            this.x = 1;
+            this.y = 50 - item.getNum();
+            craftableItem = true;
+        } else {
+            //A partir du numéro de l'item il calcul sa position X et Y dans l'affichage de l'inventaire
+            this.y = this.item.getNum();
+            this.x = 0;
+            while (this.y > 9) {
+                this.y = this.y - 10;
+                this.x++;
+            }
         }
+
         this.itemsTexture = TextureRegion.split(game.getAssetManager().get("inventory/itemsInventory.png", Texture.class), inventory.getWidthTile(), inventory.getHeightTile());
         dragAndDrop.addSource(new DragAndDrop.Source(this) {
             DragAndDrop.Payload payload = new DragAndDrop.Payload();
@@ -93,23 +102,29 @@ public class ItemsGraphic extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        if (moving) {
-            batch.draw(itemsTexture[0][item.getIdTile()], cam.x-ScreenWidth/2+Gdx.input.getX(),  cam.y+ScreenHeight/2-Gdx.input.getY());
-            if (item.getAmount() != 0)
-                font.draw(batch, String.valueOf(item.getAmount()),cam.x-ScreenWidth/2+Gdx.input.getX()+inventory.getWidthTile()/4+inventory.getWidthTile()/2,  cam.y+ScreenHeight/2-Gdx.input.getY()+inventory.getHeightTile()/3);
-        } else {
-            if (x < 1) {
-                batch.draw(itemsTexture[0][item.getIdTile()], OriginX + inventory.getWidthTile() *  y - (inventory.getWidthTile()/2), OriginY + ScreenHeight - (x*inventory.getHeightTile()+inventory.getHeightTile() + inventory.getHeightTile()/2));
+        if (!craftableItem) {
+            if (moving) {
+                batch.draw(itemsTexture[0][item.getIdTile()], cam.x-ScreenWidth/2+Gdx.input.getX(),  cam.y+ScreenHeight/2-Gdx.input.getY());
                 if (item.getAmount() != 0)
-                    font.draw(batch, String.valueOf(item.getAmount()), OriginX + inventory.getWidthTile() *  y+inventory.getWidthTile()/4, OriginY + ScreenHeight - (x*inventory.getHeightTile() + inventory.getHeightTile()/3 + inventory.getHeightTile()));
+                    font.draw(batch, String.valueOf(item.getAmount()),cam.x-ScreenWidth/2+Gdx.input.getX()+inventory.getWidthTile()/4+inventory.getWidthTile()/2,  cam.y+ScreenHeight/2-Gdx.input.getY()+inventory.getHeightTile()/3);
+            } else {
+                if (x < 1) {
+                    batch.draw(itemsTexture[0][item.getIdTile()], OriginX + inventory.getWidthTile() *  y - (inventory.getWidthTile()/2), OriginY + ScreenHeight - (x*inventory.getHeightTile()+inventory.getHeightTile() + inventory.getHeightTile()/2));
+                    if (item.getAmount() != 0)
+                        font.draw(batch, String.valueOf(item.getAmount()), OriginX + inventory.getWidthTile() *  y+inventory.getWidthTile()/4, OriginY + ScreenHeight - (x*inventory.getHeightTile() + inventory.getHeightTile()/3 + inventory.getHeightTile()));
+                }
+                if (inventory.isInventoryShow()) {
+                    batch.draw(itemsTexture[0][item.getIdTile()], OriginX + inventory.getWidthTile() *  y - (inventory.getWidthTile()/2), OriginY + ScreenHeight - (x*inventory.getHeightTile()+inventory.getHeightTile() + inventory.getHeightTile()/2));
+                    if (item.getAmount() != 0)
+                        font.draw(batch, String.valueOf(item.getAmount()), OriginX + inventory.getWidthTile() *  y+inventory.getWidthTile()/4, OriginY + ScreenHeight - (x*inventory.getHeightTile() + inventory.getHeightTile()/3 + inventory.getHeightTile()));
+                }
             }
+        } else {
             if (inventory.isInventoryShow()) {
-                batch.draw(itemsTexture[0][item.getIdTile()], OriginX + inventory.getWidthTile() *  y - (inventory.getWidthTile()/2), OriginY + ScreenHeight - (x*inventory.getHeightTile()+inventory.getHeightTile() + inventory.getHeightTile()/2));
-                if (item.getAmount() != 0)
-                    font.draw(batch, String.valueOf(item.getAmount()), OriginX + inventory.getWidthTile() *  y+inventory.getWidthTile()/4, OriginY + ScreenHeight - (x*inventory.getHeightTile() + inventory.getHeightTile()/3 + inventory.getHeightTile()));
+                System.out.println("test");
+                batch.draw(itemsTexture[0][item.getIdTile()], inventory.getScreenX() - (inventory.getWidthTile() / 2), inventory.getScreenY() + ScreenHeight - (6 * inventory.getHeightTile() + inventory.getHeightTile() + inventory.getHeightTile() / 2) - this.y * inventory.getHeightTile());
             }
         }
-
     }
 
     public void setItem(Items items) {

@@ -116,11 +116,13 @@ public class Player extends Entity {
 
             if (camera.position.x < pos.x - SPEED * deltaTime)  {
                 camera.position.set(camera.position.x + SPEED * deltaTime, pos.y, camera.position.z);
+                
             } else if (camera.position.x > pos.x + SPEED * deltaTime){
                 camera.position.set(camera.position.x - SPEED * deltaTime, pos.y, 0);
 
             } else if (camera.position.y < pos.y - SPEED * deltaTime) {
                 camera.position.set(pos.x, camera.position.y + SPEED * deltaTime, camera.position.z);
+
             } else if (camera.position.y > pos.y + SPEED * deltaTime) {
                 camera.position.set(pos.x, camera.position.y - SPEED * deltaTime, camera.position.z);
 

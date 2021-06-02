@@ -88,6 +88,9 @@ public class GameScreen extends ScreenAdapter {
         for(ItemsGraphic items : inventory.getGraphicItems() ){
             stage.addActor(items);
         }
+        for (ItemsGraphic itemsCraft : inventory.getCraftableItemGraphicList()) {
+            stage.addActor(itemsCraft);
+        }
 
         for(Entity entity : entities ){
             stage.addActor(entity);
@@ -145,6 +148,10 @@ public class GameScreen extends ScreenAdapter {
         inventory.update(camera, stage);
         for (ItemsGraphic items : inventory.getGraphicItems()) {
             items.update(camera, stage, inventory.isInventoryOpen());
+        }
+
+        for (ItemsGraphic itemsCraft : inventory.getCraftableItemGraphicList()) {
+            itemsCraft.update(camera, stage, inventory.isInventoryOpen());
         }
 
         stage.act(delta);
