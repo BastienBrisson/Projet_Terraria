@@ -18,7 +18,8 @@ import terraria.game.screens.LoadingScreen;
 
 public class Player extends Entity {
 
-    private static final int SPEED = 200, JUMP_VELOCITY = 5, RANGE = 5, SPAWN_RADIUS = 15;
+    private static final int SPEED = 200, JUMP_VELOCITY = 4, RANGE = 5, SPAWN_RADIUS = 15;  //JUMPVELOC = 5
+    private static final int textureWidth = 48, lateralOffset = -9;
 
     private static final double FALLDAMAGE_COEFF = -0.005;
     private static float fallDamage;
@@ -58,7 +59,7 @@ public class Player extends Entity {
         animations = new Array<>();
         for(int i = 0; i < LoadingScreen.TEXTURE_NUMBER_PLAYER ; i++){
             switch (i){
-                case 0: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("playerAnimation/player"+i+".png", Texture.class)),2 , 0.5F));break;
+                case 0: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("playerAnimation/player"+i+".png", Texture.class)),7 , 3F));break;
                 case 1: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("playerAnimation/player"+i+".png", Texture.class)),1 , 0.5F));break;
                 case 2: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("playerAnimation/player"+i+".png", Texture.class)),6 , 0.5F));break;
                 case 3: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("playerAnimation/player"+i+".png", Texture.class)),2 , 0.1F));break;
@@ -190,7 +191,7 @@ public class Player extends Entity {
     }
 
     public void fallingCheck() {
-        if (velocityY < -350) {
+        if (velocityY < -600) {
             tooHigh = true;
             fallDamage = velocityY;
         }
@@ -234,9 +235,10 @@ public class Player extends Entity {
                 break;
         }
 
-        batch.draw(texture, flipX ? pos.x+getWidth() : pos.x, pos.y, flipX ? -getWidth() : getWidth(), getHeight());
+        batch.draw(texture, (flipX ? pos.x+textureWidth : pos.x)+lateralOffset, pos.y, flipX ? -textureWidth : textureWidth, getHeight());
         playerHealth.draw(batch,parentAlpha);
     }
+
 
     public static int getRange() {
         return RANGE;
