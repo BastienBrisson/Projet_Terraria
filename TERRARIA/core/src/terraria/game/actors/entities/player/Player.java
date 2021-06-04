@@ -14,6 +14,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import terraria.game.actors.world.TileType;
+import terraria.game.screens.GameScreen;
 import terraria.game.screens.LoadingScreen;
 
 public class Player extends Entity {
@@ -77,72 +78,74 @@ public class Player extends Entity {
     public void update(float deltaTime, float gravity, Camera camera, Stage stage) {
         //Handle the camera
 
-        if (Gdx.input.getX() <= 25) {
+        if(TerrariaGame.getState() == GameScreen.GAME_RUNNING) {
+            if (Gdx.input.getX() <= 25) {
 
-            if (pos.x - camera.position.x  < 100) {
-                camera.position.set(camera.position.x - SPEED * deltaTime, pos.y, camera.position.z);
-            }
-            if (pos.x - camera.position.x > 200) {
-                camera.position.set(pos.x - 200, pos.y, camera.position.z);
-            }
+                if (pos.x - camera.position.x  < 100) {
+                    camera.position.set(camera.position.x - SPEED * deltaTime, pos.y, camera.position.z);
+                }
+                if (pos.x - camera.position.x > 200) {
+                    camera.position.set(pos.x - 200, pos.y, camera.position.z);
+                }
 
-        } else if (Gdx.input.getX() > gameMap.ScreenWidth - 25) {
+            } else if (Gdx.input.getX() > gameMap.ScreenWidth - 25) {
 
-            if (camera.position.x - pos.x  < 100) {
-                camera.position.set(camera.position.x + SPEED * deltaTime, pos.y, camera.position.z);
-            }
-            if (camera.position.x - pos.x > 200) {
-                camera.position.set(pos.x + 200, pos.y, camera.position.z);
-            }
+                if (camera.position.x - pos.x  < 100) {
+                    camera.position.set(camera.position.x + SPEED * deltaTime, pos.y, camera.position.z);
+                }
+                if (camera.position.x - pos.x > 200) {
+                    camera.position.set(pos.x + 200, pos.y, camera.position.z);
+                }
 
-        } else if(Gdx.input.getY() <= 25) {
+            } else if(Gdx.input.getY() <= 25) {
 
-            if(camera.position.y - pos.y < 100) {
-                camera.position.set(pos.x, (camera.position.y + SPEED * deltaTime), camera.position.z);
-            }
-            if(camera.position.y - pos.y > 200) {
-                camera.position.set(pos.x, pos.y + 200, camera.position.z);
-            }
+                if(camera.position.y - pos.y < 100) {
+                    camera.position.set(pos.x, (camera.position.y + SPEED * deltaTime), camera.position.z);
+                }
+                if(camera.position.y - pos.y > 200) {
+                    camera.position.set(pos.x, pos.y + 200, camera.position.z);
+                }
 
-        } else if(Gdx.input.getY() > gameMap.ScreenHeigth - 25) {
+            } else if(Gdx.input.getY() > gameMap.ScreenHeigth - 25) {
 
-            if(pos.y - camera.position.y < 100) {
-                camera.position.set(pos.x, (camera.position.y - SPEED * deltaTime), camera.position.z);
-            }
-            if(pos.y - camera.position.y > 200) {
-                camera.position.set(pos.x, pos.y - 200, camera.position.z);
-            }
-
-        } else {
-
-            if (camera.position.x < pos.x - SPEED * deltaTime)  {
-                camera.position.set(camera.position.x + SPEED * deltaTime, pos.y, camera.position.z);
-                
-            } else if (camera.position.x > pos.x + SPEED * deltaTime){
-                camera.position.set(camera.position.x - SPEED * deltaTime, pos.y, 0);
-
-            } else if (camera.position.y < pos.y - SPEED * deltaTime) {
-                camera.position.set(pos.x, camera.position.y + SPEED * deltaTime, camera.position.z);
-
-            } else if (camera.position.y > pos.y + SPEED * deltaTime) {
-                camera.position.set(pos.x, camera.position.y - SPEED * deltaTime, camera.position.z);
+                if(pos.y - camera.position.y < 100) {
+                    camera.position.set(pos.x, (camera.position.y - SPEED * deltaTime), camera.position.z);
+                }
+                if(pos.y - camera.position.y > 200) {
+                    camera.position.set(pos.x, pos.y - 200, camera.position.z);
+                }
 
             } else {
-                camera.position.set(pos.x , pos.y, 0);
-            }
 
-            if (camera.position.x - pos.x > 250 || pos.x - camera.position.x > 250){
-                camera.position.set(pos.x , pos.y, 0);
+                if (camera.position.x < pos.x - SPEED * deltaTime)  {
+                    camera.position.set(camera.position.x + SPEED * deltaTime, pos.y, camera.position.z);
+
+                } else if (camera.position.x > pos.x + SPEED * deltaTime){
+                    camera.position.set(camera.position.x - SPEED * deltaTime, pos.y, 0);
+
+                } else if (camera.position.y < pos.y - SPEED * deltaTime) {
+                    camera.position.set(pos.x, camera.position.y + SPEED * deltaTime, camera.position.z);
+
+                } else if (camera.position.y > pos.y + SPEED * deltaTime) {
+                    camera.position.set(pos.x, camera.position.y - SPEED * deltaTime, camera.position.z);
+
+                } else {
+                    camera.position.set(pos.x , pos.y, 0);
+                }
+
+                if (camera.position.x - pos.x > 250 || pos.x - camera.position.x > 250){
+                    camera.position.set(pos.x , pos.y, 0);
+                }
             }
+            camera.unproject(worldCoordinates);
         }
-        camera.unproject(worldCoordinates);
 
 
         //Handle the jump
-        if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.Z)) && grounded) {
+        if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.Z)) && grounded && TerrariaGame.getState() == GameScreen.GAME_RUNNING) {
             this.velocityY += JUMP_VELOCITY * getWeight();
         }
-        else if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded && this.velocityY > 0) {
+        else if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded && this.velocityY > 0 && TerrariaGame.getState() == GameScreen.GAME_RUNNING) {
             this.velocityY += JUMP_VELOCITY * getWeight() * deltaTime;
         }
 
@@ -152,10 +155,10 @@ public class Player extends Entity {
         super.update(deltaTime, gravity, camera, stage);   //Apply gravity
 
         //Handle the controls
-        if (Gdx.input.isKeyPressed(Keys.Q)) {
+        if (Gdx.input.isKeyPressed(Keys.Q) && TerrariaGame.getState() == GameScreen.GAME_RUNNING) {
             moveX(-SPEED * deltaTime);
         }
-        else if (Gdx.input.isKeyPressed(Keys.D)) {
+        else if (Gdx.input.isKeyPressed(Keys.D) && TerrariaGame.getState() == GameScreen.GAME_RUNNING) {
             moveX(SPEED * deltaTime);
         }
 

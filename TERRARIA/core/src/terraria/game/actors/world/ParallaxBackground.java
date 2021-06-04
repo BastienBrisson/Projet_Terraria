@@ -1,4 +1,5 @@
 package terraria.game.actors.world;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
@@ -9,6 +10,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
+import terraria.game.TerrariaGame;
+import terraria.game.screens.GameScreen;
 
 
 public class ParallaxBackground extends Actor {
@@ -77,9 +80,9 @@ public class ParallaxBackground extends Actor {
 
         if (constantAnimation)
             scroll += speed;
-        else if (Gdx.input.isKeyPressed(Input.Keys.Q))
+        else if (Gdx.input.isKeyPressed(Input.Keys.Q) && TerrariaGame.getState() == GameScreen.GAME_RUNNING)
             scroll -= speed;
-        else if (Gdx.input.isKeyPressed(Input.Keys.D))
+        else if (Gdx.input.isKeyPressed(Input.Keys.D) && TerrariaGame.getState() == GameScreen.GAME_RUNNING)
             scroll += speed;
 
         for(int i = 0;i<textures.size ;i++) {

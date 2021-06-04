@@ -32,6 +32,10 @@ import java.util.Random;
 
 public class GameScreen extends ScreenAdapter {
 
+    public final static int GAME_RUNNING = 1;
+    public final static int GAME_PAUSED = 2;
+    public final static int GAME_OVER = 3;
+
     public TerrariaGame game;
     private Stage stage;
     private OrthographicCamera camera;
@@ -42,6 +46,8 @@ public class GameScreen extends ScreenAdapter {
     Inventory inventory;
 
     GameMap gameMap;
+    ImageButton saveButton;
+    ImageButton optionButton;
     ImageButton exitButton;
     Boolean isMenuShow = false;
 
@@ -57,6 +63,29 @@ public class GameScreen extends ScreenAdapter {
         //Initialisation du stage et de la camera//
         stage = new Stage(new ScreenViewport());
         camera = (OrthographicCamera) stage.getViewport().getCamera();
+
+        TextureRegion save = new TextureRegion(new Texture(Gdx.files.internal("background/save.png")));
+        TextureRegion savePressed = new TextureRegion(new Texture(Gdx.files.internal("background/savePressed.png")));
+        saveButton = new ImageButton(new TextureRegionDrawable(save), new TextureRegionDrawable(savePressed));
+        saveButton.setPosition(stage.getViewport().getScreenWidth()/2, (stage.getViewport().getScreenHeight()/2)-save.getRegionHeight(), Align.center);
+        saveButton.addListener(new ActorGestureListener() {
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                super.tap(event, x, y, count, button);
+                EntityLoader.saveEntities("test", entities);
+                MapLoader.saveMap(gameMap.getId(), gameMap.getName(), gameMap.getMap(), gameMap.getStartingPoint());
+            }
+        });
+
+        TextureRegion option = new TextureRegion(new Texture(Gdx.files.internal("background/options.png")));
+        TextureRegion optionPressed = new TextureRegion(new Texture(Gdx.files.internal("background/optionsPressed.png")));
+        optionButton = new ImageButton(new TextureRegionDrawable(option), new TextureRegionDrawable(optionPressed));
+        optionButton.setPosition(stage.getViewport().getScreenWidth()/2, (stage.getViewport().getScreenHeight()/2)-option.getRegionHeight(), Align.center);
+        optionButton.addListener(new ActorGestureListener() {
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                super.tap(event, x, y, count, button);
+                game.setScreen(new MainMenuScreen(game));
+            }
+        });
 
         TextureRegion exit = new TextureRegion(new Texture(Gdx.files.internal("background/exit.png")));
         TextureRegion exitPressed = new TextureRegion(new Texture(Gdx.files.internal("background/exitPressed.png")));
@@ -101,8 +130,43 @@ public class GameScreen extends ScreenAdapter {
             }
         }
 
+        stage.addActor(saveButton);
+        stage.addActor(optionButton);
         stage.addActor(exitButton);
 
+        TerrariaGame.setState(GAME_RUNNING);
+    }
+
+    public void update(float delta) {
+        switch (TerrariaGame.getState()) {
+            case GAME_PAUSED:
+                updatePaused();
+                break;
+            case GAME_RUNNING:
+                updateRunning();
+                break;
+            case GAME_OVER:
+                updateOver();
+                break;
+        }
+    }
+
+    public void updatePaused() {
+        if(Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
+            TerrariaGame.setState(GAME_RUNNING);
+        }
+    }
+
+    public void updateRunning() {
+        if(Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
+            TerrariaGame.setState(GAME_PAUSED);
+        } else if(player.getHealth() <= 0) {
+            TerrariaGame.setState(GAME_OVER);
+        }
+    }
+
+    public void updateOver() {
+        game.setScreen(new MainMenuScreen(game));
     }
 
     @Override
@@ -115,19 +179,42 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
+        update(delta);
+
         this.camera.update();
 
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if (!isMenuShow && !inventory.isInventoryShow() && Gdx.input.isTouched())
+        if (!isMenuShow && !inventory.isInventoryShow() && Gdx.input.isTouched() && TerrariaGame.getState() == GAME_RUNNING)
             blocAction();
 
         //Handle pause Menu
         if (isMenuShow) {
-            exitButton.setPosition(camera.position.x,camera.position.y, Align.center);
+            saveButton.setPosition(camera.position.x, camera.position.y + 150, Align.center);
+            optionButton.setPosition(camera.position.x, camera.position.y, Align.center);
+            exitButton.setPosition(camera.position.x,camera.position.y - 150, Align.center);
         } else {
+            saveButton.setPosition(0, 0, Align.center);
+            optionButton.setPosition(0,0, Align.center);
             exitButton.setPosition(0, 0, Align.center);
+        }
+
+        if(Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.E) && TerrariaGame.getState() == GAME_RUNNING) {
+            if (inventory.isInventoryShow()) {
+                inventory.setInventoryShow(false);
+            } else {
+                inventory.setInventoryShow(true);
+            }
+        }
+
+        if(Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
+            if(isMenuShow) {
+                isMenuShow = false;
+            } else {
+                inventory.setInventoryShow(false);
+                isMenuShow = true;
+            }
         }
 
         //Update all actors
@@ -229,12 +316,12 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void pause() {
-
+        if(TerrariaGame.getState() == GAME_RUNNING) TerrariaGame.setState(GAME_PAUSED);
     }
 
     @Override
     public void resume() {
-
+        if(TerrariaGame.getState() == GAME_PAUSED) TerrariaGame.setState(GAME_RUNNING);
     }
 
     @Override
