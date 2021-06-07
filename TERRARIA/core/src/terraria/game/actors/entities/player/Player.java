@@ -1,4 +1,5 @@
 package terraria.game.actors.entities.player;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -34,6 +35,10 @@ public class Player extends Entity {
     private Vector3 worldCoordinates = new Vector3(0,0,0);
     Boolean tooHigh = false;
 
+    private Sound hurt, footstep_solid, footstep_grass;
+    private float stepSoundTimer = 0f;
+    private float stepSoundInterval = 0.35f;
+
     private static int state = 0;
     private static final int IDLE = 0, JUMPING = 1, RUNNING = 2, HIT = 3;
 
@@ -57,6 +62,10 @@ public class Player extends Entity {
 
 
     public void init(){
+        footstep_grass = game.getAssetManager().get("audio/sound/player_footstep_grass.wav", Sound.class);
+        footstep_solid = game.getAssetManager().get("audio/sound/player_footstep.wav", Sound.class);
+        hurt = game.getAssetManager().get("audio/sound/player_hurt.wav", Sound.class);
+
         animations = new Array<>();
         for(int i = 0; i < LoadingScreen.TEXTURE_NUMBER_PLAYER ; i++){
             switch (i){
@@ -66,6 +75,8 @@ public class Player extends Entity {
                 case 3: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("playerAnimation/player"+i+".png", Texture.class)),2 , 0.1F));break;
             }
         }
+
+
     }
 
 
@@ -156,10 +167,14 @@ public class Player extends Entity {
 
         //Handle the controls
         if (Gdx.input.isKeyPressed(Keys.Q) && TerrariaGame.getState() == GameScreen.GAME_RUNNING) {
-            moveX(-SPEED * deltaTime);
+            if (moveX(-SPEED * deltaTime) && grounded && !invulnerable) {
+                playSteppingSound(deltaTime);
+            }
         }
         else if (Gdx.input.isKeyPressed(Keys.D) && TerrariaGame.getState() == GameScreen.GAME_RUNNING) {
-            moveX(SPEED * deltaTime);
+            if (moveX(SPEED * deltaTime) && grounded && !invulnerable) {
+                playSteppingSound(deltaTime);
+            }
         }
 
         //Check the invulnerability frame
@@ -188,6 +203,7 @@ public class Player extends Entity {
     public void takeAhit(double damage) {
         if (!invulnerable) {
             playerHealth.ApplyDamage(damage);
+            hurt.play();
             //if (grounded) velocityY += 2 * getWeight();  //Knockback
             invulnerable = true;
         }
@@ -201,6 +217,18 @@ public class Player extends Entity {
         if (isGrounded() && tooHigh) {
             takeAhit(fallDamage * FALLDAMAGE_COEFF);
             tooHigh = false;
+        }
+    }
+
+    public void playSteppingSound(float deltaTime) {
+        stepSoundTimer += deltaTime;
+        if (stepSoundTimer > stepSoundInterval) {
+            stepSoundTimer = 0f;
+            TileType floor = gameMap.getTileTypeByLocation(1, pos.x, pos.y - TileType.TILE_SIZE/2);
+            if (floor == TileType.GRASS || floor == TileType.DIRT || floor == TileType.MOSSY_STONE)
+                footstep_grass.play();
+            else
+                footstep_solid.play();
         }
     }
 

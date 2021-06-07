@@ -39,4 +39,7 @@ public class Animation {
     public TextureRegion getFrame(){
         return frames.get(frame);
     }
+    public void setCycleTime(float cycleTime) {
+        maxFrameTime = cycleTime / frameCount;
+    }
 }

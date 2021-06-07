@@ -7,34 +7,34 @@ import java.util.HashMap;
 public enum TileType {
 
 
-    GRASS(1, true, "grass"),
-    DIRT(2, true, "dirt"),
-    STONE(3, true, "stone"),
-    CAVE_BACKGROUND(4, false, "cave_bg"),
-    COAL(5, true, "coal"),
-    GOLD(6, true, "gold"),
-    DIAMOND(7, true, "diamond"),
-    IRON(8, true, "iron"),
-    LAVA(9, true, "lava"),
-    MOSSY_STONE(10, true, "mossy_stone"),
-    CAVE_DIRT_BACKGROUND(14,false,"cave_dirt"),
+    GRASS(1, true, "grass", 1f),
+    DIRT(2, true, "dirt", 1f),
+    STONE(3, true, "stone", 2f),
+    STONE_BACKGROUND(4, false, "stone_bg", 2f),
+    COAL(5, true, "coal", 3f),
+    GOLD(6, true, "gold", 5f),
+    DIAMOND(7, true, "diamond", 6f),
+    IRON(8, true, "iron", 4f),
+    LAVA(9, true, "lava", 0f),
+    MOSSY_STONE(10, true, "mossy_stone", 2f),
+    DIRT_BACKGROUND(14,false,"dirt_bg", 0.5f),
 
-    WEED(11, false, "weed"),
-    LOG(12, false, "log"),
-    PEBBLE(13, false,"pebble"),
-    SAPLING(16, false, "sapling"),
+    WEED(11, false, "weed", 0),
+    LOG(12, false, "log", 1.5f),
+    PEBBLE(13, false,"pebble", 0),
+    SAPLING(16, false, "sapling", 0),
 
-    PLANKS(15, true,"planks"),
+    PLANKS(15, true,"planks", 1.5f),
 
-    LIGHTSOURCE0(108, false,"light"),
-    LIGHTSOURCE1(107, false,"light"),
-    LIGHTSOURCE2(106, false,"light"),
-    LIGHTSOURCE3(105, false,"light"),
-    LIGHTSOURCE4(104, false,"light"),
-    LIGHTSOURCE5(103, false,"light"),
-    LIGHTSOURCE6(102, false,"light"),
-    LIGHTSOURCE7(101, false,"light"),
-    NOLIGHT(100, false,"light");
+    LIGHTSOURCE0(108, false,"light", 0),
+    LIGHTSOURCE1(107, false,"light", 0),
+    LIGHTSOURCE2(106, false,"light", 0),
+    LIGHTSOURCE3(105, false,"light", 0),
+    LIGHTSOURCE4(104, false,"light", 0),
+    LIGHTSOURCE5(103, false,"light", 0),
+    LIGHTSOURCE6(102, false,"light", 0),
+    LIGHTSOURCE7(101, false,"light", 0),
+    NOLIGHT(100, false,"light", 0);
 
 
 
@@ -44,12 +44,13 @@ public enum TileType {
     private int id;
     private boolean collidable;
     private String name;
+    private float hardness; //time in sec that the player will take to destroy a block by hand
 
-
-    private TileType(int id, boolean collidable, String name) {
+    private TileType(int id, boolean collidable, String name, float hardness) {
         this.id = id;
         this.collidable = collidable;
         this.name = name;
+        this.hardness = hardness;
     }
 
     public int getId() {
@@ -60,6 +61,9 @@ public enum TileType {
     }
     public String getName() {
         return name;
+    }
+    public float getHardness() {
+        return hardness;
     }
 
     public static HashMap<Integer, TileType> caseMap;

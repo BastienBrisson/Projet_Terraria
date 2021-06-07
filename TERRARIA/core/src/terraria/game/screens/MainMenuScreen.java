@@ -2,6 +2,7 @@ package terraria.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -26,6 +27,8 @@ public class MainMenuScreen extends ScreenAdapter {
     private ImageButton exitButton;
     private ParallaxBackground parallaxBackground;
     private Array<Texture> MainScreenParallax;
+
+    private Music menuMusic;
 
     TextureRegion play;
 
@@ -99,10 +102,16 @@ public class MainMenuScreen extends ScreenAdapter {
         stage.addActor(parallaxBackground);
         stage.addActor(playButton);
         stage.addActor(exitButton);
+
+        //Set the music loop
+        menuMusic = Gdx.audio.newMusic(Gdx.files.internal("audio/music/main_menu_song.mp3"));
+        menuMusic.setLooping(true);
+        menuMusic.play();
     }
 
     public void startGame(){
         game.setScreen(new LoadingScreen(game));
+        menuMusic.stop();
     }
 
     /**
@@ -125,7 +134,7 @@ public class MainMenuScreen extends ScreenAdapter {
     @Override
     public void dispose(){
         stage.dispose();
-
+        menuMusic.dispose();
     }
 
     /**
@@ -153,7 +162,9 @@ public class MainMenuScreen extends ScreenAdapter {
      * Called when this screen becomes the current screen for a Game.
      */
     @Override
-    public void	show(){ Gdx.input.setInputProcessor(stage);}
+    public void	show(){
+        Gdx.input.setInputProcessor(stage);
+    }
 
 
 

@@ -70,8 +70,9 @@ public class Entity extends Actor {
     /**
      * Calcule le mouvement horizontale
      * @param amount
+     * @return true si l'entité se déplace, false sinon (face à un mur)
      */
-    protected void moveX (float amount) {
+    protected boolean moveX (float amount) {
         //Check if textures face right or left (+x or -x)
         if (amount < 0) flipX = true;
         else flipX = false;
@@ -81,6 +82,9 @@ public class Entity extends Actor {
         if(!gameMap.doesRectCollideWithMap(newX, this.pos.y, (int)getWidth(), (int)getHeight())){
             this.pos.x = newX;
             setX(pos.x);
+            return true;
+        } else {
+            return false;
         }
     }
 

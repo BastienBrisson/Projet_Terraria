@@ -2,6 +2,8 @@ package terraria.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -79,8 +81,18 @@ public class LoadingScreen extends ScreenAdapter {
         game.getAssetManager().load("inventory/slot.png",Texture.class);
         game.getAssetManager().load("inventory/itemsInventory.png",Texture.class);
         game.getAssetManager().load("inventory/hover.png",Texture.class);
-
         game.getAssetManager().load("breaking.png",Texture.class);
+
+        //Load music
+        game.getAssetManager().load("audio/music/forest_ambiance_day.mp3", Music.class);
+        game.getAssetManager().load("audio/music/game_song_day.mp3", Music.class);
+
+        //Load sounds
+        game.getAssetManager().load("audio/sound/block_pop.ogg", Sound.class);
+        game.getAssetManager().load("audio/sound/impact_block.ogg", Sound.class);
+        game.getAssetManager().load("audio/sound/player_footstep_grass.wav", Sound.class);
+        game.getAssetManager().load("audio/sound/player_footstep.wav", Sound.class);
+        game.getAssetManager().load("audio/sound/player_hurt.wav", Sound.class);
 
     }
     /**

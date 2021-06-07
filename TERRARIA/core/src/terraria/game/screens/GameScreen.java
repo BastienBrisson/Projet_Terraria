@@ -1,5 +1,6 @@
 package terraria.game.screens;
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -44,6 +45,9 @@ public class GameScreen extends ScreenAdapter {
     //Acteurs//
     ParallaxBackground parallaxBackground;
     Inventory inventory;
+
+    private Music gameMusicDay;
+    private Music forestAmbianceDay;
 
     GameMap gameMap;
     ImageButton saveButton;
@@ -134,6 +138,13 @@ public class GameScreen extends ScreenAdapter {
         stage.addActor(optionButton);
         stage.addActor(exitButton);
 
+        //Lance la musique
+        gameMusicDay = game.getAssetManager().get("audio/music/game_song_day.mp3", Music.class);
+        forestAmbianceDay = game.getAssetManager().get("audio/music/forest_ambiance_day.mp3", Music.class);
+        gameMusicDay.setLooping(true);
+        forestAmbianceDay.setLooping(true);
+        forestAmbianceDay.setVolume(0.25f);
+
         TerrariaGame.setState(GAME_RUNNING);
     }
 
@@ -166,6 +177,8 @@ public class GameScreen extends ScreenAdapter {
     }
 
     public void updateOver() {
+        dispose();
+        game.getAssetManager().clear();
         game.setScreen(new MainMenuScreen(game));
     }
 
@@ -175,6 +188,8 @@ public class GameScreen extends ScreenAdapter {
         inputMultiplexer.addProcessor(new terraria.game.screens.Input(this));
         inputMultiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(inputMultiplexer);
+        gameMusicDay.play();
+        forestAmbianceDay.play();
     }
 
     @Override
@@ -208,7 +223,7 @@ public class GameScreen extends ScreenAdapter {
             }
         }
 
-        if(Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
+        if(Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
             if(isMenuShow) {
                 isMenuShow = false;
             } else {
@@ -216,6 +231,12 @@ public class GameScreen extends ScreenAdapter {
                 isMenuShow = true;
             }
         }
+
+        //Stop forest sounds if player in cave
+        if (gameMap.getTileTypeByLocation(0, player.getX(), player.getY()) == TileType.STONE_BACKGROUND)
+            forestAmbianceDay.pause();
+        else
+            forestAmbianceDay.play();
 
         //Update all actors
         gameMap.update(camera, stage);
@@ -253,7 +274,7 @@ public class GameScreen extends ScreenAdapter {
         if (coordinate != null) {
             if (Gdx.input.isButtonPressed(Buttons.LEFT)){
                 //destroy block
-                gameMap.initDestroyTile(coordinate, inventory);
+                gameMap.initDestroyTile(coordinate, pos, inventory);
             } else if (Gdx.input.isButtonPressed(Buttons.RIGHT)) {
                 //put block
                 gameMap.addTile(coordinate, inventory);
@@ -304,7 +325,6 @@ public class GameScreen extends ScreenAdapter {
             stage.addActor(entity);
             entity.setTarget(player);
         }
-
     }
 
     @Override
@@ -331,6 +351,10 @@ public class GameScreen extends ScreenAdapter {
 
     public void dispose() {
         stage.dispose();
+        gameMusicDay.stop();
+        forestAmbianceDay.stop();
+        gameMusicDay.dispose();
+        forestAmbianceDay.dispose();
     }
 
     public Stage getStage(){

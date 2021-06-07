@@ -2,6 +2,7 @@ package terraria.game.actors.world;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
@@ -35,7 +36,11 @@ public class GameMap extends Actor {
 
     boolean breakable;
     Vector3 breakingCoordinate = new Vector3();
+    Vector3 mouseCoordinate = new Vector3();
     Inventory inventory;
+
+    private Sound mining, blockPoping;
+    private float soundTimer = 0f, soundInterval = 0.25f;
 
     public int ScreenX, ScreenY,ScreenWidth,ScreenHeigth;
 
@@ -62,7 +67,11 @@ public class GameMap extends Actor {
         sapling =  game.getAssetManager().get("arbres/sapling.png", Texture.class);
         pebble =  TextureRegion.split(game.getAssetManager().get("cailloux.png", Texture.class), TileType.TILE_SIZE, TileType.TILE_SIZE);
         filtre = TextureRegion.split(game.getAssetManager().get("filtre.png", Texture.class), TileType.TILE_SIZE, TileType.TILE_SIZE);
-        breakingAnimation =  new Animation(new TextureRegion(game.getAssetManager().get("breaking.png", Texture.class)),6 , 1);
+        breakingAnimation =  new Animation(new TextureRegion(game.getAssetManager().get("breaking.png", Texture.class)),6 , 1f);
+
+        //Load sounds
+        mining = game.getAssetManager().get("audio/sound/impact_block.ogg", Sound.class);
+        blockPoping = game.getAssetManager().get("audio/sound/block_pop.ogg", Sound.class);
 
     }
 
@@ -123,31 +132,47 @@ public class GameMap extends Actor {
         }
         return false;
     }
-    public void initDestroyTile(Vector3 coordinate, Inventory inventory){
+    public void initDestroyTile(Vector3 coordinate, Vector3 mouse, Inventory inventory){
         if (presentTile(coordinate)) {
             breakable = true;
             breakingCoordinate = coordinate;
+            mouseCoordinate = mouse;
 
             this.inventory = inventory;
 
-            if (getMap()[(int) coordinate.z][(int) coordinate.y][(int) coordinate.x] == TileType.LAVA.getId()) {
+            TileType tile = TileType.getTileTypeById( getMap()[(int) coordinate.z][(int) coordinate.y][(int) coordinate.x] );
+            if (tile == TileType.LAVA) {
                 //bloc indestructible
                 breakable = false;
             } else {
+                breakingAnimation.setCycleTime(tile.getHardness());
                 breakable = true;
             }
         }
     }
     public void drawBreaking(Batch batch){
         if(breakable){
+            float dt = Gdx.graphics.getDeltaTime();
 
-            breakingAnimation.update(Gdx.graphics.getDeltaTime());
+            //draw breaking animation
+            breakingAnimation.update(dt);
             batch.draw(breakingAnimation.getFrame(), breakingCoordinate.x * TileType.TILE_SIZE, getPixelHeight() - (breakingCoordinate.y +1) * TileType.TILE_SIZE );
-            if(breakingAnimation.frame > 4){ breakable = false; destroyTile(breakingCoordinate, inventory); breakingAnimation.frame = 0;}
+            //play mining sound
+            soundTimer += dt;
+            if (soundTimer > soundInterval) {
+                soundTimer = 0f;
+                mining.play();
+            }
 
-            if( !Gdx.input.isButtonPressed(Input.Buttons.LEFT) ||  Gdx.input.getDeltaX() != 0 || Gdx.input.getDeltaY() != 0){
-                breakable = false; breakingAnimation.frame = 0;
+            //destroy tile when finished
+            if(breakingAnimation.frame > 4) { breakable = false; destroyTile(breakingCoordinate, inventory); breakingAnimation.frame = 0;}
 
+            //if cursor move away from tile or stop clicking reset breaking
+            boolean validX = mouseCoordinate.x % TileType.TILE_SIZE + Gdx.input.getDeltaX() >= 0 && mouseCoordinate.x % TileType.TILE_SIZE + Gdx.input.getDeltaX() <= 31;
+            boolean validY = mouseCoordinate.y % TileType.TILE_SIZE + Gdx.input.getDeltaY() >= 0 && mouseCoordinate.y % TileType.TILE_SIZE + Gdx.input.getDeltaY() <= 31;
+            if( !Gdx.input.isButtonPressed(Input.Buttons.LEFT) ||  !validX || !validY) {
+                breakable = false;
+                breakingAnimation.frame = 0;
             }
         }
     }
@@ -157,8 +182,8 @@ public class GameMap extends Actor {
         int idBloc = getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x];
         int idBlocSupp = getMap()[(int)coordinate.z][(int)coordinate.y-1][(int)coordinate.x];
 
+        //Si c'est un arbre, on détruit tout le tronc et on note sa taille
         if (idBloc == TileType.LOG.getId() || idBlocSupp == TileType.LOG.getId() ) {
-            //on détruit tout l'arbre et on note sa taille
             treeSize = 1;
             int y = (int) coordinate.y - 1;
             while (getMap()[(int) coordinate.z][y][(int) coordinate.x] == TileType.LOG.getId()) {
@@ -174,14 +199,15 @@ public class GameMap extends Actor {
             }
 
         }
+
+        //On enlève et récupère les petits éléments destructibles sur le bloc
         if (idBlocSupp == TileType.WEED.getId() || idBlocSupp == TileType.PEBBLE.getId() || idBlocSupp == TileType.SAPLING.getId()) {
-            //On récupère les éléments posés sur le bloc
             getMap()[(int)coordinate.z][(int)coordinate.y-1][(int)coordinate.x] = 0;
             inventory.addTileInInventory(idBlocSupp);
         }
 
-
-        if (treeSize > 0) { //Une fonction pour rajouter plusieurs items dans l'inventaire serait cool
+        //On ajoute le tout a l'inventaire
+        if (treeSize > 0) { //Une fonction pour rajouter plusieurs items dans l'inventaire d'un coups serait cool
             inventory.addTileInInventory(TileType.SAPLING.getId());
             inventory.addTileInInventory(TileType.SAPLING.getId());
             for (int i = 0; i < treeSize*2; i++)
@@ -189,8 +215,9 @@ public class GameMap extends Actor {
         } else
             inventory.addTileInInventory(idBloc);
 
+        //Retire le bloc de la map
         getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = 0;
-
+        blockPoping.play();
 
     }
 
