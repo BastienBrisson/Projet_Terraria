@@ -35,9 +35,9 @@ public class ItemsGraphic extends Actor {
         this.moving = false;
         this.craftableItem = false;
         this.font = new BitmapFont();
-        if (item.getNum() > 50) {
+        if (item.getNum() >= 50) {
             this.x = 1;
-            this.y = 50 - item.getNum();
+            this.y = item.getNum() - 50;
             craftableItem = true;
         } else {
             //A partir du numéro de l'item il calcul sa position X et Y dans l'affichage de l'inventaire
@@ -80,11 +80,22 @@ public class ItemsGraphic extends Actor {
 
             public void drop (DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
                 ItemsGraphic itemOrigin = (ItemsGraphic) payload.getObject();
-                int IdTmp = item.getIdTile();
-                int amountTmp = item.getAmount();
-                setItem(itemOrigin.item);
-                itemOrigin.item.setIdTile(IdTmp);
-                itemOrigin.item.setAmount(amountTmp);
+                if (itemOrigin.craftableItem) {
+                    inventory.costUpdate(itemOrigin);
+                }
+                if (itemOrigin.getItem().getIdTile() == item.getIdTile()) {
+                    item.addAmount(itemOrigin.getItem().getAmount());
+                    itemOrigin.getItem().setIdTile(0);
+                    itemOrigin.getItem().setAmount(0);
+                } else {
+                    int IdTmp = item.getIdTile();
+                    int amountTmp = item.getAmount();
+                    setItem(itemOrigin.item);
+                    itemOrigin.item.setIdTile(IdTmp);
+                    itemOrigin.item.setAmount(amountTmp);
+                }
+                inventory.updateCraft();
+
             }
         });
     }
@@ -96,7 +107,11 @@ public class ItemsGraphic extends Actor {
         ScreenWidth = stage.getViewport().getScreenWidth();
         ScreenHeight = stage.getViewport().getScreenHeight();
         this.inventory.setInventoryShow(menu);
-        setBounds(OriginX + inventory.getWidthTile() *  y - (inventory.getWidthTile()/2), OriginY + ScreenHeight - (x*inventory.getHeightTile()+inventory.getHeightTile() + inventory.getHeightTile()/2), 50, 50);
+        if (!craftableItem) {
+            setBounds(OriginX + inventory.getWidthTile() *  y - (inventory.getWidthTile()/2), OriginY + ScreenHeight - (x*inventory.getHeightTile()+inventory.getHeightTile() + inventory.getHeightTile()/2), 50, 50);
+        } else {
+            setBounds(inventory.getScreenX() - (inventory.getWidthTile() / 2), OriginY + ScreenHeight - (7 * inventory.getHeightTile() + inventory.getHeightTile() / 2 + this.y * inventory.getHeightTile()), 50, 50);
+        }
 
     }
 
@@ -121,8 +136,15 @@ public class ItemsGraphic extends Actor {
             }
         } else {
             if (inventory.isInventoryShow()) {
-                System.out.println("test");
-                batch.draw(itemsTexture[0][item.getIdTile()], inventory.getScreenX() - (inventory.getWidthTile() / 2), inventory.getScreenY() + ScreenHeight - (6 * inventory.getHeightTile() + inventory.getHeightTile() + inventory.getHeightTile() / 2) - this.y * inventory.getHeightTile());
+                if (moving) {
+                    batch.draw(itemsTexture[0][item.getIdTile()], cam.x - ScreenWidth / 2 + Gdx.input.getX(), cam.y + ScreenHeight / 2 - Gdx.input.getY());
+                    if (item.getAmount() != 0)
+                        font.draw(batch, String.valueOf(item.getAmount()),cam.x-ScreenWidth/2+Gdx.input.getX()+inventory.getWidthTile()/4+inventory.getWidthTile()/2,  cam.y+ScreenHeight/2-Gdx.input.getY()+inventory.getHeightTile()/3);
+                } else {
+                    batch.draw(itemsTexture[0][item.getIdTile()], inventory.getScreenX() - (inventory.getWidthTile() / 2), OriginY + ScreenHeight - (7 * inventory.getHeightTile() + inventory.getHeightTile() / 2 + this.y * inventory.getHeightTile()));
+                    if (item.getAmount() != 0)
+                        font.draw(batch, String.valueOf(item.getAmount()), inventory.getScreenX()  + inventory.getWidthTile()/4, OriginY + ScreenHeight - (7 * inventory.getHeightTile() + inventory.getHeightTile() / 2 + this.y * inventory.getHeightTile()) + inventory.getHeightTile()/4);
+                }
             }
         }
     }
@@ -159,5 +181,9 @@ public class ItemsGraphic extends Actor {
 
     public void setYPosition(int y) {
         this.y = y;
+    }
+
+    public Items getItem() {
+        return item;
     }
 }

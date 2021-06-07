@@ -210,8 +210,8 @@ public class GameMap extends Actor {
         if (treeSize > 0) { //Une fonction pour rajouter plusieurs items dans l'inventaire d'un coups serait cool
             inventory.addTileInInventory(TileType.SAPLING.getId());
             inventory.addTileInInventory(TileType.SAPLING.getId());
-            for (int i = 0; i < treeSize*2; i++)
-                inventory.addTileInInventory(TileType.PLANKS.getId());
+            for (int i = 0; i < treeSize; i++)
+                inventory.addTileInInventory(TileType.LOG.getId());
         } else
             inventory.addTileInInventory(idBloc);
 

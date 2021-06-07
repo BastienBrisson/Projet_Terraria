@@ -24,7 +24,6 @@ public class Inventory extends Actor {
     private ArrayList<Items> itemsList;                 //La liste des objets de l'inventaire
     private ArrayList<ItemsGraphic> itemsGraphic;       //La liste la classe qui gère les textures des objets de l'inventaire
     private ArrayList<Items> countItems;
-    private ArrayList<Items> craftableItemList;
     private ArrayList<ItemsGraphic> craftableItemGraphicList;
     private boolean inventoryShow;                      //Boolean qui détermine si l'inventaire est affiché ou non
     private TextureRegion[][] slot;                     //Texture de chaque slot d'inventaire
@@ -33,6 +32,8 @@ public class Inventory extends Actor {
     private DragAndDrop dragAndDrop;                    //Drag & Drop de l'inventaire
     private float ScreenX, ScreenY,ScreenWidth,ScreenHeight;     //Taille de l'écran
     private int  width = 50, height = 50;                //Taille d'un slot
+    private int nbCraftableItem;
+    private BitmapFont font;                            //Police d'écriture
 
     Vector3 cam;
 
@@ -41,19 +42,21 @@ public class Inventory extends Actor {
         this.itemsList = new ArrayList<>();
         this.itemsGraphic = new ArrayList<>();
         this.countItems = new ArrayList<>();
-        this.craftableItemList = new ArrayList<>();
         this.craftableItemGraphicList = new ArrayList<>();
         this.dragAndDrop = new DragAndDrop();
         this.inventoryShow = false;
         this.slot = TextureRegion.split(game.getAssetManager().get("inventory/slot.png", Texture.class), width, height);
         this.hoverTexture = TextureRegion.split(game.getAssetManager().get("inventory/hover.png", Texture.class), width, height);
+        this.nbCraftableItem = 0;
+        this.font = new BitmapFont();
         //On crée les items de l'inventaire
         for (int i = 0; i < SIZEINVENTORY; i++) {
             itemsList.add(new Items(i));
             itemsGraphic.add(new ItemsGraphic(game, itemsList.get(i), this, dragAndDrop));
         }
-        for (int i = 0; i < 50; i ++) {
+        for (int i = 0; i < 50; i++) {
             countItems.add(new Items(i, i));
+            craftableItemGraphicList.add(new ItemsGraphic(game, new Items(i+50, 0), this, dragAndDrop));
         }
         countItems();
     }
@@ -71,10 +74,7 @@ public class Inventory extends Actor {
         }
         System.out.println("fin");*/
 
-        if (inventoryShow) {
-            countItems();
-            craftableItem();
-        }
+
     }
 
     @Override
@@ -94,6 +94,7 @@ public class Inventory extends Actor {
 
         //Si l'inventaire est affiché
         if (inventoryShow) {
+            font.draw(batch, String.valueOf("Inventaire"),ScreenX,  ScreenY + ScreenHeight - 10);
             for (int i = 1; i < 5; i++) {
                 for (int j = 0; j < SLOTINVENTORYBAR; j++) {
                     batch.draw(slot[0][0], ScreenX + width * j - (width / 2), ScreenY + ScreenHeight - (i*height + height + height / 2));
@@ -103,8 +104,11 @@ public class Inventory extends Actor {
                 }
             }
 
+            if (nbCraftableItem != 0) {
+                font.draw(batch, String.valueOf("Objet craftable"),ScreenX,  ScreenY + ScreenHeight - 10 - 6*getHeightTile());
+            }
             //On dessine les slots de craft disponible
-            for (int craftableItem = 0; craftableItem < craftableItemList.size(); craftableItem++) {
+            for (int craftableItem = 0; craftableItem < nbCraftableItem; craftableItem++) {
                 batch.draw(slot[0][0], ScreenX - (width/2), ScreenY + ScreenHeight -  (6*height+height+height/2) - craftableItem*height);
             }
         }
@@ -217,31 +221,27 @@ public class Inventory extends Actor {
         }
     }
 
-    public void craftableItem() {
-        this.craftableItemList = new ArrayList<>();
-        this.craftableItemGraphicList = new ArrayList<>();
-        int countItem = 51;
-        Items itemsTmp;
+    public void updateCraftableItem() {
+        int numCraftItem = 0;
         for (Items item : countItems) {
-            if (item.getIdTile() == 15 && item.getAmount() >= 4) {
-                itemsTmp = new Items(countItem, 2);
-                craftableItemList.add(itemsTmp);
-                craftableItemGraphicList.add(new ItemsGraphic(game, itemsTmp, this, dragAndDrop));
-                countItem++;
+            if (item.getIdTile() == 12 && item.getAmount() >= 1) {
+                craftableItemGraphicList.get(numCraftItem).getItem().setIdTile(15);
+                craftableItemGraphicList.get(numCraftItem).getItem().setAmount(2);
+                numCraftItem++;
             }
             if (item.getIdTile() == 3 && item.getAmount() >= 4) {
-                itemsTmp = new Items(countItem, 3);
-                craftableItemList.add(itemsTmp);
-                craftableItemGraphicList.add(new ItemsGraphic(game, itemsTmp, this, dragAndDrop));
-                countItem++;
+                craftableItemGraphicList.get(numCraftItem).getItem().setIdTile(3);
+                craftableItemGraphicList.get(numCraftItem).getItem().setAmount(1);
+                numCraftItem++;
             }
-
+        }
+        nbCraftableItem = numCraftItem;
+        for (int i = numCraftItem; i < 50; i++) {
+            craftableItemGraphicList.get(numCraftItem).getItem().setIdTile(0);
+            craftableItemGraphicList.get(numCraftItem).getItem().setAmount(0);
         }
     }
 
-    public ArrayList<Items> getCraftableItemList() {
-        return this.craftableItemList;
-    }
 
     public float getScreenX() {
         return ScreenX;
@@ -265,5 +265,28 @@ public class Inventory extends Actor {
 
     public void setCraftableItemGraphicList(ArrayList<ItemsGraphic> craftableItemGraphicList) {
         this.craftableItemGraphicList = craftableItemGraphicList;
+    }
+
+    public void updateCraft() {
+        countItems();
+        updateCraftableItem();;
+    }
+
+    public void costUpdate(ItemsGraphic itemG) {
+        if (itemG.getItem().getIdTile() == 15) {
+            int tlog = 1;
+            while (tlog > 0) {
+                int i = 0;
+                while (i < craftableItemGraphicList.size() && tlog > 0) {
+                    if (itemsList.get(i).getIdTile() == 12) {
+                        while (itemsList.get(i).getAmount() > 0 && tlog > 0) {
+                            itemsList.get(i).decrAmount();
+                            tlog--;
+                        }
+                    }
+                    i++;
+                }
+            }
+        }
     }
 }
