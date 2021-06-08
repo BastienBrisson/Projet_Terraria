@@ -223,22 +223,29 @@ public class Inventory extends Actor {
 
     public void updateCraftableItem() {
         int numCraftItem = 0;
-        for (Items item : countItems) {
-            if (item.getIdTile() == 12 && item.getAmount() >= 1) {
-                craftableItemGraphicList.get(numCraftItem).getItem().setIdTile(15);
-                craftableItemGraphicList.get(numCraftItem).getItem().setAmount(2);
+        boolean craftable = true;
+        Craft checkIfCraftable;
+        for (int itemsCraf = 0; itemsCraf < Craft.values().length; itemsCraf++) {
+            checkIfCraftable = Craft.values()[itemsCraf];
+            int i = 0;
+            while (i < checkIfCraftable.getIdsItemNeeded().length && craftable) {
+                if (countItems.get(checkIfCraftable.getIdsItemNeeded()[i]).getAmount() < checkIfCraftable.getNumberItemNeeded()[i] && craftable) {
+                    craftable = false;
+                }
+                i++;
+            }
+            System.out.println(craftable);
+            if (craftable) {
+                craftableItemGraphicList.get(numCraftItem).getItem().setIdTile(checkIfCraftable.getIdItem());
+                craftableItemGraphicList.get(numCraftItem).getItem().setAmount(checkIfCraftable.getNbItem());
                 numCraftItem++;
             }
-            if (item.getIdTile() == 3 && item.getAmount() >= 4) {
-                craftableItemGraphicList.get(numCraftItem).getItem().setIdTile(3);
-                craftableItemGraphicList.get(numCraftItem).getItem().setAmount(1);
-                numCraftItem++;
-            }
+            craftable=true;
         }
         nbCraftableItem = numCraftItem;
         for (int i = numCraftItem; i < 50; i++) {
-            craftableItemGraphicList.get(numCraftItem).getItem().setIdTile(0);
-            craftableItemGraphicList.get(numCraftItem).getItem().setAmount(0);
+            craftableItemGraphicList.get(i).getItem().setIdTile(0);
+            craftableItemGraphicList.get(i).getItem().setAmount(0);
         }
     }
 
@@ -272,20 +279,18 @@ public class Inventory extends Actor {
         updateCraftableItem();;
     }
 
-    public void costUpdate(ItemsGraphic itemG) {
-        if (itemG.getItem().getIdTile() == 15) {
-            int tlog = 1;
-            while (tlog > 0) {
-                int i = 0;
-                while (i < craftableItemGraphicList.size() && tlog > 0) {
-                    if (itemsList.get(i).getIdTile() == 12) {
-                        while (itemsList.get(i).getAmount() > 0 && tlog > 0) {
-                            itemsList.get(i).decrAmount();
-                            tlog--;
-                        }
+    public void costUpdate(Craft craft) {
+        for (int i = 0; i < craft.getIdsItemNeeded().length; i++) {
+            int num = craft.getNumberItemNeeded()[i];
+            int inv = 0;
+            while (inv < craftableItemGraphicList.size() && num > 0) {
+                if (itemsList.get(inv).getIdTile() == craft.getIdsItemNeeded()[i]) {
+                    while (itemsList.get(inv).getAmount() > 0 && num > 0) {
+                        itemsList.get(inv).decrAmount();
+                        num--;
                     }
-                    i++;
                 }
+                inv++;
             }
         }
     }

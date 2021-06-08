@@ -72,7 +72,7 @@ public class ItemsGraphic extends Actor {
             public boolean drag (DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
                 setHover(true);
                 ItemsGraphic itemOrigin = (ItemsGraphic) payload.getObject();
-                if (itemOrigin.isCraftableItem() && item.getIdTile() != 0) {
+                if (itemOrigin.isCraftableItem() && item.getIdTile() != 0 && itemOrigin.getItem().getIdTile() != item.getIdTile()) {
                     return false;
                 }
                 return true;
@@ -85,7 +85,7 @@ public class ItemsGraphic extends Actor {
             public void drop (DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
                 ItemsGraphic itemOrigin = (ItemsGraphic) payload.getObject();
                 if (itemOrigin.craftableItem) {
-                    inventory.costUpdate(itemOrigin);
+                    inventory.costUpdate(Craft.getCraftById(itemOrigin.getItem().getIdTile()));
                 }
                 if (itemOrigin.getItem().getIdTile() == item.getIdTile()) {
                     item.addAmount(itemOrigin.getItem().getAmount());
