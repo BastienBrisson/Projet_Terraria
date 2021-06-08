@@ -10,8 +10,24 @@ import java.util.HashMap;
 public enum Craft {
 
     PLANKS_CRAFT(TileType.PLANKS.getId(), 2, new int[]{TileType.TIMBER.getId()}, new int[]{1}),
-    STICK_CRAFT(2, 2, new int[]{15}, new int[]{2});
-    //RANDOM_CRAFT(7, 5, new int[]{2, 15}, new int[]{1, 2});
+    STICK_CRAFT(18, 2, new int[]{15}, new int[]{2}),
+
+    IRON_INGOT_CRAFT(19, 1, new int[]{8}, new int[]{1}),
+    GOLD_INGOT_CRAFT(20, 1, new int[]{6}, new int[]{1}),
+    DIAMOND_INGOT_CRAFT(21, 1, new int[]{7}, new int[]{1}),
+    COAL_INGOT_CRAFT(22, 1, new int[]{5}, new int[]{1}),
+
+    SWORD_WOOD_CRAFT(23, 1, new int[]{18, 15}, new int[]{1, 2}),
+    SWORD_STONE_CRAFT(24, 1, new int[]{18, 3}, new int[]{1, 2}),
+    SWORD_IRON_CRAFT(25, 1, new int[]{18, 19}, new int[]{1, 2}),
+    SWORD_DIAMOND_CRAFT(26, 1, new int[]{18, 21}, new int[]{1, 2}),
+    SWORD_GOLD_CRAFT(27, 1, new int[]{18, 20}, new int[]{1, 2}),
+
+    PICKAXE_WOOD_CRAFT(28, 1, new int[]{18, 15}, new int[]{1, 3}),
+    PICKAXE_STONE_CRAFT(29, 1, new int[]{18, 3}, new int[]{1, 3}),
+    PICKAXE_IRON_CRAFT(30, 1, new int[]{18, 19}, new int[]{1, 3}),
+    PICKAXE_DIAMOND_CRAFT(31, 1, new int[]{18, 21}, new int[]{1, 3}),
+    PICKAXE_GOLD_CRAFT(32, 1, new int[]{18, 20}, new int[]{1, 3});
 
     private int idItem;             //Item qui sera crée
     private int nbItem;             //Nombre de fois que l'items va être produit

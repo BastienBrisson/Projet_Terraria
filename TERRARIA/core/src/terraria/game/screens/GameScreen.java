@@ -287,10 +287,14 @@ public class GameScreen extends ScreenAdapter {
         if (coordinate != null) {
             if (Gdx.input.isButtonPressed(Buttons.LEFT)){
                 //destroy block
-                gameMap.initDestroyTile(coordinate, pos, inventory);
+                //PROVISOIRE
+                if (inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile() < 18)
+                    gameMap.initDestroyTile(coordinate, pos, inventory);
             } else if (Gdx.input.isButtonPressed(Buttons.RIGHT)) {
                 //put block
-                gameMap.addTile(coordinate, inventory);
+                //PROVISOIRE
+                if (inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile() < 18)
+                    gameMap.addTile(coordinate, inventory);
                 //Check if no entity in the way
                 for (Entity entity : entities) {
                     if (gameMap.doesRectCollideWithMap(entity.getX(), entity.getY(), (int) entity.getWidth(), (int) entity.getHeight()))

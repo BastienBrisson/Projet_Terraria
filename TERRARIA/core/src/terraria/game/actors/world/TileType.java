@@ -18,14 +18,35 @@ public enum TileType {
     LAVA(9, true, "lava", 0f),
     MOSSY_STONE(10, true, "mossy_stone", 2f),
     DIRT_BACKGROUND(14,false,"dirt_bg", 0.5f),
-    TIMBER(17, true, "timber", 2f),
+
 
     WEED(11, false, "weed", 0),
     LOG(12, false, "log", 2f),
     PEBBLE(13, false,"pebble", 0),
-    SAPLING(16, false, "sapling", 0),
+
 
     PLANKS(15, true,"planks", 1.5f),
+    SAPLING(16, false, "sapling", 0),
+    TIMBER(17, true, "timber", 2f),
+
+    STICK(18, false, "stick", 0),
+
+    IRON_INGOT(19, true, "iron_ingot", 0),
+    GOLD_INGOT(20, true, "gold_ingot", 0),
+    DIAMOND_INGOT(21, true, "diamond_ingot", 0),
+    COAL_INGOT(22, true, "coal_ingot", 0),
+
+    SWORD_WOOD(23, true, "sword wood", 0),
+    SWORD_STONE(24, true, "sword stone", 0),
+    SWORD_IRON(25, true, "sword iron", 0),
+    SWORD_DIAMOND(26, true, "sword diamond", 0),
+    SWORD_GOLD(27, true, "dword gold", 0),
+
+    PICKAXE_WOOD(28, true, "pickaxe wood", 0),
+    PICKAXE_STONE(29, true, "pickaxe stone", 0),
+    PICKAXE_IRON(30, true, "pickaxe iron", 0),
+    PICKAXE_DIAMOND(31, true, "pickaxe diamond", 0),
+    PICKAXE_GOLD(32, true, "pickaxe gold", 0),
 
     LIGHTSOURCE0(108, false,"light", 0),
     LIGHTSOURCE1(107, false,"light", 0),
