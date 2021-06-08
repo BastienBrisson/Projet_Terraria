@@ -20,11 +20,8 @@ import terraria.game.actors.Inventory.Inventory;
 import terraria.game.actors.Inventory.ItemsGraphic;
 import terraria.game.actors.entities.*;
 import terraria.game.actors.entities.player.Player;
-import terraria.game.actors.world.DayNightCycle;
-import terraria.game.actors.world.GameMap;
+import terraria.game.actors.world.*;
 import terraria.game.actors.world.GeneratorMap.MapLoader;
-import terraria.game.actors.world.ParallaxBackground;
-import terraria.game.actors.world.TileType;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -47,6 +44,7 @@ public class GameScreen extends ScreenAdapter {
     ParallaxBackground parallaxBackground;
     Inventory inventory;
     DayNightCycle dayNightCycle;
+    NightFiltre nightFiltre;
 
     private Music gameMusicDay;
     private Music forestAmbianceDay;
@@ -72,6 +70,8 @@ public class GameScreen extends ScreenAdapter {
 
 
         dayNightCycle = new DayNightCycle(game.getAssetManager().get("dayNightCycle.png",Texture.class));
+        nightFiltre = new NightFiltre(new Texture("filtreNight.png"));
+
 
         TextureRegion save = new TextureRegion(new Texture(Gdx.files.internal("background/save.png")));
         TextureRegion savePressed = new TextureRegion(new Texture(Gdx.files.internal("background/savePressed.png")));
@@ -123,13 +123,7 @@ public class GameScreen extends ScreenAdapter {
         stage.addActor(dayNightCycle);
         stage.addActor(parallaxBackground);
         stage.addActor(gameMap);
-        stage.addActor(inventory);
-        for(ItemsGraphic items : inventory.getGraphicItems() ){
-            stage.addActor(items);
-        }
-        for(ItemsGraphic items : inventory.getCraftableItemGraphicList() ){
-            stage.addActor(items);
-        }
+
 
         for(Entity entity : entities ){
             stage.addActor(entity);
@@ -138,6 +132,16 @@ public class GameScreen extends ScreenAdapter {
                 Mushroom monster = (Mushroom) entity;
                 monster.setTarget(player);
             }
+        }
+
+        stage.addActor(nightFiltre);
+
+        stage.addActor(inventory);
+        for(ItemsGraphic items : inventory.getGraphicItems() ){
+            stage.addActor(items);
+        }
+        for(ItemsGraphic items : inventory.getCraftableItemGraphicList() ){
+            stage.addActor(items);
         }
 
         stage.addActor(saveButton);
@@ -261,6 +265,7 @@ public class GameScreen extends ScreenAdapter {
 
         dayNightCycle.update(camera,stage);
         parallaxBackground.update(camera, stage);
+        nightFiltre.update(camera,stage);
         inventory.update(camera, stage);
         for (ItemsGraphic items : inventory.getGraphicItems()) {
             items.update(camera, stage, inventory.isInventoryOpen());

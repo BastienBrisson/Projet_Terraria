@@ -359,6 +359,7 @@ public class GameMap extends Actor {
                 }
             }
         }
+
         drawBreaking(batch);
     }
 

@@ -76,6 +76,7 @@ public class ParallaxBackground extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
 
+
         batch.setColor(getColor().r, getColor().g, getColor().b, getColor().a * parentAlpha);
 
         if (constantAnimation)
@@ -89,6 +90,8 @@ public class ParallaxBackground extends Actor {
             srcX = scroll + i*this.LAYER_SPEED_DIFFERENCE *scroll;
             srcX =  srcX/4;
             batch.draw(textures.get(i), x, y, originX, originY, width, heigth,scaleX,scaleY,rotation,srcX,srcY,textures.get(i).getWidth(),textures.get(i).getHeight(),flipX,flipY);
+
+
         }
     }
 }

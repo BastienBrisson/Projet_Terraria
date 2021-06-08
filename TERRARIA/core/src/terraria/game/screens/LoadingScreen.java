@@ -147,6 +147,7 @@ public class LoadingScreen extends ScreenAdapter {
             entities = EntityLoader.loadEntities("test", gameMap, game);
             game.setScreen(new GameScreen(game, parallaxBackground, entities, gameMap));
 
+
         } else {
             progress = game.getAssetManager().getProgress();
 
