@@ -71,6 +71,10 @@ public class ItemsGraphic extends Actor {
         dragAndDrop.addTarget(new DragAndDrop.Target(this) {
             public boolean drag (DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
                 setHover(true);
+                ItemsGraphic itemOrigin = (ItemsGraphic) payload.getObject();
+                if (itemOrigin.isCraftableItem() && item.getIdTile() != 0) {
+                    return false;
+                }
                 return true;
             }
 
@@ -185,5 +189,13 @@ public class ItemsGraphic extends Actor {
 
     public Items getItem() {
         return item;
+    }
+
+    public boolean isCraftableItem() {
+        return craftableItem;
+    }
+
+    public void setCraftableItem(boolean craftableItem) {
+        this.craftableItem = craftableItem;
     }
 }

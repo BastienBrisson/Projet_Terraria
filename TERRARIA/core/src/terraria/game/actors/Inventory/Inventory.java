@@ -94,7 +94,7 @@ public class Inventory extends Actor {
 
         //Si l'inventaire est affiché
         if (inventoryShow) {
-            font.draw(batch, String.valueOf("Inventaire"),ScreenX,  ScreenY + ScreenHeight - 10);
+            font.draw(batch, String.valueOf("Inventory"),ScreenX,  ScreenY + ScreenHeight - 10);
             for (int i = 1; i < 5; i++) {
                 for (int j = 0; j < SLOTINVENTORYBAR; j++) {
                     batch.draw(slot[0][0], ScreenX + width * j - (width / 2), ScreenY + ScreenHeight - (i*height + height + height / 2));
@@ -105,7 +105,7 @@ public class Inventory extends Actor {
             }
 
             if (nbCraftableItem != 0) {
-                font.draw(batch, String.valueOf("Objet craftable"),ScreenX,  ScreenY + ScreenHeight - 10 - 6*getHeightTile());
+                font.draw(batch, String.valueOf("Craftable items"),ScreenX,  ScreenY + ScreenHeight - 10 - 6*getHeightTile());
             }
             //On dessine les slots de craft disponible
             for (int craftableItem = 0; craftableItem < nbCraftableItem; craftableItem++) {
