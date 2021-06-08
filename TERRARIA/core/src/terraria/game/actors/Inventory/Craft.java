@@ -9,7 +9,7 @@ import java.util.HashMap;
  */
 public enum Craft {
 
-    PLANKS_CRAFT(15, 2, new int[]{12}, new int[]{1}),
+    PLANKS_CRAFT(TileType.PLANKS.getId(), 2, new int[]{TileType.TIMBER.getId()}, new int[]{1}),
     STICK_CRAFT(2, 2, new int[]{15}, new int[]{2});
     //RANDOM_CRAFT(7, 5, new int[]{2, 15}, new int[]{1, 2});
 

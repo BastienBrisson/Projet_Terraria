@@ -211,7 +211,7 @@ public class GameMap extends Actor {
             inventory.addTileInInventory(TileType.SAPLING.getId());
             inventory.addTileInInventory(TileType.SAPLING.getId());
             for (int i = 0; i < treeSize; i++)
-                inventory.addTileInInventory(TileType.LOG.getId());
+                inventory.addTileInInventory(TileType.TIMBER.getId());
         } else
             inventory.addTileInInventory(idBloc);
 

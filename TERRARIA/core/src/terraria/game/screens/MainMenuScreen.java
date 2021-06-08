@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -27,8 +28,11 @@ public class MainMenuScreen extends ScreenAdapter {
     private ImageButton exitButton;
     private ParallaxBackground parallaxBackground;
     private Array<Texture> MainScreenParallax;
+    private Image logo;
 
     private Music menuMusic;
+    private float rotationTimer = 1;
+    private float rotation = 1;
 
     TextureRegion play;
 
@@ -98,10 +102,16 @@ public class MainMenuScreen extends ScreenAdapter {
         parallaxBackground.setSize(stage.getViewport().getScreenWidth(),stage.getViewport().getScreenHeight());
         parallaxBackground.setSpeed(1);
 
+        logo = new Image(new Texture("logo.png"));
+        logo.setSize(logo.getWidth()*4, logo.getHeight()*4);
+        logo.setPosition(stage.getViewport().getScreenWidth()/2+16*4,(stage.getViewport().getScreenHeight()/2)+play.getRegionHeight()+logo.getHeight()/2-16, Align.center);
+        logo.setOrigin(Align.center);
+
         //Set the stage
         stage.addActor(parallaxBackground);
         stage.addActor(playButton);
         stage.addActor(exitButton);
+        stage.addActor(logo);
 
         //Set the music loop
         menuMusic = Gdx.audio.newMusic(Gdx.files.internal("audio/music/main_menu_song.mp3"));
@@ -120,10 +130,15 @@ public class MainMenuScreen extends ScreenAdapter {
      */
     @Override
     public void	render(float delta){
-        playButton.setPosition(stage.getViewport().getScreenWidth()/2,stage.getViewport().getScreenHeight()/2, Align.center);
-        exitButton.setPosition(stage.getViewport().getScreenWidth()/2,stage.getViewport().getScreenHeight()/2-play.getRegionHeight()-10, Align.center);
         stage.act(delta);
         stage.draw();
+
+        logo.rotateBy(2*delta * rotation);
+        rotationTimer += delta;
+        if (rotationTimer > 2){
+            rotation = -1 * rotation;
+            rotationTimer = 0;
+        }
 
         this.parallaxBackground.update((OrthographicCamera) camera, stage);
     }
@@ -164,6 +179,8 @@ public class MainMenuScreen extends ScreenAdapter {
     @Override
     public void	show(){
         Gdx.input.setInputProcessor(stage);
+        playButton.setPosition(stage.getViewport().getScreenWidth()/2,stage.getViewport().getScreenHeight()/2, Align.center);
+        exitButton.setPosition(stage.getViewport().getScreenWidth()/2,stage.getViewport().getScreenHeight()/2-play.getRegionHeight()-10, Align.center);
     }
 
 

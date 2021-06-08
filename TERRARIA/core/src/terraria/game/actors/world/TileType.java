@@ -18,9 +18,10 @@ public enum TileType {
     LAVA(9, true, "lava", 0f),
     MOSSY_STONE(10, true, "mossy_stone", 2f),
     DIRT_BACKGROUND(14,false,"dirt_bg", 0.5f),
+    TIMBER(17, true, "timber", 2f),
 
     WEED(11, false, "weed", 0),
-    LOG(12, false, "log", 1.5f),
+    LOG(12, false, "log", 2f),
     PEBBLE(13, false,"pebble", 0),
     SAPLING(16, false, "sapling", 0),
 
