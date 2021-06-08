@@ -6,11 +6,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import terraria.game.TerrariaGame;
+import terraria.game.actors.entities.EntityLoader;
+import terraria.game.actors.world.GeneratorMap.MapLoader;
+import terraria.game.screens.MainMenuScreen;
 
 public class PlayerHealth {
 
 
-    double health;  //0 = death
+    public double health;  //0 = death
     public TextureRegion[][] heart;
     float ScreenX, ScreenY,ScreenWidth,ScreenHeigth;
 
@@ -19,6 +22,7 @@ public class PlayerHealth {
     public PlayerHealth( TerrariaGame game,TextureRegion[][] heart, double health ){
         this.health = health;
         this.heart = heart;
+
     }
 
     public void ApplyDamage(double damage) {
@@ -35,6 +39,7 @@ public class PlayerHealth {
         ScreenY = vec.y -  stage.getViewport().getScreenHeight()/2;
         ScreenWidth =   stage.getViewport().getScreenWidth();
         ScreenHeigth = stage.getViewport().getScreenHeight();
+
     }
 
 

@@ -26,7 +26,7 @@ public class Player extends Entity {
     private static final double FALLDAMAGE_COEFF = -0.005;
     private static float fallDamage;
 
-    private PlayerHealth playerHealth;
+    public PlayerHealth playerHealth;
     private Inventory inventory;
     private boolean invulnerable = false;
     private final float INVULNERABILITY_TIME = 1f;  //1f = 1sec
