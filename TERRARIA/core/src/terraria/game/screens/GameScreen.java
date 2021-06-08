@@ -20,6 +20,7 @@ import terraria.game.actors.Inventory.Inventory;
 import terraria.game.actors.Inventory.ItemsGraphic;
 import terraria.game.actors.entities.*;
 import terraria.game.actors.entities.player.Player;
+import terraria.game.actors.world.DayNightCycle;
 import terraria.game.actors.world.GameMap;
 import terraria.game.actors.world.GeneratorMap.MapLoader;
 import terraria.game.actors.world.ParallaxBackground;
@@ -45,6 +46,7 @@ public class GameScreen extends ScreenAdapter {
     //Acteurs//
     ParallaxBackground parallaxBackground;
     Inventory inventory;
+    DayNightCycle dayNightCycle;
 
     private Music gameMusicDay;
     private Music forestAmbianceDay;
@@ -67,6 +69,9 @@ public class GameScreen extends ScreenAdapter {
         //Initialisation du stage et de la camera//
         stage = new Stage(new ScreenViewport());
         camera = (OrthographicCamera) stage.getViewport().getCamera();
+
+
+        dayNightCycle = new DayNightCycle(game.getAssetManager().get("dayNightCycle.png",Texture.class));
 
         TextureRegion save = new TextureRegion(new Texture(Gdx.files.internal("background/save.png")));
         TextureRegion savePressed = new TextureRegion(new Texture(Gdx.files.internal("background/savePressed.png")));
@@ -115,6 +120,7 @@ public class GameScreen extends ScreenAdapter {
         inventory = player.getInventory();
 
         //On ajoute nos acteurs//
+        stage.addActor(dayNightCycle);
         stage.addActor(parallaxBackground);
         stage.addActor(gameMap);
         stage.addActor(inventory);
@@ -253,6 +259,7 @@ public class GameScreen extends ScreenAdapter {
             }
         }
 
+        dayNightCycle.update(camera,stage);
         parallaxBackground.update(camera, stage);
         inventory.update(camera, stage);
         for (ItemsGraphic items : inventory.getGraphicItems()) {

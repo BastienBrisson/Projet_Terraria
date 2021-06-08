@@ -33,7 +33,7 @@ public class LoadingScreen extends ScreenAdapter {
 
     public static int TEXTURE_NUMBER_PLAYER = 4;
     public static int TEXTURE_NUMBER_MUSHROOM = 4;
-    public static int TEXTURE_NUMBER_PARALLAX_GAME = 3;
+    public static int TEXTURE_NUMBER_PARALLAX_GAME = 1;
 
     private static final float PROGRESS_BAR_WIDTH = 500;
     private static final float PROGRESS_BAR_HEIGHT = 25;
@@ -78,6 +78,7 @@ public class LoadingScreen extends ScreenAdapter {
         game.getAssetManager().load("cailloux.png",Texture.class );
         game.getAssetManager().load("filtre.png", Texture.class);
         game.getAssetManager().load("heart.png",Texture.class);
+        game.getAssetManager().load("dayNightCycle.png",Texture.class);
         game.getAssetManager().load("inventory/slot.png",Texture.class);
         game.getAssetManager().load("inventory/itemsInventory.png",Texture.class);
         game.getAssetManager().load("inventory/hover.png",Texture.class);
@@ -134,7 +135,7 @@ public class LoadingScreen extends ScreenAdapter {
         if (game.getAssetManager().update()) {
 
             Array<Texture> texturesParallax = new Array<Texture>();
-            for(int i = 1; i < TEXTURE_NUMBER_PARALLAX_GAME ;i++){
+            for(int i = 1; i < TEXTURE_NUMBER_PARALLAX_GAME + 1;i++){
                 texturesParallax.add(game.getAssetManager().get("parallax/img"+i+".png", Texture.class));
                 texturesParallax.get(texturesParallax.size-1).setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
             }
