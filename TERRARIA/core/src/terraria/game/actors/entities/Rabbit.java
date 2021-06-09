@@ -15,16 +15,16 @@ import terraria.game.actors.world.GameMap;
 import terraria.game.actors.world.TileType;
 import terraria.game.screens.LoadingScreen;
 
-public class Mushroom extends Entity {
+public class Rabbit extends Entity {
 
     Player target;
 
-    private static final int SPEED = 75, JUMP_VELOCITY = 6, RANGE = 25 * TileType.TILE_SIZE;
+    private static final int SPEED = 200, JUMP_VELOCITY = 5, RANGE = 25 * TileType.TILE_SIZE;
 
-    private double health = 5;
-    private boolean invulnerable = false, flip = false;
-    private final float INVULNERABILITY_TIME = 0.25f;  //1f = 1sec
-    private float invulnerabilityTimer = 0f;
+    private double health = 3;
+    private boolean invulnerable = false, scared = false, flip = false;
+    private final float INVULNERABILITY_TIME = 0.25f, SCARED_TIME = 10f;  //1f = 1sec
+    private float invulnerabilityTimer = 0f, scaredTimer = 0f;
 
     private int state = 0;
     private static final int IDLE = 0, RUNNING = 1, JUMPING = 2, HIT = 3;
@@ -54,10 +54,10 @@ public class Mushroom extends Entity {
         animations = new Array<>();
         for(int i = 0; i < LoadingScreen.TEXTURE_NUMBER_MOBS; i++){
             switch (i){
-                case IDLE: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("mobs/mushroom"+i+".png", Texture.class)),7 , 1F));break;
-                case RUNNING: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("mobs/mushroom"+i+".png", Texture.class)),8 , 0.5F));break;
-                case JUMPING: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("mobs/mushroom"+i+".png", Texture.class)),1 , 0.5F));break;
-                case HIT: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("mobs/mushroom"+i+".png", Texture.class)),2 , 0.1F));break;
+                case IDLE: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("mobs/rabbit"+i+".png", Texture.class)),4, 1F));break;
+                case RUNNING: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("mobs/rabbit"+i+".png", Texture.class)),6 , 0.25F));break;
+                case JUMPING: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("mobs/rabbit"+i+".png", Texture.class)),1 , 0F));break;
+                case HIT: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("mobs/rabbit"+i+".png", Texture.class)),2 , 0.1F));break;
             }
         }
     }
@@ -70,31 +70,29 @@ public class Mushroom extends Entity {
             float xDistance = target.pos.x - pos.x;
             float yDistance = target.pos.y - pos.y;
 
-            //if player in range
-            if (!invulnerable && xDistance < RANGE && xDistance > -RANGE && yDistance < RANGE && yDistance > -RANGE) {
+            //if rabbit scared and player in range
+            if (!invulnerable && scared && xDistance < RANGE && xDistance > -RANGE && yDistance < RANGE && yDistance > -RANGE) {
 
-                //run toward player
-                if (xDistance > getWidth()) {
-                    moveX(SPEED * deltaTime);
-                    state = RUNNING;
-                } else if (xDistance < -target.getWidth()) {
+                //run away from player
+                if (xDistance >= 0) {
                     moveX(-SPEED * deltaTime);
                     state = RUNNING;
-                } else {
-                    if (yDistance < getHeight() && yDistance > -target.getHeight())    //player touched
-                        target.takeAhit(1);
-                    state = IDLE;
+                } else if (xDistance < 0) {
+                    moveX(SPEED * deltaTime);
+                    state = RUNNING;
                 }
 
                 TileType frontTile =  flipX ? gameMap.getTileTypeByLocation(1, pos.x - TileType.TILE_SIZE/2, pos.y) : gameMap.getTileTypeByLocation(1, pos.x + getWidth() + TileType.TILE_SIZE/2, pos.y);
                 TileType frontGroundTile =  flipX ? gameMap.getTileTypeByLocation(1, pos.x - TileType.TILE_SIZE/2, pos.y - TileType.TILE_SIZE) : gameMap.getTileTypeByLocation(1, pos.x + getWidth() + TileType.TILE_SIZE/2, pos.y - TileType.TILE_SIZE);
-                //jump if block in front or if hole in front and player upward
-                if ( grounded && ( ( frontTile != null && frontTile.isCollidable() ) || ( (frontGroundTile == null || !frontGroundTile.isCollidable()) && yDistance >= 0 )  ) )
+                //jump if block or  hole in front
+                if ( grounded && ( ( frontTile != null && frontTile.isCollidable() ) || ( frontGroundTile == null || !frontGroundTile.isCollidable() )  ) )
                     this.velocityY += JUMP_VELOCITY * getWeight();
 
             } else {
                 state = IDLE;
+                if (scared && scaredTimer > 1) {scared = false; scaredTimer = 0f;}
             }
+
         } else {
             //No target (never supposed to happen)
             state = IDLE;
@@ -113,7 +111,16 @@ public class Mushroom extends Entity {
             else moveX(-4*getWeight() * deltaTime);
         }
 
-        //Check shroom state
+        //Check if bunny scared
+        if (scared) {
+            scaredTimer += deltaTime;
+            if (scaredTimer > SCARED_TIME) {
+                scaredTimer = 0f;
+                scared = false;
+            }
+        }
+
+        //Check bunny state
         if (invulnerable) state = HIT;
         else if (!grounded) state = JUMPING;
         else if (grounded && state == JUMPING) state = IDLE;
@@ -124,8 +131,9 @@ public class Mushroom extends Entity {
         if (!invulnerable) {
             health -= damage;
             flip = flipX;
-            if (grounded) this.velocityY += 3*getWeight();  //Knockback
+            if (grounded) this.velocityY += 2*getWeight();  //Knockback
             invulnerable = true;
+            scared = true; scaredTimer = 0;
         }
     }
 

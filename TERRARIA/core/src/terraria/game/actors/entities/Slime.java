@@ -15,7 +15,7 @@ import terraria.game.actors.world.GameMap;
 import terraria.game.actors.world.TileType;
 import terraria.game.screens.LoadingScreen;
 
-public class Mushroom extends Entity {
+public class Slime extends Entity {
 
     Player target;
 
@@ -54,10 +54,10 @@ public class Mushroom extends Entity {
         animations = new Array<>();
         for(int i = 0; i < LoadingScreen.TEXTURE_NUMBER_MOBS; i++){
             switch (i){
-                case IDLE: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("mobs/mushroom"+i+".png", Texture.class)),7 , 1F));break;
-                case RUNNING: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("mobs/mushroom"+i+".png", Texture.class)),8 , 0.5F));break;
-                case JUMPING: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("mobs/mushroom"+i+".png", Texture.class)),1 , 0.5F));break;
-                case HIT: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("mobs/mushroom"+i+".png", Texture.class)),2 , 0.1F));break;
+                case IDLE: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("mobs/slime"+i+".png", Texture.class)),5 , 1F));break;
+                case RUNNING: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("mobs/slime"+i+".png", Texture.class)),15 , 1F));break;
+                case JUMPING: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("mobs/slime"+i+".png", Texture.class)),1 , 0.5F));break;
+                case HIT: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("mobs/slime"+i+".png", Texture.class)),2 , 0.1F));break;
             }
         }
     }
@@ -113,7 +113,7 @@ public class Mushroom extends Entity {
             else moveX(-4*getWeight() * deltaTime);
         }
 
-        //Check shroom state
+        //Check mob state
         if (invulnerable) state = HIT;
         else if (!grounded) state = JUMPING;
         else if (grounded && state == JUMPING) state = IDLE;
@@ -158,7 +158,7 @@ public class Mushroom extends Entity {
                 break;
         }
 
-        batch.draw(texture, flipX ? pos.x + getWidth() : pos.x, pos.y, flipX ? -getWidth() : getWidth(), getHeight());
+        batch.draw(texture, !flipX ? pos.x + getWidth() : pos.x, pos.y, !flipX ? -getWidth() : getWidth(), getHeight());
     }
 
     public void setTarget(Player target) { this.target = target; }

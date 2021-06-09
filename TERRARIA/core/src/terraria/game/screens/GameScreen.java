@@ -128,9 +128,19 @@ public class GameScreen extends ScreenAdapter {
         for(Entity entity : entities ){
             stage.addActor(entity);
             //All monsters focus the player
-            if (entity.getType() == EntityType.SHROOM) {
-                Mushroom monster = (Mushroom) entity;
-                monster.setTarget(player);
+            switch (entity.getType()) {
+                case MUSHROOM:
+                    Mushroom mushroom = (Mushroom) entity;
+                    mushroom.setTarget(player);
+                    break;
+                case RABBIT:
+                    Rabbit rabbit = (Rabbit) entity;
+                    rabbit.setTarget(player);
+                    break;
+                case SLIME:
+                    Slime slime = (Slime) entity;
+                    slime.setTarget(player);
+                    break;
             }
         }
 
@@ -258,6 +268,17 @@ public class GameScreen extends ScreenAdapter {
             entity = it.next();
             entity.update(delta, gravity, camera, stage);
             if (entity.getHealth() <= 0) {  //if entity dead
+                switch (entity.getType()) {
+                    case MUSHROOM:
+                        inventory.addTileInInventory(TileType.MUSHROOM.getId());
+                        break;
+                    case SLIME:
+                        inventory.addTileInInventory(TileType.SLIME.getId());
+                        break;
+                    case RABBIT:
+                        inventory.addTileInInventory(TileType.RABBIT_MEAT.getId());
+                        break;
+                }
                 entity.remove();            //remove it from stage
                 it.remove();                //stop updating it
             }
@@ -315,7 +336,7 @@ public class GameScreen extends ScreenAdapter {
      * @param playerY in game coordinates
      * @param spawnRadius in number of blocs
      */
-    public void spawnMushroom (int playerX, int playerY, int spawnRadius) {
+    public void spawnMob (int playerX, int playerY, int spawnRadius, EntityType type) {
         //Check all valid spots
         List<Vector2> validPos = new ArrayList<Vector2>();
         for (int x = playerX - spawnRadius; x <= playerX + spawnRadius; x++ ) {
@@ -331,16 +352,36 @@ public class GameScreen extends ScreenAdapter {
             }
         }
 
+
         if (!validPos.isEmpty()) {
             //Choose a random spawn point
             Random rand = new Random();
             Vector2 randomPos = validPos.get(rand.nextInt(validPos.size()));
 
-            Mushroom entity = new Mushroom();
-            entity.create((int)randomPos.x * TileType.TILE_SIZE, (int)randomPos.y * TileType.TILE_SIZE, EntityType.SHROOM, gameMap, game);
-            entities.add(entity);
-            stage.addActor(entity);
-            entity.setTarget(player);
+            switch (type) {
+                case MUSHROOM:
+                    Mushroom mushroom = new Mushroom();
+                    mushroom.create((int)randomPos.x * TileType.TILE_SIZE, (int)randomPos.y * TileType.TILE_SIZE, EntityType.MUSHROOM, gameMap, game);
+                    entities.add(mushroom);
+                    stage.addActor(mushroom);
+                    mushroom.setTarget(player);
+                    break;
+                case RABBIT:
+                    Rabbit rabbit = new Rabbit();
+                    rabbit.create((int)randomPos.x * TileType.TILE_SIZE, (int)randomPos.y * TileType.TILE_SIZE, EntityType.RABBIT, gameMap, game);
+                    entities.add(rabbit);
+                    stage.addActor(rabbit);
+                    rabbit.setTarget(player);
+                    break;
+                case SLIME:
+                    Slime slime = new Slime();
+                    slime.create((int)randomPos.x * TileType.TILE_SIZE, (int)randomPos.y * TileType.TILE_SIZE, EntityType.RABBIT, gameMap, game);
+                    entities.add(slime);
+                    stage.addActor(slime);
+                    slime.setTarget(player);
+                    break;
+            }
+
         }
     }
 

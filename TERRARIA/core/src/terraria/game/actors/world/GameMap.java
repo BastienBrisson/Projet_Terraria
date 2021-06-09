@@ -145,7 +145,8 @@ public class GameMap extends Actor {
                 //bloc indestructible
                 breakable = false;
             } else {
-                breakingAnimation.setCycleTime(tile.getHardness());
+                //breakingAnimation.setCycleTime(tile.getHardness());
+                breakingAnimation.setCycleTime(0);
                 breakable = true;
             }
         }

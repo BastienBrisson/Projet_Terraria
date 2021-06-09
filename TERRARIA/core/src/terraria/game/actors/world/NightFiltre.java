@@ -101,9 +101,9 @@ public class NightFiltre extends Actor {
         }
 
         int srcFunc = batch.getBlendSrcFunc();
-        System.out.println(srcFunc);
+        //System.out.println(srcFunc);
         int dstFunc = batch.getBlendDstFunc();
-        System.out.println(dstFunc);
+        //System.out.println(dstFunc);
         batch.enableBlending();
         batch.setBlendFunction(Gdx.gl20.GL_ZERO, Gdx.gl20.GL_SRC_COLOR);
         batch.draw(textures, x, y, originX, originY, width, heigth, scaleX, scaleY, rotation, srcX, srcY, textures.getWidth(), textures.getHeight(), flipX, flipY);

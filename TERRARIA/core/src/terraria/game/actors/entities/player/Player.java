@@ -20,10 +20,11 @@ import terraria.game.screens.LoadingScreen;
 
 public class Player extends Entity {
 
-    private static final int SPEED = 200, JUMP_VELOCITY = 4, RANGE = 5, SPAWN_RADIUS = 15;  //JUMPVELOC = 5
+    private static final int WALK_SPEED = 150, RUN_SPEED = 200, JUMP_VELOCITY = 4, RANGE = 5, SPAWN_RADIUS = 15;  //JUMPVELOC = 5
     private static final int textureWidth = 48, lateralOffset = -9;
-
     private static final double FALLDAMAGE_COEFF = -0.005;
+
+    private static int speed;
     private static float fallDamage;
 
     public PlayerHealth playerHealth;
@@ -40,7 +41,7 @@ public class Player extends Entity {
     private float stepSoundInterval = 0.35f;
 
     private static int state = 0;
-    private static final int IDLE = 0, JUMPING = 1, RUNNING = 2, HIT = 3;
+    private static final int IDLE = 0, JUMPING = 1, RUNNING = 2, HIT = 3, WALKING = 4;
 
     @Override
     public void create(EntitySnapshot snapshot, EntityType type, GameMap gameMap, TerrariaGame game) {
@@ -73,6 +74,7 @@ public class Player extends Entity {
                 case 1: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("playerAnimation/player"+i+".png", Texture.class)),1 , 0.5F));break;
                 case 2: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("playerAnimation/player"+i+".png", Texture.class)),6 , 0.5F));break;
                 case 3: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("playerAnimation/player"+i+".png", Texture.class)),2 , 0.1F));break;
+                case 4: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("playerAnimation/player"+i+".png", Texture.class)),4 , 0.75F));break;
             }
         }
 
@@ -93,7 +95,7 @@ public class Player extends Entity {
             if (Gdx.input.getX() <= 25) {
 
                 if (pos.x - camera.position.x  < 100) {
-                    camera.position.set(camera.position.x - SPEED * deltaTime, pos.y, camera.position.z);
+                    camera.position.set(camera.position.x - RUN_SPEED * deltaTime, pos.y, camera.position.z);
                 }
                 if (pos.x - camera.position.x > 200) {
                     camera.position.set(pos.x - 200, pos.y, camera.position.z);
@@ -102,7 +104,7 @@ public class Player extends Entity {
             } else if (Gdx.input.getX() > gameMap.ScreenWidth - 25) {
 
                 if (camera.position.x - pos.x  < 100) {
-                    camera.position.set(camera.position.x + SPEED * deltaTime, pos.y, camera.position.z);
+                    camera.position.set(camera.position.x + RUN_SPEED * deltaTime, pos.y, camera.position.z);
                 }
                 if (camera.position.x - pos.x > 200) {
                     camera.position.set(pos.x + 200, pos.y, camera.position.z);
@@ -111,7 +113,7 @@ public class Player extends Entity {
             } else if(Gdx.input.getY() <= 25) {
 
                 if(camera.position.y - pos.y < 100) {
-                    camera.position.set(pos.x, (camera.position.y + SPEED * deltaTime), camera.position.z);
+                    camera.position.set(pos.x, (camera.position.y + RUN_SPEED * deltaTime), camera.position.z);
                 }
                 if(camera.position.y - pos.y > 200) {
                     camera.position.set(pos.x, pos.y + 200, camera.position.z);
@@ -120,7 +122,7 @@ public class Player extends Entity {
             } else if(Gdx.input.getY() > gameMap.ScreenHeigth - 25) {
 
                 if(pos.y - camera.position.y < 100) {
-                    camera.position.set(pos.x, (camera.position.y - SPEED * deltaTime), camera.position.z);
+                    camera.position.set(pos.x, (camera.position.y - RUN_SPEED * deltaTime), camera.position.z);
                 }
                 if(pos.y - camera.position.y > 200) {
                     camera.position.set(pos.x, pos.y - 200, camera.position.z);
@@ -128,17 +130,17 @@ public class Player extends Entity {
 
             } else {
 
-                if (camera.position.x < pos.x - SPEED * deltaTime)  {
-                    camera.position.set(camera.position.x + SPEED * deltaTime, pos.y, camera.position.z);
+                if (camera.position.x < pos.x - RUN_SPEED * deltaTime)  {
+                    camera.position.set(camera.position.x + RUN_SPEED * deltaTime, pos.y, camera.position.z);
 
-                } else if (camera.position.x > pos.x + SPEED * deltaTime){
-                    camera.position.set(camera.position.x - SPEED * deltaTime, pos.y, 0);
+                } else if (camera.position.x > pos.x + RUN_SPEED * deltaTime){
+                    camera.position.set(camera.position.x - RUN_SPEED * deltaTime, pos.y, 0);
 
-                } else if (camera.position.y < pos.y - SPEED * deltaTime) {
-                    camera.position.set(pos.x, camera.position.y + SPEED * deltaTime, camera.position.z);
+                } else if (camera.position.y < pos.y - RUN_SPEED * deltaTime) {
+                    camera.position.set(pos.x, camera.position.y + RUN_SPEED * deltaTime, camera.position.z);
 
-                } else if (camera.position.y > pos.y + SPEED * deltaTime) {
-                    camera.position.set(pos.x, camera.position.y - SPEED * deltaTime, camera.position.z);
+                } else if (camera.position.y > pos.y + RUN_SPEED * deltaTime) {
+                    camera.position.set(pos.x, camera.position.y - RUN_SPEED * deltaTime, camera.position.z);
 
                 } else {
                     camera.position.set(pos.x , pos.y, 0);
@@ -160,6 +162,10 @@ public class Player extends Entity {
             this.velocityY += JUMP_VELOCITY * getWeight() * deltaTime;
         }
 
+        //Check if running
+        if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) speed = RUN_SPEED;
+        else speed = WALK_SPEED;
+
         //Check if falling from too high
         fallingCheck();
 
@@ -167,12 +173,12 @@ public class Player extends Entity {
 
         //Handle the controls
         if (Gdx.input.isKeyPressed(Keys.Q) && TerrariaGame.getState() == GameScreen.GAME_RUNNING) {
-            if (moveX(-SPEED * deltaTime) && grounded && !invulnerable) {
+            if (moveX(-speed * deltaTime) && grounded && !invulnerable) {
                 playSteppingSound(deltaTime);
             }
         }
         else if (Gdx.input.isKeyPressed(Keys.D) && TerrariaGame.getState() == GameScreen.GAME_RUNNING) {
-            if (moveX(SPEED * deltaTime) && grounded && !invulnerable) {
+            if (moveX(speed * deltaTime) && grounded && !invulnerable) {
                 playSteppingSound(deltaTime);
             }
         }
@@ -189,7 +195,10 @@ public class Player extends Entity {
         //Check the state of the character
         if (invulnerable) state = HIT;
         else if (!grounded) state = JUMPING;
-        else if (Gdx.input.isKeyPressed(Keys.Q) || Gdx.input.isKeyPressed(Keys.D)) state = RUNNING;
+        else if (Gdx.input.isKeyPressed(Keys.Q) || Gdx.input.isKeyPressed(Keys.D)) {
+            if (speed == RUN_SPEED) state = RUNNING;
+            else state = WALKING;
+        }
         else state = IDLE;
 
         //Update health
@@ -204,7 +213,6 @@ public class Player extends Entity {
         if (!invulnerable) {
             playerHealth.ApplyDamage(damage);
             hurt.play();
-            //if (grounded) velocityY += 2 * getWeight();  //Knockback
             invulnerable = true;
         }
     }
@@ -259,6 +267,10 @@ public class Player extends Entity {
             case HIT:
                 texture = animations.get(3).getFrame();
                 animations.get(3).update( Gdx.graphics.getDeltaTime());
+                break;
+            case WALKING:
+                texture = animations.get(4).getFrame();
+                animations.get(4).update( Gdx.graphics.getDeltaTime());
                 break;
             default :   //state == IDLE
                 texture = animations.get(0).getFrame();

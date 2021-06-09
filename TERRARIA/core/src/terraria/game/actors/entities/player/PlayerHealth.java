@@ -28,7 +28,6 @@ public class PlayerHealth {
     public void ApplyDamage(double damage) {
         double newHealth = health - Math.round(damage*4f)/4f;
         health = (newHealth > 0) ? newHealth : 0;
-        //System.out.println(damage+" damage -> health = "+health);
     }
 
     public void update(Camera camera, Stage stage){

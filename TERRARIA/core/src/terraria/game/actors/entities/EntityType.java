@@ -12,7 +12,10 @@ import java.util.HashMap;
 public enum EntityType {
 
     PLAYER("player", Player.class, 70, 30, 52 ),    //WEIGHT = 40
-    SHROOM("monster", Mushroom.class, 20, 31, 31);
+    MUSHROOM("monster", Mushroom.class, 20, 31, 31),
+    SLIME("monster", Slime.class, 20, 31, 31),
+    RABBIT("mob", Rabbit.class, 70, 31, 16);
+
 
     private String id;
     private Class loaderClass;

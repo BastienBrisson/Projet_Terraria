@@ -20,7 +20,6 @@ public class Entity extends Actor {
     protected boolean flipX = false;
     public double health;
 
-    protected Array<Texture> textures;
     protected Array<Animation> animations;
 
 
@@ -44,8 +43,6 @@ public class Entity extends Actor {
         //Apply gravity
         float newY = pos.y;
         this.velocityY += gravity * deltaTime * getWeight();
-
-        //if (!grounded){System.out.println(velocityY);}  //test
 
         newY += this.velocityY * deltaTime;
         if(gameMap.doesRectCollideWithMap(pos.x, newY, (int)getWidth(), (int)getHeight())){
