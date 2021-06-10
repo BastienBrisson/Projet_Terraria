@@ -291,6 +291,7 @@ public class GameMap extends Actor {
         return TileType.getTileTypeById(id);
     }
 
+    public DataMap getDataMap(){return this.dataMap;}
     public int getPixelWidth(){return this.getMapWidth() * TileType.TILE_SIZE;}
     public int getPixelHeight(){return this.getMapHeight() * TileType.TILE_SIZE; }
 

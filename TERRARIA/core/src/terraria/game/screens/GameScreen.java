@@ -134,6 +134,8 @@ public class GameScreen extends ScreenAdapter {
         parallaxBackground.setSpeed(1);
 
         player = (Player) entities.get(0);
+        gameMap.getDataMap().startingPoint[0] = (int) player.pos.x;
+        gameMap.getDataMap().startingPoint[1] = (int) player.pos.y;
         inventory = player.getInventory();
 
         //On ajoute nos acteurs//
