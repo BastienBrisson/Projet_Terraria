@@ -148,7 +148,16 @@ public class ItemsGraphic extends Actor {
                     batch.draw(itemsTexture[0][item.getIdTile()], inventory.getScreenX() - (inventory.getWidthTile() / 2), OriginY + ScreenHeight - (7 * inventory.getHeightTile() + inventory.getHeightTile() / 2 + this.y * inventory.getHeightTile()));
                     if (item.getAmount() != 0)
                         font.draw(batch, String.valueOf(item.getAmount()), inventory.getScreenX()  + inventory.getWidthTile()/4, OriginY + ScreenHeight - (7 * inventory.getHeightTile() + inventory.getHeightTile() / 2 + this.y * inventory.getHeightTile()) + inventory.getHeightTile()/4);
+                    if (item.getIdTile() != 0) {
+                        font.draw(batch, "Cost :", inventory.getScreenX()  + inventory.getWidthTile()/2 + inventory.getWidthTile()/4, OriginY + ScreenHeight - (7 * inventory.getHeightTile() + inventory.getHeightTile() / 2 - 5 + this.y * inventory.getHeightTile()) + inventory.getHeightTile()/2);
+                        for (int i = 0; i < Craft.getCraftById(item.getIdTile()).getIdsItemNeeded().length; i++) {
+                            batch.draw(itemsTexture[0][Craft.getCraftById(item.getIdTile()).getIdsItemNeeded()[i]], inventory.getScreenX() - (inventory.getWidthTile() / 2) + inventory.getWidthTile()*2 + inventory.getWidthTile() * i, OriginY + ScreenHeight - (7 * inventory.getHeightTile() + inventory.getHeightTile() / 2 + this.y * inventory.getHeightTile()));
+                            font.draw(batch, String.valueOf(Craft.getCraftById(item.getIdTile()).getNumberItemNeeded()[i]),inventory.getScreenX() - (inventory.getWidthTile() / 2) + inventory.getWidthTile()*2 + inventory.getWidthTile() * i + inventory.getWidthTile()/2 + inventory.getWidthTile()/3,  OriginY + ScreenHeight - (7 * inventory.getHeightTile() + inventory.getHeightTile() / 2 + this.y * inventory.getHeightTile() - inventory.getHeightTile()/4));
+                        }
+                    }
+
                 }
+
             }
         }
     }
