@@ -127,6 +127,25 @@ public class GameScreen extends ScreenAdapter {
                 player = (Player) entities.get(0);
                 player.playerHealth.update(camera, stage);
                 res = 1;
+                stage.addActor(player);
+
+                for(Entity entity : entities ){
+                    //All monsters focus the player
+                    switch (entity.getType()) {
+                        case MUSHROOM:
+                            Mushroom mushroom = (Mushroom) entity;
+                            mushroom.setTarget(player);
+                            break;
+                        case RABBIT:
+                            Rabbit rabbit = (Rabbit) entity;
+                            rabbit.setTarget(player);
+                            break;
+                        case SLIME:
+                            Slime slime = (Slime) entity;
+                            slime.setTarget(player);
+                            break;
+                    }
+                }
             }
         });
 
