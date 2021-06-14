@@ -28,17 +28,29 @@ public class ItemsGraphic extends Actor {
     private int x;                   //Le numéro de la ligne ou est placé l'item dans l'affichage l'inventaire
     private int y;                   //Le numéro de la colonne ou est placé l'item dans l'affichage de l'inventaire
     private boolean craftableItem;
+    private int page;
 
     public ItemsGraphic(TerrariaGame game, final Items item, final Inventory inventory, DragAndDrop dragAndDrop) {
         this.item = item;
         this.inventory = inventory;
         this.moving = false;
         this.craftableItem = false;
+        this.page = 0;
         this.font = new BitmapFont();
         if (item.getNum() >= 50) {
             this.x = 1;
             this.y = item.getNum() - 50;
-            craftableItem = true;
+            this.craftableItem = true;
+            if (0 <= this.y && this.y < 5) {
+                this.page = 1;
+            } else if (5 <= this.y && this.y < 10) {
+                this.page = 2;
+            } else if (10 <= this.y && this.y < 15) {
+                this.page = 3;
+            } else if (15 <= this.y && this.y < 20) {
+                this.page = 4;
+            }
+            this.y = this.y - (this.page-1)*5;
         } else {
             //A partir du numéro de l'item il calcul sa position X et Y dans l'affichage de l'inventaire
             this.y = this.item.getNum();
@@ -114,9 +126,13 @@ public class ItemsGraphic extends Actor {
         if (!craftableItem) {
             setBounds(OriginX + inventory.getWidthTile() *  y - (inventory.getWidthTile()/2), OriginY + ScreenHeight - (x*inventory.getHeightTile()+inventory.getHeightTile() + inventory.getHeightTile()/2), 50, 50);
         } else {
-            setBounds(inventory.getScreenX() - (inventory.getWidthTile() / 2), OriginY + ScreenHeight - (7 * inventory.getHeightTile() + inventory.getHeightTile() / 2 + this.y * inventory.getHeightTile()), 50, 50);
-        }
+            if (inventory.getCurrentPage() == this.page) {
+                setBounds(inventory.getScreenX() - (inventory.getWidthTile() / 2), OriginY + ScreenHeight - (7 * inventory.getHeightTile() + inventory.getHeightTile() / 2 + this.y * inventory.getHeightTile()), 50, 50);
+            } else {
+                setBounds(inventory.getScreenX() - (inventory.getWidthTile() / 2), OriginY + ScreenHeight - (7 * inventory.getHeightTile() + inventory.getHeightTile() / 2 + this.y * inventory.getHeightTile()), 0, 0);
+            }
 
+        }
     }
 
     @Override
@@ -139,7 +155,7 @@ public class ItemsGraphic extends Actor {
                 }
             }
         } else {
-            if (inventory.isInventoryShow()) {
+            if (inventory.isInventoryShow() && inventory.getCurrentPage() == this.page) {
                 if (moving) {
                     batch.draw(itemsTexture[0][item.getIdTile()], cam.x - ScreenWidth / 2 + Gdx.input.getX(), cam.y + ScreenHeight / 2 - Gdx.input.getY());
                     if (item.getAmount() != 0)

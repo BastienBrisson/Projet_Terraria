@@ -2,6 +2,7 @@ package terraria.game.actors.Inventory;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -10,9 +11,16 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import terraria.game.TerrariaGame;
+import terraria.game.actors.entities.EntityLoader;
+import terraria.game.actors.world.GeneratorMap.MapLoader;
 import terraria.game.actors.world.TileType;
 
 public class Inventory extends Actor {
@@ -34,11 +42,18 @@ public class Inventory extends Actor {
     private int  width = 50, height = 50;                //Taille d'un slot
     private int nbCraftableItem;
     private BitmapFont font;                            //Police d'écriture
+    private int currentPage;
+
+    ImageButton leftArrow;
+    ImageButton rightArrow;
+    TextureRegion leftArrowImg;
+    TextureRegion rightArrowImg;
 
     Vector3 cam;
 
     public Inventory(TerrariaGame game) {
         this.game = game;
+        this.currentPage = 1;
         this.itemsList = new ArrayList<>();
         this.itemsGraphic = new ArrayList<>();
         this.countItems = new ArrayList<>();
@@ -59,6 +74,28 @@ public class Inventory extends Actor {
             craftableItemGraphicList.add(new ItemsGraphic(game, new Items(i+50, 0), this, dragAndDrop));
         }
         countItems();
+        leftArrowImg = new TextureRegion(new Texture(Gdx.files.internal("inventory/left_arrow.png")));
+        rightArrowImg = new TextureRegion(new Texture(Gdx.files.internal("inventory/right_arrow.png")));
+
+        leftArrow = new ImageButton(new TextureRegionDrawable(leftArrowImg));
+        leftArrow.setPosition(ScreenX - (width/2), ScreenY + ScreenHeight -  (6*height+height+height/2) - height, Align.center);
+        leftArrow.addListener(new ActorGestureListener() {
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                if (currentPage > 1) {
+                    currentPage--;
+                }
+            }
+        });
+
+        rightArrow = new ImageButton(new TextureRegionDrawable(rightArrowImg));
+        rightArrow.setPosition(ScreenX - (width/2), ScreenY + ScreenHeight -  (6*height+height+height/2) - height, Align.center);
+        rightArrow.addListener(new ActorGestureListener() {
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                if (currentPage < 4) {
+                    currentPage++;
+                }
+            }
+        });
     }
 
     public void update(Camera camera, Stage stage){
@@ -68,11 +105,13 @@ public class Inventory extends Actor {
         ScreenWidth =   stage.getViewport().getScreenWidth();
         ScreenHeight = stage.getViewport().getScreenHeight();
 
-        /*System.out.println("debut");
-        for(Items item : countItems) {
-            System.out.println(TileType.getTileTypeById(item.getIdTile())+"  : "+item.getAmount());
+        if (isInventoryShow()) {
+            leftArrow.setPosition(ScreenX + 25 , ScreenY + ScreenHeight - 12*height, Align.center);
+            rightArrow.setPosition(ScreenX + 75 , ScreenY + ScreenHeight - 12*height, Align.center);
+        } else {
+            leftArrow.setPosition(0, 0, Align.center);
+            rightArrow.setPosition(0, 0, Align.center);
         }
-        System.out.println("fin");*/
 
 
     }
@@ -108,9 +147,11 @@ public class Inventory extends Actor {
                 font.draw(batch, String.valueOf("Craftable items"),ScreenX,  ScreenY + ScreenHeight - 10 - 6*getHeightTile());
             }
             //On dessine les slots de craft disponible
-            for (int craftableItem = 0; craftableItem < nbCraftableItem; craftableItem++) {
+            for (int craftableItem = 0; craftableItem < nbCraftableItem && craftableItem < 5; craftableItem++) {
                 batch.draw(slot[0][0], ScreenX - (width/2), ScreenY + ScreenHeight -  (6*height+height+height/2) - craftableItem*height);
             }
+
+
         }
 
 
@@ -293,5 +334,29 @@ public class Inventory extends Actor {
                 inv++;
             }
         }
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+    }
+
+    public ImageButton getLeftArrow() {
+        return leftArrow;
+    }
+
+    public void setLeftArrow(ImageButton leftArrow) {
+        this.leftArrow = leftArrow;
+    }
+
+    public ImageButton getRightArrow() {
+        return rightArrow;
+    }
+
+    public void setRightArrow(ImageButton rightArrow) {
+        this.rightArrow = rightArrow;
     }
 }

@@ -197,6 +197,9 @@ public class GameScreen extends ScreenAdapter {
         stage.addActor(exitButton);
         stage.addActor(restartButton);
 
+        stage.addActor(inventory.getLeftArrow());
+        stage.addActor(inventory.getRightArrow());
+
         //Lance la musique
         gameMusicDay = game.getAssetManager().get("audio/music/game_song_day.mp3", Music.class);
         forestAmbianceDay = game.getAssetManager().get("audio/music/forest_ambiance_day.mp3", Music.class);
