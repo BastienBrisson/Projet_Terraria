@@ -46,8 +46,8 @@ public class GameScreen extends ScreenAdapter {
     DayNightCycle dayNightCycle;
     NightFiltre nightFiltre;
 
-    private Music gameMusicDay;
-    private Music forestAmbianceDay;
+    private Music gameMusicDay, gameMusicNight;
+    private Music forestAmbianceDay, forestAmbianceNight;
 
     GameMap gameMap;
     ImageButton saveButton;
@@ -57,6 +57,10 @@ public class GameScreen extends ScreenAdapter {
     Boolean isMenuShow = false;
 
     protected ArrayList<Entity> entities;
+    private final int MAX_ENTITIES = 128;
+    private final int rabbitSpawnRate = 20, mushroomSpawnRate = 20, slimeSpawnRate = 10;    //ex: 1 rabbit spawn every 20sec
+    private float rabbitTimer = rabbitSpawnRate/2, mushroomTimer = 0, slimeTimer = 0;       //used to count sec
+
     Player player;
     private int res = 0;
 
@@ -119,6 +123,7 @@ public class GameScreen extends ScreenAdapter {
         restartButton = new ImageButton(new TextureRegionDrawable(restart), new TextureRegionDrawable(restartPressed));
         restartButton.setPosition(0, 0, Align.center);
         restartButton.addListener(new ActorGestureListener() {
+
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
                 Player p = new Player();
@@ -128,24 +133,7 @@ public class GameScreen extends ScreenAdapter {
                 player.playerHealth.update(camera, stage);
                 res = 1;
                 stage.addActor(player);
-
-                for(Entity entity : entities ){
-                    //All monsters focus the player
-                    switch (entity.getType()) {
-                        case MUSHROOM:
-                            Mushroom mushroom = (Mushroom) entity;
-                            mushroom.setTarget(player);
-                            break;
-                        case RABBIT:
-                            Rabbit rabbit = (Rabbit) entity;
-                            rabbit.setTarget(player);
-                            break;
-                        case SLIME:
-                            Slime slime = (Slime) entity;
-                            slime.setTarget(player);
-                            break;
-                    }
-                }
+                setEntitiesTarget();
             }
         });
 
@@ -165,21 +153,6 @@ public class GameScreen extends ScreenAdapter {
 
         for(Entity entity : entities ){
             stage.addActor(entity);
-            //All monsters focus the player
-            switch (entity.getType()) {
-                case MUSHROOM:
-                    Mushroom mushroom = (Mushroom) entity;
-                    mushroom.setTarget(player);
-                    break;
-                case RABBIT:
-                    Rabbit rabbit = (Rabbit) entity;
-                    rabbit.setTarget(player);
-                    break;
-                case SLIME:
-                    Slime slime = (Slime) entity;
-                    slime.setTarget(player);
-                    break;
-            }
         }
 
         stage.addActor(nightFiltre);
@@ -200,17 +173,34 @@ public class GameScreen extends ScreenAdapter {
         stage.addActor(inventory.getLeftArrow());
         stage.addActor(inventory.getRightArrow());
 
-        //Lance la musique
+        //Make mobs focus the player
+        setEntitiesTarget();
+
+        //Initialize music
         gameMusicDay = game.getAssetManager().get("audio/music/game_song_day.mp3", Music.class);
-        forestAmbianceDay = game.getAssetManager().get("audio/music/forest_ambiance_day.mp3", Music.class);
+        gameMusicNight = game.getAssetManager().get("audio/music/game_song_night.mp3", Music.class);
+
+        forestAmbianceDay = game.getAssetManager().get("audio/music/forest_ambiance_day.wav", Music.class);
+        forestAmbianceNight = game.getAssetManager().get("audio/music/forest_ambiance_night.wav", Music.class);
+
         gameMusicDay.setLooping(true);
+        gameMusicNight.setLooping(true);
         forestAmbianceDay.setLooping(true);
-        forestAmbianceDay.setVolume(0.25f);
+        forestAmbianceNight.setLooping(true);
 
         TerrariaGame.setState(GAME_RUNNING);
     }
 
-    public void update(float delta) {
+
+
+
+    @Override
+    public void render(float delta) {
+        this.camera.update();
+
+        Gdx.gl.glClearColor(0, 0, 0, 0);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         switch (TerrariaGame.getState()) {
             case GAME_PAUSED:
                 updatePaused();
@@ -222,21 +212,12 @@ public class GameScreen extends ScreenAdapter {
                 updateOver();
                 break;
         }
+
+        stage.act(delta);
+        stage.draw();
+
     }
 
-    public void updatePaused() {
-        //Handle pause Menu
-        saveButton.setPosition(camera.position.x, camera.position.y + 150, Align.center);
-        optionButton.setPosition(camera.position.x, camera.position.y, Align.center);
-        exitButton.setPosition(camera.position.x,camera.position.y - 150, Align.center);
-
-        if(Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
-            saveButton.setPosition(0, 0, Align.center);
-            optionButton.setPosition(0,0, Align.center);
-            exitButton.setPosition(0, 0, Align.center);
-            TerrariaGame.setState(GAME_RUNNING);
-        }
-    }
 
     public void updateRunning(float delta) {
         if(Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
@@ -245,9 +226,11 @@ public class GameScreen extends ScreenAdapter {
             TerrariaGame.setState(GAME_OVER);
         }
 
+        //Right or left click on blocs
         if (!isMenuShow && !inventory.isInventoryShow() && Gdx.input.isTouched())
             blocAction();
 
+        //Handle inventory
         if(Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.E)) {
             if (inventory.isInventoryShow()) {
                 inventory.setInventoryShow(false);
@@ -257,11 +240,35 @@ public class GameScreen extends ScreenAdapter {
             }
         }
 
-        //Stop forest sounds if player in cave
-        if (gameMap.getTileTypeByLocation(0, player.getX(), player.getY()) == TileType.STONE_BACKGROUND)
-            forestAmbianceDay.pause();
-        else
-            forestAmbianceDay.play();
+        //Handle music
+        TileType backTile = gameMap.getTileTypeByLocation(0, player.getX(), player.getY());
+        DayNightCycle.TimeOfDay timeOfDay = dayNightCycle.getTime();
+        switch (timeOfDay) {
+            case SUNRISE:
+            case DAY:
+            case SUNSET:
+                if (gameMusicNight.isPlaying()) gameMusicNight.stop();
+                if (forestAmbianceNight.isPlaying()) forestAmbianceNight.stop();
+
+                gameMusicDay.play();
+                if (backTile == null) forestAmbianceDay.play();
+                else forestAmbianceDay.pause();
+
+                break;
+
+            case NIGHT:
+                if (gameMusicDay.isPlaying()) gameMusicDay.stop();
+                if (forestAmbianceDay.isPlaying()) forestAmbianceDay.stop();
+
+                gameMusicNight.play();
+                if (backTile != TileType.STONE_BACKGROUND) forestAmbianceNight.play();
+                else forestAmbianceNight.pause();
+
+                break;
+        }
+
+        //Spawn mob
+        updateSpawnMob(delta, timeOfDay);
 
         //Update all actors
         gameMap.update(camera, stage);
@@ -272,17 +279,21 @@ public class GameScreen extends ScreenAdapter {
             entity = it.next();
             entity.update(delta, gravity, camera, stage);
             if (entity.getHealth() <= 0) {  //if entity dead
-                switch (entity.getType()) {
-                    case MUSHROOM:
-                        inventory.addTileInInventory(TileType.MUSHROOM.getId());
-                        break;
-                    case SLIME:
-                        inventory.addTileInInventory(TileType.SLIME.getId());
-                        break;
-                    case RABBIT:
-                        inventory.addTileInInventory(TileType.RABBIT_MEAT.getId());
-                        break;
+
+                if (entity.isLootable()) {  //if entity has loot
+                    switch (entity.getType()) {
+                        case MUSHROOM:
+                            inventory.addTileInInventory(TileType.MUSHROOM.getId());
+                            break;
+                        case SLIME:
+                            inventory.addTileInInventory(TileType.SLIME.getId());
+                            break;
+                        case RABBIT:
+                            inventory.addTileInInventory(TileType.RABBIT_MEAT.getId());
+                            break;
+                    }
                 }
+
                 entity.remove();            //remove it from stage
                 it.remove();                //stop updating it
             }
@@ -299,7 +310,24 @@ public class GameScreen extends ScreenAdapter {
         for (ItemsGraphic itemsCraft : inventory.getCraftableItemGraphicList()) {
             itemsCraft.update(camera, stage, inventory.isInventoryOpen());
         }
+
     }
+
+
+    public void updatePaused() {
+        //Handle pause Menu
+        saveButton.setPosition(camera.position.x, camera.position.y + 150, Align.center);
+        optionButton.setPosition(camera.position.x, camera.position.y, Align.center);
+        exitButton.setPosition(camera.position.x,camera.position.y - 150, Align.center);
+
+        if(Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
+            saveButton.setPosition(0, 0, Align.center);
+            optionButton.setPosition(0,0, Align.center);
+            exitButton.setPosition(0, 0, Align.center);
+            TerrariaGame.setState(GAME_RUNNING);
+        }
+    }
+
 
     public void updateOver() {
         if(res == 1) {
@@ -312,6 +340,7 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+
     @Override
     public void show() {
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
@@ -322,19 +351,7 @@ public class GameScreen extends ScreenAdapter {
         forestAmbianceDay.play();
     }
 
-    @Override
-    public void render(float delta) {
-        update(delta);
 
-        this.camera.update();
-
-        Gdx.gl.glClearColor(0, 0, 0, 0);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        stage.act(delta);
-        stage.draw();
-
-    }
 
     public void blocAction() {
         Vector3 pos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
@@ -360,39 +377,90 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
-    public OrthographicCamera getCamera() {
-        return camera;
+
+    public void updateSpawnMob (float delta,  DayNightCycle.TimeOfDay timeOfDay) {
+        if (entities.size() <= MAX_ENTITIES) {
+
+            switch (timeOfDay) {
+                case SUNRISE:
+                case DAY:
+                case SUNSET:
+                    rabbitTimer += delta;
+                    if (rabbitTimer >= rabbitSpawnRate) {
+                        rabbitTimer = 0;
+                        spawnMob(EntityType.RABBIT);
+                    }
+                    break;
+
+                case NIGHT:
+                    mushroomTimer += delta;
+                    slimeTimer += delta;
+
+                    if (mushroomTimer >= mushroomSpawnRate) {
+                        mushroomTimer = 0;
+                        spawnMob(EntityType.MUSHROOM);
+                    }
+
+                    if (slimeTimer >= slimeSpawnRate) {
+                        slimeTimer = 0;
+                        spawnMob(EntityType.SLIME);
+                    }
+                    break;
+            }
+
+        }
     }
 
+
     /**
-     * Spawn un champi dans une case vide random comprise dans un carré de taille spawnRadius autour du joueur
-     * (à améliorer avec un return 0 ou 1 si y'avait aucun emplacement de spawn)
-     * @param playerX in game coordinates
-     * @param playerY in game coordinates
-     * @param spawnRadius in number of blocs
+     * Spawn un mob dans une case vide random comprise dans un carré de taille spawnRadius autour du joueur
+     * Rabbit spawn de jour sur l'herbe et disparaissent la nuit
+     * Mushroom spawn la nuit sur l'herbe et ne disparaissent pas le jour
+     * Slime spawn sur n'importe quel bloc la nuit et disparaissent le jour
+     * @param type mob a faire spawn
      */
-    public void spawnMob (int playerX, int playerY, int spawnRadius, EntityType type) {
+    public void spawnMob (EntityType type) {
+        int playerX = (int) player.getX() / TileType.TILE_SIZE;
+        int playerY = (int) player.getY() / TileType.TILE_SIZE;
+        int spawnRadius = player.getSpawnRadius();
+
         //Check all valid spots
         List<Vector2> validPos = new ArrayList<Vector2>();
         for (int x = playerX - spawnRadius; x <= playerX + spawnRadius; x++ ) {
             for (int y = playerY - spawnRadius; y <= playerY + spawnRadius; y++ ) {
+
+                //Check if the spot is empty
                 TileType tileType = gameMap.getTileTypeByCoordinate(1, x, y);
-                //Check if empty spot
                 if (tileType == null || !tileType.isCollidable()) {
                     TileType underTile = gameMap.getTileTypeByCoordinate(1, x, y-1);
-                    //Check if solid ground
-                    if (underTile != null && underTile.isCollidable())
-                        validPos.add(new Vector2(x, y));
+
+                    //Check the specific conditions of each mob
+                    switch (type) {
+                        case MUSHROOM:
+                        case RABBIT:
+                            //Check if grass ground
+                            if (underTile == TileType.GRASS || underTile == TileType.MOSSY_STONE)
+                                validPos.add(new Vector2(x, y));
+                            break;
+
+                        case SLIME:
+                            //Check if solid ground
+                            if (underTile != null && underTile.isCollidable())
+                                validPos.add(new Vector2(x, y));
+                            break;
+                    }
+
                 }
+
             }
         }
-
 
         if (!validPos.isEmpty()) {
             //Choose a random spawn point
             Random rand = new Random();
             Vector2 randomPos = validPos.get(rand.nextInt(validPos.size()));
 
+            //Create new mob
             switch (type) {
                 case MUSHROOM:
                     Mushroom mushroom = new Mushroom();
@@ -410,13 +478,32 @@ public class GameScreen extends ScreenAdapter {
                     break;
                 case SLIME:
                     Slime slime = new Slime();
-                    slime.create((int)randomPos.x * TileType.TILE_SIZE, (int)randomPos.y * TileType.TILE_SIZE, EntityType.RABBIT, gameMap, game);
+                    slime.create((int)randomPos.x * TileType.TILE_SIZE, (int)randomPos.y * TileType.TILE_SIZE, EntityType.SLIME, gameMap, game);
                     entities.add(slime);
                     stage.addActor(slime);
                     slime.setTarget(player);
                     break;
             }
 
+        }
+    }
+
+    public void setEntitiesTarget () {
+        for (Entity entity : entities) {
+            switch (entity.getType()) {
+                case MUSHROOM:
+                    Mushroom mushroom = (Mushroom) entity;
+                    mushroom.setTarget(player);
+                    break;
+                case RABBIT:
+                    Rabbit rabbit = (Rabbit) entity;
+                    rabbit.setTarget(player);
+                    break;
+                case SLIME:
+                    Slime slime = (Slime) entity;
+                    slime.setTarget(player);
+                    break;
+            }
         }
     }
 
@@ -444,13 +531,22 @@ public class GameScreen extends ScreenAdapter {
 
     public void dispose() {
         stage.dispose();
+
         gameMusicDay.stop();
+        gameMusicNight.stop();
         forestAmbianceDay.stop();
+        forestAmbianceNight.stop();
+
         gameMusicDay.dispose();
+        gameMusicNight.dispose();
         forestAmbianceDay.dispose();
+        forestAmbianceNight.dispose();
     }
 
     public Stage getStage(){
         return stage;
+    }
+    public OrthographicCamera getCamera() {
+        return camera;
     }
 }

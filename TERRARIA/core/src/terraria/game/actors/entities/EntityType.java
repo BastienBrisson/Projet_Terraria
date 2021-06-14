@@ -11,10 +11,10 @@ import java.util.HashMap;
 @SuppressWarnings("rawtypes")
 public enum EntityType {
 
-    PLAYER("player", Player.class, 70, 30, 52 ),    //WEIGHT = 40
+    PLAYER("player", Player.class, 70, 30, 52 ),
     MUSHROOM("monster", Mushroom.class, 20, 31, 31),
-    SLIME("monster", Slime.class, 20, 31, 31),
-    RABBIT("mob", Rabbit.class, 70, 31, 16);
+    SLIME("monster", Slime.class, 70, 31, 31),
+    RABBIT("friendly", Rabbit.class, 70, 31, 16);
 
 
     private String id;

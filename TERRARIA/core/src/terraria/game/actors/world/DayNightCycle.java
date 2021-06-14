@@ -1,9 +1,7 @@
 package terraria.game.actors.world;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -12,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 public class DayNightCycle extends Actor {
 
     OrthographicCamera camera;
-    boolean constantAnimation;
 
     private TimeOfDay time;
     private final Texture textures;
@@ -42,14 +39,13 @@ public class DayNightCycle extends Actor {
     public DayNightCycle(Texture textures) {
 
         this.textures = textures;
-        this.constantAnimation = constantAnimation;
         this.time = TimeOfDay.DAY;
         textures.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         scaleX = scaleY = 1;
         i = 1;
 
         temps_depart = System.currentTimeMillis();
-        duree = 20000; // en millisecondes
+        duree = 600000; // 10min en millisecondes
         setSpeed(0);
 
         first = true;

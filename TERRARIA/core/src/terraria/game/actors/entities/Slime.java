@@ -19,15 +19,17 @@ public class Slime extends Entity {
 
     Player target;
 
-    private static final int SPEED = 75, JUMP_VELOCITY = 6, RANGE = 25 * TileType.TILE_SIZE;
+    private static final int AIR_SPEED = 200, RUN_SPEED = 25, JUMP_VELOCITY = 5, RANGE = 25 * TileType.TILE_SIZE;
 
     private double health = 5;
-    private boolean invulnerable = false, flip = false;
-    private final float INVULNERABILITY_TIME = 0.25f;  //1f = 1sec
-    private float invulnerabilityTimer = 0f;
+    private boolean invulnerable = false, flip = false, readyToJump = false, jumping = false;
+    private final float INVULNERABILITY_TIME = 0.25f, JUMP_TIME = 1;  //1f = 1sec
+    private float invulnerabilityTimer = 0f, jumpTimer = 0f;
+
+
 
     private int state = 0;
-    private static final int IDLE = 0, RUNNING = 1, JUMPING = 2, HIT = 3;
+    private static final int IDLE = 0, RUNNING = 1 ,JUMPING = 2, HIT = 3;
 
     @Override
     public void create(EntitySnapshot snapshot, EntityType type, GameMap gameMap, TerrariaGame game) {
@@ -55,7 +57,7 @@ public class Slime extends Entity {
         for(int i = 0; i < LoadingScreen.TEXTURE_NUMBER_MOBS; i++){
             switch (i){
                 case IDLE: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("mobs/slime"+i+".png", Texture.class)),5 , 1F));break;
-                case RUNNING: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("mobs/slime"+i+".png", Texture.class)),15 , 1F));break;
+                case RUNNING: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("mobs/slime"+i+".png", Texture.class)),15 , 2F));break;
                 case JUMPING: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("mobs/slime"+i+".png", Texture.class)),1 , 0.5F));break;
                 case HIT: animations.add(new Animation(new TextureRegion(game.getAssetManager().get("mobs/slime"+i+".png", Texture.class)),2 , 0.1F));break;
             }
@@ -73,25 +75,56 @@ public class Slime extends Entity {
             //if player in range
             if (!invulnerable && xDistance < RANGE && xDistance > -RANGE && yDistance < RANGE && yDistance > -RANGE) {
 
-                //run toward player
-                if (xDistance > getWidth()) {
-                    moveX(SPEED * deltaTime);
-                    state = RUNNING;
-                } else if (xDistance < -target.getWidth()) {
-                    moveX(-SPEED * deltaTime);
-                    state = RUNNING;
+                //only move with jumps
+                if (state == JUMPING) {
+
+                    //run toward player
+                    if (xDistance > getWidth()) moveX(AIR_SPEED * deltaTime);
+                    else if (xDistance < -target.getWidth()) moveX(-AIR_SPEED * deltaTime);
+
+                    if (grounded) state = IDLE;
+
+
                 } else {
-                    if (yDistance < getHeight() && yDistance > -target.getHeight())    //player touched
-                        target.takeAhit(1);
-                    state = IDLE;
+
+                    //Time the next jump
+                    if (readyToJump) {
+                        this.velocityY += JUMP_VELOCITY * getWeight();
+                        state = JUMPING;
+                        readyToJump = false;
+                    } else {
+                        jumpTimer += deltaTime;
+                        if (jumpTimer > JUMP_TIME) {
+                            jumpTimer = 0f;
+                            readyToJump = true;
+                        }
+                    }
+
+                    //slowly walk if Tile over its head
+                    TileType upperTile =  gameMap.getTileTypeByLocation(1, pos.x, pos.y + 32 + TileType.TILE_SIZE/2);
+                    TileType upperLeftTile =  gameMap.getTileTypeByLocation(1, pos.x - TileType.TILE_SIZE, pos.y + 32 + TileType.TILE_SIZE/2);
+                    TileType upperRightTile =  gameMap.getTileTypeByLocation(1, pos.x + TileType.TILE_SIZE, pos.y + 32 + TileType.TILE_SIZE/2);
+                    if (grounded && ( (upperTile != null && upperTile.isCollidable()) || (upperLeftTile != null && upperLeftTile.isCollidable()) || (upperRightTile != null && upperRightTile.isCollidable()) ) ) {
+                        state = RUNNING;
+                        if (xDistance > getWidth()) moveX(RUN_SPEED * deltaTime);
+                        else if (xDistance < -target.getWidth()) moveX(-RUN_SPEED * deltaTime);
+                    }
+
+                    //always face the player
+                    if (xDistance > getWidth()) flipX = false;
+                    else if (xDistance < -target.getWidth()) flipX = true;
+
                 }
 
-                TileType frontTile =  flipX ? gameMap.getTileTypeByLocation(1, pos.x - TileType.TILE_SIZE/2, pos.y) : gameMap.getTileTypeByLocation(1, pos.x + getWidth() + TileType.TILE_SIZE/2, pos.y);
-                TileType frontGroundTile =  flipX ? gameMap.getTileTypeByLocation(1, pos.x - TileType.TILE_SIZE/2, pos.y - TileType.TILE_SIZE) : gameMap.getTileTypeByLocation(1, pos.x + getWidth() + TileType.TILE_SIZE/2, pos.y - TileType.TILE_SIZE);
-                //jump if block in front or if hole in front and player upward
-                if ( grounded && ( ( frontTile != null && frontTile.isCollidable() ) || ( (frontGroundTile == null || !frontGroundTile.isCollidable()) && yDistance >= 0 )  ) )
-                    this.velocityY += JUMP_VELOCITY * getWeight();
+                //attack player on contact
+                if (yDistance < getHeight() && yDistance > -target.getHeight() && xDistance < getWidth() && xDistance > -target.getWidth())    //player touched
+                    target.takeAhit(1);
 
+            //if mob out of rendering range
+            } else if (xDistance > despawnRange || xDistance < -despawnRange || yDistance > despawnRange || yDistance < -despawnRange) {
+                health = 0; //despawn
+
+            //Player not in range, mob IDLE
             } else {
                 state = IDLE;
             }
@@ -115,13 +148,12 @@ public class Slime extends Entity {
 
         //Check mob state
         if (invulnerable) state = HIT;
-        else if (!grounded) state = JUMPING;
-        else if (grounded && state == JUMPING) state = IDLE;
 
     }
 
     public void takeAhit(double damage) {
         if (!invulnerable) {
+            if (health-damage <= 0) lootable = true;
             health -= damage;
             flip = flipX;
             if (grounded) this.velocityY += 3*getWeight();  //Knockback
@@ -144,10 +176,6 @@ public class Slime extends Entity {
             case JUMPING:
                 texture = animations.get(JUMPING).getFrame();
                 break;
-            case RUNNING:
-                texture = animations.get(RUNNING).getFrame();
-                animations.get(RUNNING).update( Gdx.graphics.getDeltaTime());
-                break;
             case HIT:
                 texture = animations.get(HIT).getFrame();
                 animations.get(HIT).update( Gdx.graphics.getDeltaTime());
@@ -158,7 +186,7 @@ public class Slime extends Entity {
                 break;
         }
 
-        batch.draw(texture, !flipX ? pos.x + getWidth() : pos.x, pos.y, !flipX ? -getWidth() : getWidth(), getHeight());
+        batch.draw(texture, !flipX ? pos.x + 32 : pos.x, pos.y, !flipX ? -32 : 32, 32);
     }
 
     public void setTarget(Player target) { this.target = target; }

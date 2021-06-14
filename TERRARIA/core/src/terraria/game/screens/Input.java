@@ -7,9 +7,7 @@ import terraria.game.TerrariaGame;
 import terraria.game.actors.Inventory.Inventory;
 import terraria.game.actors.entities.EntityLoader;
 import terraria.game.actors.entities.EntityType;
-import terraria.game.actors.entities.player.Player;
 import terraria.game.actors.world.GeneratorMap.MapLoader;
-import terraria.game.actors.world.TileType;
 
 public class Input implements InputProcessor {
 
@@ -22,24 +20,27 @@ public class Input implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        Player player = screen.player;
-
-        switch (keycode) {
-            case Keys.ALT_RIGHT:   //Non définitif
+        /*switch (keycode) {
+            //Save
+            case Keys.ALT_RIGHT:
                 EntityLoader.saveEntities("test", this.screen.entities);
                 MapLoader.saveMap(this.screen.gameMap.getId(), this.screen.gameMap.getName(), this.screen.gameMap.getMap(), this.screen.gameMap.getStartingPoint());
                 break;
 
-            case Keys.M:    //Non définitif
-                screen.spawnMob((int)player.pos.x / TileType.TILE_SIZE, (int)player.pos.y / TileType.TILE_SIZE, player.getSpawnRadius(), EntityType.MUSHROOM);
+            //Spawn mobs
+            case Keys.M:
+                screen.spawnMob(EntityType.MUSHROOM);
                 break;
             case Keys.L:
-                screen.spawnMob((int)player.pos.x / TileType.TILE_SIZE, (int)player.pos.y / TileType.TILE_SIZE, player.getSpawnRadius(), EntityType.RABBIT);
+                screen.spawnMob(EntityType.RABBIT);
+                break;
+            case Keys.K:
+                screen.spawnMob(EntityType.SLIME);
                 break;
 
             default:
                 break;
-        }
+        }*/
         return true;
     }
 

@@ -92,6 +92,11 @@ public class Mushroom extends Entity {
                 if ( grounded && ( ( frontTile != null && frontTile.isCollidable() ) || ( (frontGroundTile == null || !frontGroundTile.isCollidable()) && yDistance >= 0 )  ) )
                     this.velocityY += JUMP_VELOCITY * getWeight();
 
+            //if mob out of rendering range
+            } else if (xDistance > despawnRange || xDistance < -despawnRange || yDistance > despawnRange || yDistance < -despawnRange) {
+                health = 0; //despawn
+
+            //Player not in range, mob IDLE
             } else {
                 state = IDLE;
             }
@@ -122,6 +127,7 @@ public class Mushroom extends Entity {
 
     public void takeAhit(double damage) {
         if (!invulnerable) {
+            if (health-damage <= 0) lootable = true;
             health -= damage;
             flip = flipX;
             if (grounded) this.velocityY += 3*getWeight();  //Knockback
@@ -158,7 +164,7 @@ public class Mushroom extends Entity {
                 break;
         }
 
-        batch.draw(texture, flipX ? pos.x + getWidth() : pos.x, pos.y, flipX ? -getWidth() : getWidth(), getHeight());
+        batch.draw(texture, flipX ? pos.x + 32 : pos.x, pos.y, flipX ? -32 : 32, 32);
     }
 
     public void setTarget(Player target) { this.target = target; }

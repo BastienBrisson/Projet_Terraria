@@ -88,6 +88,11 @@ public class Rabbit extends Entity {
                 if ( grounded && ( ( frontTile != null && frontTile.isCollidable() ) || ( frontGroundTile == null || !frontGroundTile.isCollidable() )  ) )
                     this.velocityY += JUMP_VELOCITY * getWeight();
 
+            //if mob out of rendering range
+            } else if (xDistance > despawnRange || xDistance < -despawnRange || yDistance > despawnRange || yDistance < -despawnRange) {
+                health = 0; //despawn
+
+            //Player not in range, mob IDLE
             } else {
                 state = IDLE;
                 if (scared && scaredTimer > 1) {scared = false; scaredTimer = 0f;}
@@ -129,6 +134,7 @@ public class Rabbit extends Entity {
 
     public void takeAhit(double damage) {
         if (!invulnerable) {
+            if (health-damage <= 0) lootable = true;
             health -= damage;
             flip = flipX;
             if (grounded) this.velocityY += 2*getWeight();  //Knockback
@@ -166,7 +172,7 @@ public class Rabbit extends Entity {
                 break;
         }
 
-        batch.draw(texture, flipX ? pos.x + getWidth() : pos.x, pos.y, flipX ? -getWidth() : getWidth(), getHeight());
+        batch.draw(texture, flipX ? pos.x + 32 : pos.x, pos.y, flipX ? -32 : 32, 16);
     }
 
     public void setTarget(Player target) { this.target = target; }

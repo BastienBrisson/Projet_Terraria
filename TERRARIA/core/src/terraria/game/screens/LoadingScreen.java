@@ -87,8 +87,10 @@ public class LoadingScreen extends ScreenAdapter {
         game.getAssetManager().load("breaking.png",Texture.class);
 
         //Load music
-        game.getAssetManager().load("audio/music/forest_ambiance_day.mp3", Music.class);
+        game.getAssetManager().load("audio/music/forest_ambiance_day.wav", Music.class);
+        game.getAssetManager().load("audio/music/forest_ambiance_night.wav", Music.class);
         game.getAssetManager().load("audio/music/game_song_day.mp3", Music.class);
+        game.getAssetManager().load("audio/music/game_song_night.mp3", Music.class);
 
         //Load sounds
         game.getAssetManager().load("audio/sound/block_pop.ogg", Sound.class);

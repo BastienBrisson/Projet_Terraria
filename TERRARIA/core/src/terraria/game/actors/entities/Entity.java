@@ -1,13 +1,13 @@
 package terraria.game.actors.entities;
 
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import terraria.game.TerrariaGame;
 import terraria.game.actors.world.GameMap;
+import terraria.game.actors.world.TileType;
 
 public class Entity extends Actor {
 
@@ -19,6 +19,9 @@ public class Entity extends Actor {
     protected boolean grounded = false;
     protected boolean flipX = false;
     public double health;
+    public boolean lootable = false;
+
+    protected final int despawnRange = 128 * TileType.TILE_SIZE;
 
     protected Array<Animation> animations;
 
@@ -107,5 +110,7 @@ public class Entity extends Actor {
         return type;
     }
     public double getHealth() { return health; };
-
+    public boolean isLootable() {
+        return lootable;
+    }
 }
