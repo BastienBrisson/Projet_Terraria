@@ -296,8 +296,8 @@ public class GameScreen extends ScreenAdapter {
 
                 entity.remove();            //remove it from stage
                 it.remove();                //stop updating it
-            }
-            if ( (entity.getType() == EntityType.RABBIT && timeOfDay == DayNightCycle.TimeOfDay.NIGHT) || (entity.getType() == EntityType.SLIME && timeOfDay == DayNightCycle.TimeOfDay.DAY) ) {
+
+            } else if ( (entity.getType() == EntityType.RABBIT && timeOfDay == DayNightCycle.TimeOfDay.NIGHT) || (entity.getType() == EntityType.SLIME && timeOfDay == DayNightCycle.TimeOfDay.DAY) ) {
                 entity.remove();
                 it.remove();
             }
