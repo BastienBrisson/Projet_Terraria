@@ -140,13 +140,14 @@ public class GameMap extends Actor {
 
             this.inventory = inventory;
 
+            TileType upperTile = TileType.getTileTypeById( getMap()[(int) coordinate.z][(int) coordinate.y-1][(int) coordinate.x] );
             TileType tile = TileType.getTileTypeById( getMap()[(int) coordinate.z][(int) coordinate.y][(int) coordinate.x] );
-            if (tile == TileType.LAVA) {
+            if ( tile == TileType.LAVA || (tile == TileType.GRASS && upperTile == TileType.LOG) ) {
                 //bloc indestructible
                 breakable = false;
             } else {
-                //breakingAnimation.setCycleTime(tile.getHardness());
-                breakingAnimation.setCycleTime(0);
+                breakingAnimation.setCycleTime(tile.getHardness());
+                //breakingAnimation.setCycleTime(0); //no break time -> for tests
                 breakable = true;
             }
         }
@@ -171,7 +172,7 @@ public class GameMap extends Actor {
             //if cursor move away from tile or stop clicking reset breaking
             boolean validX = mouseCoordinate.x % TileType.TILE_SIZE + Gdx.input.getDeltaX() >= 0 && mouseCoordinate.x % TileType.TILE_SIZE + Gdx.input.getDeltaX() <= 31;
             boolean validY = mouseCoordinate.y % TileType.TILE_SIZE + Gdx.input.getDeltaY() >= 0 && mouseCoordinate.y % TileType.TILE_SIZE + Gdx.input.getDeltaY() <= 31;
-            if( !Gdx.input.isButtonPressed(Input.Buttons.LEFT) ||  !validX || !validY) {
+            if( !Gdx.input.isButtonPressed(Input.Buttons.LEFT) || !validX || !validY ) {
                 breakable = false;
                 breakingAnimation.frame = 0;
             }
@@ -184,7 +185,7 @@ public class GameMap extends Actor {
         int idBlocSupp = getMap()[(int)coordinate.z][(int)coordinate.y-1][(int)coordinate.x];
 
         //Si c'est un arbre, on détruit tout le tronc et on note sa taille
-        if (idBloc == TileType.LOG.getId() || idBlocSupp == TileType.LOG.getId() ) {
+        if (idBloc == TileType.LOG.getId()) {
             treeSize = 1;
             int y = (int) coordinate.y - 1;
             while (getMap()[(int) coordinate.z][y][(int) coordinate.x] == TileType.LOG.getId()) {
@@ -223,17 +224,27 @@ public class GameMap extends Actor {
     }
 
     public void addTile(Vector3 coordinate, Inventory inventory) {
+        //If tile not out of map and no block already present
         if (tileInMap(coordinate) && !presentTile(coordinate)) {
+            int handTile = inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile();
 
-            int type = inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile();
-            if (type == TileType.WEED.getId() || type == TileType.SAPLING.getId()) {
+            //Only put these tiles on grass
+            if (handTile == TileType.WEED.getId() || handTile == TileType.SAPLING.getId()) {
                 if (getMap()[(int)coordinate.z][(int)coordinate.y+1][(int)coordinate.x] == TileType.GRASS.getId()) {
-                    getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = type;
+                    getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = handTile;
                     inventory.getItemsList().get(inventory.getCurrentItems()).decrAmount();
                 }
+
+            //Only put tile if there's an adjacent tile
             } else {
-                getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = type;
-                inventory.getItemsList().get(inventory.getCurrentItems()).decrAmount();
+                if (getMap()[(int)coordinate.z][(int)coordinate.y+1][(int)coordinate.x] != 0 ||
+                    getMap()[(int)coordinate.z][(int)coordinate.y-1][(int)coordinate.x] != 0 ||
+                    getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x+1] != 0 ||
+                    getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x-1] != 0  ) {
+
+                        getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = handTile;
+                        inventory.getItemsList().get(inventory.getCurrentItems()).decrAmount();
+                }
             }
 
         }

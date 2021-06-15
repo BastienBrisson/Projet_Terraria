@@ -20,7 +20,7 @@ import terraria.game.screens.LoadingScreen;
 
 public class Player extends Entity {
 
-    private static final int WALK_SPEED = 150, RUN_SPEED = 200, JUMP_VELOCITY = 4, RANGE = 5, SPAWN_RADIUS = 64;
+    private static final int WALK_SPEED = 150, RUN_SPEED = 200, JUMP_VELOCITY = 4, RANGE = 5 * TileType.TILE_SIZE, SPAWN_RADIUS = 64;
     private static final int textureWidth = 48, lateralOffset = -9;
     private static final double FALLDAMAGE_COEFF = -0.005;
 

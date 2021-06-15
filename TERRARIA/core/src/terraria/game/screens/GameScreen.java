@@ -280,7 +280,7 @@ public class GameScreen extends ScreenAdapter {
             entity.update(delta, gravity, camera, stage);
             if (entity.getHealth() <= 0) {  //if entity dead
 
-                if (entity.isLootable()) {  //if entity has loot
+                if (entity.isLootable()) {
                     switch (entity.getType()) {
                         case MUSHROOM:
                             inventory.addTileInInventory(TileType.MUSHROOM.getId());
@@ -296,6 +296,10 @@ public class GameScreen extends ScreenAdapter {
 
                 entity.remove();            //remove it from stage
                 it.remove();                //stop updating it
+            }
+            if ( (entity.getType() == EntityType.RABBIT && timeOfDay == DayNightCycle.TimeOfDay.NIGHT) || (entity.getType() == EntityType.SLIME && timeOfDay == DayNightCycle.TimeOfDay.DAY) ) {
+                entity.remove();
+                it.remove();
             }
         }
 
@@ -357,21 +361,37 @@ public class GameScreen extends ScreenAdapter {
         Vector3 pos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
         Vector3 coordinate = gameMap.getTileCoordinateByLocation(1, pos.x, pos.y);
 
-        if (coordinate != null) {
+        //If tile pointed is in range
+        if (coordinate != null &&
+            pos.x < player.getX() + player.getWidth() + player.getRange() && pos.x > player.getX() - player.getRange() &&
+            pos.y < player.getY() + player.getHeight() + player.getRange() && pos.y > player.getY() - player.getRange()) {
+
+            //Destroy block
             if (Gdx.input.isButtonPressed(Buttons.LEFT)){
-                //destroy block
-                //PROVISOIRE
-                if (inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile() < 18)
+
+                if (inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile() < 18) //PROVISOIRE
                     gameMap.initDestroyTile(coordinate, pos, inventory);
+
+            //Put block
             } else if (Gdx.input.isButtonPressed(Buttons.RIGHT)) {
-                //put block
-                //PROVISOIRE
-                if (inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile() < 18)
-                    gameMap.addTile(coordinate, inventory);
+
+                boolean entityBlocking = false;
+                Entity entity;
+                float blocX1 = coordinate.x * TileType.TILE_SIZE, blocY1 = (gameMap.getMapHeight() -1- coordinate.y) * TileType.TILE_SIZE;
+                float blocX2 = blocX1 + TileType.TILE_SIZE, blocY2 = blocY1 + TileType.TILE_SIZE;
+                int i = 0, size = entities.size();
+
                 //Check if no entity in the way
-                for (Entity entity : entities) {
-                    if (gameMap.doesRectCollideWithMap(entity.getX(), entity.getY(), (int) entity.getWidth(), (int) entity.getHeight()))
-                        gameMap.destroyTile(coordinate, inventory);
+                while (i < size && !entityBlocking) {
+                    entity = entities.get(i);
+                    if (entity.getX() < blocX2 && entity.getX() + entity.getWidth() > blocX1 && entity.getY() < blocY2 && entity.getY() + entity.getHeight() > blocY1)  //Check if rectangle collides
+                        entityBlocking = true;
+                    i++;
+                }
+
+                if (!entityBlocking) {
+                    if (inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile() < 18) //PROVISOIRE
+                        gameMap.addTile(coordinate, inventory);
                 }
             }
         }
