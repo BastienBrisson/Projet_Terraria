@@ -91,7 +91,7 @@ public class Inventory extends Actor {
         rightArrow.setPosition(ScreenX - (width/2), ScreenY + ScreenHeight -  (6*height+height+height/2) - height, Align.center);
         rightArrow.addListener(new ActorGestureListener() {
             public void tap(InputEvent event, float x, float y, int count, int button) {
-                if (currentPage < 4) {
+                if (currentPage < 4 && currentPage-1 < nbCraftableItem/5) {
                     currentPage++;
                 }
             }
@@ -147,7 +147,7 @@ public class Inventory extends Actor {
                 font.draw(batch, String.valueOf("Craftable items"),ScreenX,  ScreenY + ScreenHeight - 10 - 6*getHeightTile());
             }
             //On dessine les slots de craft disponible
-            for (int craftableItem = 0; craftableItem < nbCraftableItem && craftableItem < 5; craftableItem++) {
+            for (int craftableItem = 0; craftableItem < nbCraftableItem/currentPage && craftableItem < 5; craftableItem++) {
                 batch.draw(slot[0][0], ScreenX - (width/2), ScreenY + ScreenHeight -  (6*height+height+height/2) - craftableItem*height);
             }
 
