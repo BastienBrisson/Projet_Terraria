@@ -101,9 +101,14 @@ public class ItemsGraphic extends Actor {
                         inventory.costUpdate(Craft.getCraftById(itemOrigin.getItem().getIdTile()));
                     }
                     if (itemOrigin.getItem().getIdTile() == item.getIdTile()) {
-                        item.addAmount(itemOrigin.getItem().getAmount());
+                        int id = itemOrigin.getItem().getIdTile();
+                        int amount = itemOrigin.getItem().getAmount();
                         itemOrigin.getItem().setIdTile(0);
                         itemOrigin.getItem().setAmount(0);
+                        for (int i = amount; i > 0; i--) {
+                            inventory.addTileInInventory(id);
+                        }
+
                     } else {
                         int IdTmp = item.getIdTile();
                         int amountTmp = item.getAmount();

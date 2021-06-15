@@ -279,7 +279,6 @@ public class Inventory extends Actor {
                 }
                 i++;
             }
-            System.out.println(craftable);
             if (craftable) {
                 craftableItemGraphicList.get(numCraftItem).getItem().setIdTile(checkIfCraftable.getIdItem());
                 craftableItemGraphicList.get(numCraftItem).getItem().setAmount(checkIfCraftable.getNbItem());
