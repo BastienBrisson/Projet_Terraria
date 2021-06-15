@@ -46,8 +46,6 @@ public class Inventory extends Actor {
 
     ImageButton leftArrow;
     ImageButton rightArrow;
-    TextureRegion leftArrowImg;
-    TextureRegion rightArrowImg;
 
     Vector3 cam;
 
@@ -74,10 +72,13 @@ public class Inventory extends Actor {
             craftableItemGraphicList.add(new ItemsGraphic(game, new Items(i+50, 0), this, dragAndDrop));
         }
         countItems();
-        leftArrowImg = new TextureRegion(new Texture(Gdx.files.internal("inventory/left_arrow.png")));
-        rightArrowImg = new TextureRegion(new Texture(Gdx.files.internal("inventory/right_arrow.png")));
+        TextureRegion leftArrowImg = new TextureRegion(new Texture(Gdx.files.internal("inventory/left_arrow.png")));
+        TextureRegion rightArrowImg = new TextureRegion(new Texture(Gdx.files.internal("inventory/right_arrow.png")));
 
-        leftArrow = new ImageButton(new TextureRegionDrawable(leftArrowImg));
+        TextureRegion leftArrowHoverImg = new TextureRegion(new Texture(Gdx.files.internal("inventory/left_arrow_hover.png")));
+        TextureRegion rightArrowHoverImg = new TextureRegion(new Texture(Gdx.files.internal("inventory/right_arrow_hover.png")));
+
+        leftArrow = new ImageButton(new TextureRegionDrawable(leftArrowImg), new TextureRegionDrawable(leftArrowHoverImg));
         leftArrow.setPosition(ScreenX - (width/2), ScreenY + ScreenHeight -  (6*height+height+height/2) - height, Align.center);
         leftArrow.addListener(new ActorGestureListener() {
             public void tap(InputEvent event, float x, float y, int count, int button) {
@@ -87,7 +88,7 @@ public class Inventory extends Actor {
             }
         });
 
-        rightArrow = new ImageButton(new TextureRegionDrawable(rightArrowImg));
+        rightArrow = new ImageButton(new TextureRegionDrawable(rightArrowImg), new TextureRegionDrawable(rightArrowHoverImg));
         rightArrow.setPosition(ScreenX - (width/2), ScreenY + ScreenHeight -  (6*height+height+height/2) - height, Align.center);
         rightArrow.addListener(new ActorGestureListener() {
             public void tap(InputEvent event, float x, float y, int count, int button) {
@@ -105,9 +106,18 @@ public class Inventory extends Actor {
         ScreenWidth =   stage.getViewport().getScreenWidth();
         ScreenHeight = stage.getViewport().getScreenHeight();
 
-        if (isInventoryShow()) {
-            leftArrow.setPosition(ScreenX + 25 , ScreenY + ScreenHeight - 12*height, Align.center);
-            rightArrow.setPosition(ScreenX + 75 , ScreenY + ScreenHeight - 12*height, Align.center);
+        if (isInventoryShow() && nbCraftableItem>5) {
+            if (currentPage != 1) {
+                leftArrow.setPosition(ScreenX + 25 , ScreenY + ScreenHeight - 12*height, Align.center);
+            }
+            else {
+                leftArrow.setPosition(0, 0, Align.center);
+            }
+            if (nbCraftableItem/currentPage > 5) {
+                rightArrow.setPosition(ScreenX + 75 , ScreenY + ScreenHeight - 12*height, Align.center);
+            } else {
+                rightArrow.setPosition(0, 0, Align.center);
+            }
         } else {
             leftArrow.setPosition(0, 0, Align.center);
             rightArrow.setPosition(0, 0, Align.center);
@@ -150,13 +160,7 @@ public class Inventory extends Actor {
             for (int craftableItem = 0; craftableItem < nbCraftableItem/currentPage && craftableItem < 5; craftableItem++) {
                 batch.draw(slot[0][0], ScreenX - (width/2), ScreenY + ScreenHeight -  (6*height+height+height/2) - craftableItem*height);
             }
-
-
         }
-
-
-
-
     }
 
     /**

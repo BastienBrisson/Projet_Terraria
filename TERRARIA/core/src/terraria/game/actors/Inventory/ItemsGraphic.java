@@ -96,22 +96,24 @@ public class ItemsGraphic extends Actor {
 
             public void drop (DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
                 ItemsGraphic itemOrigin = (ItemsGraphic) payload.getObject();
-                if (itemOrigin.craftableItem) {
-                    inventory.costUpdate(Craft.getCraftById(itemOrigin.getItem().getIdTile()));
+                if (itemOrigin.getItem().getIdTile() != 0) {
+                    if (itemOrigin.craftableItem) {
+                        inventory.costUpdate(Craft.getCraftById(itemOrigin.getItem().getIdTile()));
+                    }
+                    if (itemOrigin.getItem().getIdTile() == item.getIdTile()) {
+                        item.addAmount(itemOrigin.getItem().getAmount());
+                        itemOrigin.getItem().setIdTile(0);
+                        itemOrigin.getItem().setAmount(0);
+                    } else {
+                        int IdTmp = item.getIdTile();
+                        int amountTmp = item.getAmount();
+                        setItem(itemOrigin.item);
+                        itemOrigin.item.setIdTile(IdTmp);
+                        itemOrigin.item.setAmount(amountTmp);
+                    }
+                    inventory.updateCraft();
+                    inventory.setCurrentPage(1);
                 }
-                if (itemOrigin.getItem().getIdTile() == item.getIdTile()) {
-                    item.addAmount(itemOrigin.getItem().getAmount());
-                    itemOrigin.getItem().setIdTile(0);
-                    itemOrigin.getItem().setAmount(0);
-                } else {
-                    int IdTmp = item.getIdTile();
-                    int amountTmp = item.getAmount();
-                    setItem(itemOrigin.item);
-                    itemOrigin.item.setIdTile(IdTmp);
-                    itemOrigin.item.setAmount(amountTmp);
-                }
-                inventory.updateCraft();
-
             }
         });
     }
