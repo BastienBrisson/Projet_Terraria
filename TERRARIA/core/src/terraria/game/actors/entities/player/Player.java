@@ -92,62 +92,60 @@ public class Player extends Entity {
         //Handle the camera
 
         if(TerrariaGame.getState() == GameScreen.GAME_RUNNING) {
+            //Quand on pointe a gauche de l'écran
             if (Gdx.input.getX() <= 25) {
-
                 if (pos.x - camera.position.x  < 100) {
-                    camera.position.set(camera.position.x - RUN_SPEED * deltaTime, pos.y, camera.position.z);
-                }
-                if (pos.x - camera.position.x > 200) {
-                    camera.position.set(pos.x - 200, pos.y, camera.position.z);
+                    camera.position.set(camera.position.x - RUN_SPEED * deltaTime, pos.y+100, camera.position.z);
+                } else  {
+                    camera.position.set(pos.x - 100, pos.y+100, camera.position.z);
                 }
 
+            //Quand on pointe a droite de l'écran
             } else if (Gdx.input.getX() > gameMap.ScreenWidth - 25) {
-
                 if (camera.position.x - pos.x  < 100) {
-                    camera.position.set(camera.position.x + RUN_SPEED * deltaTime, pos.y, camera.position.z);
-                }
-                if (camera.position.x - pos.x > 200) {
-                    camera.position.set(pos.x + 200, pos.y, camera.position.z);
+                    camera.position.set(camera.position.x + RUN_SPEED * deltaTime, pos.y+100, camera.position.z);
+                } else {
+                    camera.position.set(pos.x + 100, pos.y+100, camera.position.z);
                 }
 
+            //Quand on pointe en haut de l'écran
             } else if(Gdx.input.getY() <= 25) {
-
-                if(camera.position.y - pos.y < 100) {
+                if(camera.position.y - pos.y < 200) {
                     camera.position.set(pos.x, (camera.position.y + RUN_SPEED * deltaTime), camera.position.z);
-                }
-                if(camera.position.y - pos.y > 200) {
+                } else {
                     camera.position.set(pos.x, pos.y + 200, camera.position.z);
                 }
 
+            //Quand on pointe en bas de l'écran
             } else if(Gdx.input.getY() > gameMap.ScreenHeigth - 25) {
-
-                if(pos.y - camera.position.y < 100) {
+                if(pos.y - camera.position.y < 0) {
                     camera.position.set(pos.x, (camera.position.y - RUN_SPEED * deltaTime), camera.position.z);
-                }
-                if(pos.y - camera.position.y > 200) {
-                    camera.position.set(pos.x, pos.y - 200, camera.position.z);
+                } else {
+                    camera.position.set(pos.x, pos.y, camera.position.z);
                 }
 
             } else {
 
                 if (camera.position.x < pos.x - RUN_SPEED * deltaTime)  {
-                    camera.position.set(camera.position.x + RUN_SPEED * deltaTime, pos.y, camera.position.z);
+                    camera.position.set(camera.position.x + RUN_SPEED * deltaTime, pos.y+100, camera.position.z);
 
                 } else if (camera.position.x > pos.x + RUN_SPEED * deltaTime){
-                    camera.position.set(camera.position.x - RUN_SPEED * deltaTime, pos.y, 0);
+                    camera.position.set(camera.position.x - RUN_SPEED * deltaTime, pos.y+100, 0);
 
-                } else if (camera.position.y < pos.y - RUN_SPEED * deltaTime) {
+                } else if (camera.position.y < pos.y +100 - RUN_SPEED * deltaTime) {
                     camera.position.set(pos.x, camera.position.y + RUN_SPEED * deltaTime, camera.position.z);
 
-                } else if (camera.position.y > pos.y + RUN_SPEED * deltaTime) {
+                } else if (camera.position.y > pos.y +100 + RUN_SPEED * deltaTime) {
                     camera.position.set(pos.x, camera.position.y - RUN_SPEED * deltaTime, camera.position.z);
 
+                //position de base de la cam
                 } else {
-                    camera.position.set(pos.x , pos.y, 0);
+                    camera.position.set(pos.x , pos.y+100, 0);
                 }
 
-                if (camera.position.x - pos.x > 250 || pos.x - camera.position.x > 250){
-                    camera.position.set(pos.x , pos.y, 0);
+                //Si la cam sort du cadre
+                if (camera.position.x - pos.x > 250 || pos.x - camera.position.x > 250 || pos.y - camera.position.y > 250 || camera.position.y - pos.y > 250 ){
+                    camera.position.set(pos.x , pos.y+100, 0);
                 }
             }
             camera.unproject(worldCoordinates);
