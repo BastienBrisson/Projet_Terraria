@@ -369,8 +369,7 @@ public class GameScreen extends ScreenAdapter {
             //Destroy block
             if (Gdx.input.isButtonPressed(Buttons.LEFT)){
 
-                if (inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile() < 18) //PROVISOIRE
-                    gameMap.initDestroyTile(coordinate, pos, inventory);
+                gameMap.initDestroyTile(coordinate, pos, inventory);
 
             //Put block
             } else if (Gdx.input.isButtonPressed(Buttons.RIGHT)) {

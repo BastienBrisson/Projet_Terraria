@@ -146,7 +146,7 @@ public class GameMap extends Actor {
                 //bloc indestructible
                 breakable = false;
             } else {
-                breakingAnimation.setCycleTime(tile.getHardness());
+                breakingAnimation.setCycleTime(tile.getHardness(), TileType.getTileTypeById(inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile()).getEfficiency());
                 //breakingAnimation.setCycleTime(0); //no break time -> for tests
                 breakable = true;
             }

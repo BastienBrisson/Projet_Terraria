@@ -2,6 +2,7 @@ package terraria.game.actors.entities;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
+import terraria.game.actors.Inventory.Inventory;
 
 
 public class Animation {
@@ -39,7 +40,8 @@ public class Animation {
     public TextureRegion getFrame(){
         return frames.get(frame);
     }
-    public void setCycleTime(float cycleTime) {
-        maxFrameTime = cycleTime / frameCount;
+    public void setCycleTime(float cycleTime, float eff) {
+        maxFrameTime = cycleTime / (frameCount * eff);
     }
+
 }
