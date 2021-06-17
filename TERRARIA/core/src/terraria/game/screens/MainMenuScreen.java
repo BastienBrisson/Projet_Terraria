@@ -40,6 +40,7 @@ public class MainMenuScreen extends ScreenAdapter {
 
     public MainMenuScreen(final TerrariaGame game){
         this.game = game;
+        Gdx.graphics.setTitle("Project Terra");
 
         //Initialize the stage and camera
         stage = new Stage(new ScreenViewport());
