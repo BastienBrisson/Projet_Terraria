@@ -133,6 +133,7 @@ public class GameScreen extends ScreenAdapter {
                 player.playerHealth.update(camera, stage);
                 res = 1;
                 stage.addActor(player);
+                player.setInventory(inventory);
                 setEntitiesTarget();
             }
         });
@@ -364,7 +365,6 @@ public class GameScreen extends ScreenAdapter {
         Vector3 coordinate = gameMap.getTileCoordinateByLocation(1, pos.x, pos.y);
 
         //If tile pointed is in range
-        System.out.println(pos.y);
         if (coordinate != null &&
             pos.x < player.getX() + player.getWidth() + player.getRange() && pos.x > player.getX() - player.getRange() &&
             pos.y < player.getY() + player.getHeight() + player.getRange() && pos.y > player.getY() - player.getRange()

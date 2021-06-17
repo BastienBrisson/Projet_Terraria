@@ -293,4 +293,7 @@ public class Player extends Entity {
         return SPAWN_RADIUS;
     }
     public double getHealth() { return playerHealth.health; }
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
+    }
 }
