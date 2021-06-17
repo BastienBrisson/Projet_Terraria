@@ -48,7 +48,9 @@ public class Slime extends Entity {
             @Override
             public void clicked(InputEvent event, float x, float y)  {
                 super.clicked(event, x, y);
-                takeAhit(1);
+                if (target.getRange() > getX() - target.getX() && target.getRange() > target.getX() - getX() && target.getRange() > getY() - target.getY() && target.getRange() > target.getY() - getY()) {
+                    takeAhit(1);
+                }
             }
 
         });
