@@ -58,8 +58,9 @@ public class GameScreen extends ScreenAdapter {
 
     protected ArrayList<Entity> entities;
     private final int MAX_ENTITIES = 128;
-    private final int rabbitSpawnRate = 20, mushroomSpawnRate = 20, slimeSpawnRate = 10;    //ex: 1 rabbit spawn every 20sec
-    private float rabbitTimer = rabbitSpawnRate/2, mushroomTimer = 0, slimeTimer = 0;       //used to count sec
+    private int dayLength;
+    private int rabbitSpawnRate, mushroomSpawnRate, slimeSpawnRate;
+    private float rabbitTimer = rabbitSpawnRate-10, mushroomTimer = 0, slimeTimer = 0;
 
     Player player;
     private int res = 0;
@@ -77,7 +78,10 @@ public class GameScreen extends ScreenAdapter {
 
         dayNightCycle = new DayNightCycle(game.getAssetManager().get("dayNightCycle.png",Texture.class));
         nightFiltre = new NightFiltre(new Texture("filtreNight.png"));
-
+        dayLength = (int) dayNightCycle.getDuree() / 1000;  //in seconds
+        rabbitSpawnRate = dayLength / 20;   //20 rabbit spawn every day
+        mushroomSpawnRate = dayLength / 10;
+        slimeSpawnRate = dayLength / 20;
 
         TextureRegion save = new TextureRegion(new Texture(Gdx.files.internal("background/save.png")));
         TextureRegion savePressed = new TextureRegion(new Texture(Gdx.files.internal("background/savePressed.png")));

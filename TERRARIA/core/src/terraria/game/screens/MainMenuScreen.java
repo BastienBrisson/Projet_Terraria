@@ -5,6 +5,7 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -45,6 +46,9 @@ public class MainMenuScreen extends ScreenAdapter {
         //Initialize the stage and camera
         stage = new Stage(new ScreenViewport());
         camera = (OrthographicCamera) stage.getViewport().getCamera();
+
+        //Set custom cursor
+        Gdx.graphics.setCursor(Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("cursor32.png")), 0, 0));
 
         //Initialize menu's buttons
         game.getAssetManager().load("background/play.png", Texture.class);
@@ -107,6 +111,7 @@ public class MainMenuScreen extends ScreenAdapter {
         logo.setSize(logo.getWidth()*4, logo.getHeight()*4);
         logo.setPosition(stage.getViewport().getScreenWidth()/2+16*4,(stage.getViewport().getScreenHeight()/2)+play.getRegionHeight()+logo.getHeight()/2-16, Align.center);
         logo.setOrigin(Align.center);
+
 
         //Set the stage
         stage.addActor(parallaxBackground);

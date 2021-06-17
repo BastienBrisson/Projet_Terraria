@@ -123,6 +123,10 @@ public class DayNightCycle extends Actor {
 
 
     }
+
+    public long getDuree() {
+        return duree;
+    }
 }
 
 
