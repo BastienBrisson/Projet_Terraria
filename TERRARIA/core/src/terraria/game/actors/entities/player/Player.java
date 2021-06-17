@@ -21,8 +21,12 @@ import terraria.game.screens.LoadingScreen;
 public class Player extends Entity {
 
     private static final int WALK_SPEED = 150, RUN_SPEED = 200, JUMP_VELOCITY = 4, RANGE = 3 * TileType.TILE_SIZE, SPAWN_RADIUS = 64;
-    private static final int textureWidth = 48, lateralOffset = -9;
     private static final double FALLDAMAGE_COEFF = -0.005;
+
+    private static final int textureWidth = 48, lateralOffset = -9;
+    private static float itemRotation = 0, itemYOffset = 0;
+    private final float ITEMFRAME_TIME = 0.075f;  //1f = 1sec
+    private float itemFrameTimer = 0f;
 
     private static int speed;
     private static float fallDamage;
@@ -156,7 +160,7 @@ public class Player extends Entity {
         if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.Z)) && grounded && TerrariaGame.getState() == GameScreen.GAME_RUNNING) {
             this.velocityY += JUMP_VELOCITY * getWeight();
         }
-        else if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded && this.velocityY > 0 && TerrariaGame.getState() == GameScreen.GAME_RUNNING) {
+        else if (Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.Z) && !grounded && this.velocityY > 0 && TerrariaGame.getState() == GameScreen.GAME_RUNNING) {
             this.velocityY += JUMP_VELOCITY * getWeight() * deltaTime;
         }
 
@@ -279,12 +283,41 @@ public class Player extends Entity {
         batch.draw(texture, (flipX ? pos.x+textureWidth : pos.x)+lateralOffset, pos.y, flipX ? -textureWidth : textureWidth, getHeight());
 
         //draw item in hand
-        if ( state == IDLE && TileType.getTileTypeById(inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile()).isItem() )
-            batch.draw(inventory.getGraphicItems().get(0).getItemTexture(inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile()), (flipX ? pos.x+30 : pos.x), pos.y, flipX ? -50 : 50, 50);
+        if ( state == IDLE && TileType.getTileTypeById(inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile()).isItem() ) {
+            TextureRegion item = inventory.getGraphicItems().get(0).getItemTexture(inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile());
+            batch.draw(item, (flipX ? pos.x+30 : pos.x), pos.y+itemYOffset, 0, 0, flipX ? -50 : 50, 50, 1, 1, (flipX ? itemRotation : -itemRotation));
+        }
 
         playerHealth.draw(batch,parentAlpha);
     }
 
+    public void itemAnimationUpdate(float dt) {
+        itemFrameTimer += dt;
+        if (itemFrameTimer > ITEMFRAME_TIME) {
+            itemRotation +=10;
+            itemYOffset = 10;
+            itemFrameTimer = 0;
+        }
+        if (itemRotation >= 40) {
+            itemRotation = 0;
+            itemYOffset = 0;
+        }
+    }
+
+    public void itemAnimationReset(float dt) {
+        if (itemRotation > 0) {
+            itemFrameTimer += dt;
+            if (itemFrameTimer > ITEMFRAME_TIME) {
+                itemRotation +=10;
+                itemYOffset = 10;
+                itemFrameTimer = 0;
+            }
+            if (itemRotation >= 40) {
+                itemRotation = 0;
+                itemYOffset = 0;
+            }
+        }
+    }
 
     public static int getRange() {
         return RANGE;

@@ -158,14 +158,10 @@ public class GameScreen extends ScreenAdapter {
         stage.addActor(parallaxBackground);
         stage.addActor(gameMap);
 
-
-
-
         stage.addActor(nightFiltre);
         for(Entity entity : entities ){
             stage.addActor(entity);
         }
-
 
         stage.addActor(inventory);
         for(ItemsGraphic items : inventory.getGraphicItems() ){
@@ -238,7 +234,10 @@ public class GameScreen extends ScreenAdapter {
 
         //Right or left click on blocs
         if (!isMenuShow && !inventory.isInventoryShow() && Gdx.input.isTouched())
-            blocAction();
+            blocAction(delta);
+
+        if (!Gdx.input.isButtonPressed(Buttons.LEFT))
+            player.itemAnimationReset(delta);
 
         //Handle inventory
         if(Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.E)) {
@@ -367,7 +366,7 @@ public class GameScreen extends ScreenAdapter {
 
 
 
-    public void blocAction() {
+    public void blocAction(float dt) {
         Vector3 pos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
         Vector3 coordinate = gameMap.getTileCoordinateByLocation(1, pos.x, pos.y);
 
@@ -380,6 +379,7 @@ public class GameScreen extends ScreenAdapter {
             //Destroy block
             if (Gdx.input.isButtonPressed(Buttons.LEFT)){
 
+                player.itemAnimationUpdate(dt);
                 gameMap.initDestroyTile(coordinate, pos, inventory);
 
             //Put block
