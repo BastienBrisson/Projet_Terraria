@@ -6,6 +6,7 @@ import java.util.HashMap;
  */
 public enum TileType {
 
+    //Natural Tile
     EMPTY(0, true, "empty", 1f, 1, 1),
     GRASS(1, true, "grass", 1f, 1, 1),
     DIRT(2, true, "dirt", 1f, 1, 1),
@@ -19,41 +20,44 @@ public enum TileType {
     MOSSY_STONE(10, true, "mossy_stone", 2f, 1, 1),
     DIRT_BACKGROUND(14,false,"dirt_bg", 0.5f, 1, 1),
 
-
+    //Environment
     WEED(11, false, "weed", 0, 1, 1),
     LOG(12, false, "log", 2f, 1, 1),
     PEBBLE(13, false,"pebble", 0, 1, 1),
-
-
-    PLANKS(15, true,"planks", 1.5f, 1, 1),
     SAPLING(16, false, "sapling", 0, 1, 1),
+
+    //Craftable Tiles
+    PLANKS(15, true,"planks", 1.5f, 1, 1),
     TIMBER(17, true, "timber", 2f, 1, 1),
 
-    STICK(18, false, "stick", 0, 1, 1),
+    //Items
+    STICK(18, false, "stick", 0, 1, 1, true),
 
-    IRON_INGOT(19, false, "iron_ingot", 0, 1, 1),
-    GOLD_INGOT(20, false, "gold_ingot", 0, 1, 1),
-    DIAMOND_INGOT(21, false, "diamond_ingot", 0, 1, 1),
-    COAL_INGOT(22, false, "coal_ingot", 0, 1, 1),
+    //Ores
+    IRON_INGOT(19, false, "iron_ingot", 0, 1, 1, true),
+    GOLD_INGOT(20, false, "gold_ingot", 0, 1, 1, true),
+    DIAMOND_INGOT(21, false, "diamond_ingot", 0, 1, 1, true),
+    COAL_INGOT(22, false, "coal_ingot", 0, 1, 1, true),
 
-    SWORD_WOOD(23, false, "sword wood", 0, 1, 1.5f),
-    SWORD_STONE(24, false, "sword stone", 0, 1, 2),
-    SWORD_IRON(25, false, "sword iron", 0, 1, 2.5f),
-    SWORD_DIAMOND(26, false, "sword diamond", 0, 1, 3.5f),
-    SWORD_GOLD(27, false, "dword gold", 0, 1, 3),
+    //Tools
+    SWORD_WOOD(23, false, "sword wood", 0, 1, 1.5f, true),
+    SWORD_STONE(24, false, "sword stone", 0, 1, 2, true),
+    SWORD_IRON(25, false, "sword iron", 0, 1, 2.5f, true),
+    SWORD_DIAMOND(26, false, "sword diamond", 0, 1, 3.5f, true),
+    SWORD_GOLD(27, false, "dword gold", 0, 1, 3, true),
 
-    PICKAXE_WOOD(28, false, "pickaxe wood", 0, 1.5f, 1),
-    PICKAXE_STONE(29, false, "pickaxe stone", 0, 2f, 1),
-    PICKAXE_IRON(30, false, "pickaxe iron", 0, 2.5f, 1),
-    PICKAXE_DIAMOND(31, false, "pickaxe diamond", 0, 3.5f, 1),
-    PICKAXE_GOLD(32, false, "pickaxe gold", 0, 3f, 1),
+    PICKAXE_WOOD(28, false, "pickaxe wood", 0, 1.5f, 1, true),
+    PICKAXE_STONE(29, false, "pickaxe stone", 0, 2f, 1, true),
+    PICKAXE_IRON(30, false, "pickaxe iron", 0, 2.5f, 1, true),
+    PICKAXE_DIAMOND(31, false, "pickaxe diamond", 0, 3.5f, 1, true),
+    PICKAXE_GOLD(32, false, "pickaxe gold", 0, 3f, 1, true),
 
+    //Mob loots
+    MUSHROOM(33, false, "mushroom", 0, 1, 1, true),
+    SLIME(34, false, "slime", 0, 1, 1, true),
+    RABBIT_MEAT(35, false, "rabbit_meat", 0, 1, 1, true),
 
-    MUSHROOM(33, false, "mushroom", 0, 1, 1),
-    SLIME(34, false, "slime", 0, 1, 1),
-    RABBIT_MEAT(35, false, "rabbit_meat", 0, 1, 1),
-
-
+    //Light filters
     LIGHTSOURCE0(108, false,"light", 0, 1, 1),
     LIGHTSOURCE1(107, false,"light", 0, 1, 1),
     LIGHTSOURCE2(106, false,"light", 0, 1, 1),
@@ -74,7 +78,8 @@ public enum TileType {
     private String name;
     private float hardness; //time in sec that the player will take to destroy a block by hand
     private float efficiency;
-    private float damage;
+    private boolean item;
+    private float damage;   //if item, draw in the hand of the player and cannot put on the ground
 
     private TileType(int id, boolean collidable, String name, float hardness, float efficiency, float damage) {
         this.id = id;
@@ -83,6 +88,17 @@ public enum TileType {
         this.hardness = hardness;
         this.efficiency = efficiency;
         this.damage = damage;
+        this.item = false;
+    }
+
+    private TileType(int id, boolean collidable, String name, float hardness, float efficiency, float damage, boolean item) {
+        this.id = id;
+        this.collidable = collidable;
+        this.name = name;
+        this.hardness = hardness;
+        this.efficiency = efficiency;
+        this.damage = damage;
+        this.item = item;
     }
 
     public int getId() {
@@ -126,5 +142,9 @@ public enum TileType {
 
     public float getDamage() {
         return damage;
+    }
+
+    public boolean isItem() {
+        return item;
     }
 }

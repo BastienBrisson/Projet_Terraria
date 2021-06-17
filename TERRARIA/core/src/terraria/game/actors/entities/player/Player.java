@@ -277,6 +277,11 @@ public class Player extends Entity {
         }
 
         batch.draw(texture, (flipX ? pos.x+textureWidth : pos.x)+lateralOffset, pos.y, flipX ? -textureWidth : textureWidth, getHeight());
+
+        //draw item in hand
+        if ( state == IDLE && TileType.getTileTypeById(inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile()).isItem() )
+            batch.draw(inventory.getGraphicItems().get(0).getItemTexture(inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile()), (flipX ? pos.x+30 : pos.x), pos.y, flipX ? -50 : 50, 50);
+
         playerHealth.draw(batch,parentAlpha);
     }
 

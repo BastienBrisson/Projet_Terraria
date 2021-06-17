@@ -392,9 +392,8 @@ public class GameScreen extends ScreenAdapter {
                     i++;
                 }
 
-                if (!entityBlocking) {
-                    if (inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile() < 18) //PROVISOIRE
-                        gameMap.addTile(coordinate, inventory);
+                if (!entityBlocking && !TileType.getTileTypeById(inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile()).isItem()) {
+                    gameMap.addTile(coordinate, inventory);
                 }
             }
         }

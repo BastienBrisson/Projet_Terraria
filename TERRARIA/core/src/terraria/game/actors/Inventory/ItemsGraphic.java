@@ -227,6 +227,10 @@ public class ItemsGraphic extends Actor {
         return craftableItem;
     }
 
+    public TextureRegion getItemTexture(int id) {
+        return itemsTexture[0][id];
+    }
+
     public void setCraftableItem(boolean craftableItem) {
         this.craftableItem = craftableItem;
     }
