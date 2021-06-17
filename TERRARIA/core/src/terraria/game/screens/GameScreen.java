@@ -86,8 +86,11 @@ public class GameScreen extends ScreenAdapter {
         saveButton.addListener(new ActorGestureListener() {
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
-                EntityLoader.saveEntities("test", entities);
-                MapLoader.saveMap(gameMap.getId(), gameMap.getName(), gameMap.getMap(), gameMap.getStartingPoint());
+                if (game.getState() == 2) {
+                    EntityLoader.saveEntities("test", entities);
+                    MapLoader.saveMap(gameMap.getId(), gameMap.getName(), gameMap.getMap(), gameMap.getStartingPoint());
+                }
+
             }
         });
 
@@ -110,11 +113,13 @@ public class GameScreen extends ScreenAdapter {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
-                dispose();
-                game.getAssetManager().clear();
-                EntityLoader.saveEntities("test", entities);
-                MapLoader.saveMap(gameMap.getId(), gameMap.getName(), gameMap.getMap(), gameMap.getStartingPoint());
-                game.setScreen(new MainMenuScreen(game));
+                if (game.getState() == 2) {
+                    dispose();
+                    game.getAssetManager().clear();
+                    EntityLoader.saveEntities("test", entities);
+                    MapLoader.saveMap(gameMap.getId(), gameMap.getName(), gameMap.getMap(), gameMap.getStartingPoint());
+                    game.setScreen(new MainMenuScreen(game));
+                }
             }
         });
 
@@ -126,15 +131,17 @@ public class GameScreen extends ScreenAdapter {
 
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
-                Player p = new Player();
-                p.create(gameMap.getStartingPoint()[0], gameMap.getStartingPoint()[1], EntityType.PLAYER, gameMap, game);
-                entities.add(0, p);
-                player = (Player) entities.get(0);
-                player.playerHealth.update(camera, stage);
-                res = 1;
-                stage.addActor(player);
-                player.setInventory(inventory);
-                setEntitiesTarget();
+                if (game.getState() == 3) {
+                    Player p = new Player();
+                    p.create(gameMap.getStartingPoint()[0], gameMap.getStartingPoint()[1], EntityType.PLAYER, gameMap, game);
+                    entities.add(0, p);
+                    player = (Player) entities.get(0);
+                    player.playerHealth.update(camera, stage);
+                    res = 1;
+                    stage.addActor(player);
+                    player.setInventory(inventory);
+                    setEntitiesTarget();
+                }
             }
         });
 
