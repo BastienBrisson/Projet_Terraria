@@ -147,7 +147,6 @@ public class GameMap extends Actor {
                 breakable = false;
             } else {
                 breakingAnimation.setCycleTime(tile.getHardness(), TileType.getTileTypeById(inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile()).getEfficiency());
-                //breakingAnimation.setCycleTime(0); //no break time -> for tests
                 breakable = true;
             }
         }
