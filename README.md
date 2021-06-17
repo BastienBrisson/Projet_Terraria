@@ -1,9 +1,9 @@
 ![Game logo](/TERRARIA/core/assets/logo_big.png)
 
 # Project_Terra
-A little 2D sandbox game, heavily inspired by Minecraft and Terraria (maybe the name gave it away ?)
+A little 2D sandbox game, heavily inspired by Minecraft and Terraria, (maybe the name gave it away ?)
 
-Here is a [video presentation](https://www.youtube.com/watch?v=dQw4w9WgXcQ) of the game.
+here is a little [video presentation](https://www.youtube.com/watch?v=dQw4w9WgXcQ) !
 
 ## Context
 This game was written in Java using the framework libGDX.
@@ -14,7 +14,13 @@ Feel free to contribute to the project, the code architecture is described [here
 
 To install or build from source, see [this](INSTALL.md) document.
 
-## Screenshots
+## Controls
+* **Q & D** to move left and right
+* **Space** to jump
+* **E** to open inventory
+* **Left Click** to break tiles
+* **Right Click** to put tiles
+* **Hold Shift** to run
 
 ## Authors
 * **Bastien Brisson**
@@ -22,6 +28,8 @@ To install or build from source, see [this](INSTALL.md) document.
 * **Flamine Sebti**
 * **Mathys Stephan**
 
-## Licence
-This project does not have any license.
+## Screenshots
+![Game logo](/TERRARIA/core/assets/screenshots/screenshot1.png)
+![Game logo](/TERRARIA/core/assets/screenshots/screenshot2.png)
+
 
