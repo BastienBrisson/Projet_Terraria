@@ -21,6 +21,7 @@ To install or build from source, see [this](INSTALL.md) document.
 * **Left Click** to break tiles
 * **Right Click** to put tiles
 * **Hold Shift** to run
+* **Escape** to open pause menu
 
 ## Authors
 * **Bastien Brisson**
