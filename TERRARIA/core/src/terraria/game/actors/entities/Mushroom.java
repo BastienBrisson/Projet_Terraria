@@ -47,7 +47,7 @@ public class Mushroom extends Entity {
             public void clicked(InputEvent event, float x, float y)  {
                 super.clicked(event, x, y);
                 if (target.getRange() > getX() - target.getX() && target.getRange() > target.getX() - getX() && target.getRange() > getY() - target.getY() && target.getRange() > target.getY() - getY()) {
-                    takeAhit(1);
+                    takeAhit(TileType.getTileTypeById(target.getInventory().getItemsList().get(target.getInventory().getCurrentItems()).getIdTile()).getDamage());
                 }
 
             }
