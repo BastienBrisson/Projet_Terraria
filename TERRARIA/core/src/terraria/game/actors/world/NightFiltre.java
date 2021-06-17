@@ -37,7 +37,7 @@ public class NightFiltre extends Actor {
         i = 1;
 
         temps_depart = System.currentTimeMillis();
-        duree = 20000; // en millisecondes
+        duree = 600000; // en millisecondes
         setSpeed(0);
 
         first = true;
