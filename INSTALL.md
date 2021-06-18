@@ -1,21 +1,12 @@
 
 # Installation and building instructions
 
-## Installing a release
-### Prerequisites
-* Windows, GNU/Linux or Mac
-* 
- 
 ### Installing
-Download the release on the gitHub
+- Download the release [here](https://github.com/Bast5614/Projet_Terraria/releases)
 
-Unzip it and launch `Project Tera.jar` as an executable jar.
-
-## Building from source
-### Prerequisites
-*
+- Unzip it and launch `ProjectTera_v1.0.jar` as an executable jar.
 
 ### Building
-clone the repository.
+- Clone the repository
 
-Run `gradle.....`
+- Run `gradlew desktop:dist` on Linux / `gradlew.bat desktop:dist` on Windows from the [`/TERRARIA`](/TERRARIA) directory to produce an executable jar into `/TERRARIA/desktop/build/libs`.
