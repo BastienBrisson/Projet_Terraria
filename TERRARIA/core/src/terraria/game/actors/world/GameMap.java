@@ -39,7 +39,7 @@ public class GameMap extends Actor {
     Vector3 mouseCoordinate = new Vector3();
     Inventory inventory;
 
-    private Sound mining, blockPoping;
+    private Sound mining, blockPoping, puttingBlock;
     private float soundTimer = 0f, soundInterval = 0.25f;
 
     public int ScreenX, ScreenY,ScreenWidth,ScreenHeigth;
@@ -72,6 +72,7 @@ public class GameMap extends Actor {
         //Load sounds
         mining = game.getAssetManager().get("audio/sound/impact_block.ogg", Sound.class);
         blockPoping = game.getAssetManager().get("audio/sound/block_pop.ogg", Sound.class);
+        puttingBlock = game.getAssetManager().get("audio/sound/block_put.ogg", Sound.class);
 
     }
 
@@ -162,7 +163,7 @@ public class GameMap extends Actor {
             soundTimer += dt;
             if (soundTimer > soundInterval) {
                 soundTimer = 0f;
-                mining.play();
+                mining.play(0.25f);
             }
 
             //destroy tile when finished
@@ -230,8 +231,11 @@ public class GameMap extends Actor {
             //Only put these tiles on grass
             if (handTile == TileType.WEED.getId() || handTile == TileType.SAPLING.getId()) {
                 if (getMap()[(int)coordinate.z][(int)coordinate.y+1][(int)coordinate.x] == TileType.GRASS.getId()) {
+
                     getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = handTile;
                     inventory.getItemsList().get(inventory.getCurrentItems()).decrAmount();
+                    puttingBlock.play();
+
                 }
 
             //Only put tile if there's an adjacent tile
@@ -241,8 +245,10 @@ public class GameMap extends Actor {
                     getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x+1] != 0 ||
                     getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x-1] != 0  ) {
 
-                        getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = handTile;
-                        inventory.getItemsList().get(inventory.getCurrentItems()).decrAmount();
+                    getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = handTile;
+                    inventory.getItemsList().get(inventory.getCurrentItems()).decrAmount();
+                    puttingBlock.play();
+
                 }
             }
 

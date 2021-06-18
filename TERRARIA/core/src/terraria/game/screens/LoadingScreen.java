@@ -98,6 +98,7 @@ public class LoadingScreen extends ScreenAdapter {
         game.getAssetManager().load("audio/sound/player_footstep_grass.wav", Sound.class);
         game.getAssetManager().load("audio/sound/player_footstep.wav", Sound.class);
         game.getAssetManager().load("audio/sound/player_hurt.wav", Sound.class);
+        game.getAssetManager().load("audio/sound/block_put.ogg", Sound.class);
 
     }
     /**

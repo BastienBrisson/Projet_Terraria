@@ -194,9 +194,13 @@ public class GameScreen extends ScreenAdapter {
         forestAmbianceNight = game.getAssetManager().get("audio/music/forest_ambiance_night.wav", Music.class);
 
         gameMusicDay.setLooping(true);
+        gameMusicDay.setVolume(0.5f);
         gameMusicNight.setLooping(true);
+        gameMusicNight.setVolume(0.5f);
         forestAmbianceDay.setLooping(true);
+        forestAmbianceDay.setVolume(0.5f);
         forestAmbianceNight.setLooping(true);
+        forestAmbianceNight.setVolume(0.5f);
 
         TerrariaGame.setState(GAME_RUNNING);
     }
