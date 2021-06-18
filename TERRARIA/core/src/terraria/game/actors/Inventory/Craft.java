@@ -27,7 +27,9 @@ public enum Craft {
     PICKAXE_STONE_CRAFT(29, 1, new int[]{18, 3}, new int[]{1, 3}),
     PICKAXE_IRON_CRAFT(30, 1, new int[]{18, 19}, new int[]{1, 3}),
     PICKAXE_DIAMOND_CRAFT(31, 1, new int[]{18, 21}, new int[]{1, 3}),
-    PICKAXE_GOLD_CRAFT(32, 1, new int[]{18, 20}, new int[]{1, 3});
+    PICKAXE_GOLD_CRAFT(32, 1, new int[]{18, 20}, new int[]{1, 3}),
+
+    COOK_RABBIT_FOOD(36, 1, new int[]{35, 22}, new int[]{1, 1});
 
     private int idItem;             //Item qui sera crée
     private int nbItem;             //Nombre de fois que l'items va être produit

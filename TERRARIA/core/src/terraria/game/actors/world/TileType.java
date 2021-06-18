@@ -56,6 +56,7 @@ public enum TileType {
     MUSHROOM(33, false, "mushroom", 0, 1, 1, true),
     SLIME(34, false, "slime", 0, 1, 1, true),
     RABBIT_MEAT(35, false, "rabbit_meat", 0, 1, 1, true),
+    RABBIT_MEAT_COOK(36, false, "rabbit_meat_cook", 0, 1, 1, true),
 
     //Light filters
     LIGHTSOURCE0(108, false,"light", 0, 1, 1),
