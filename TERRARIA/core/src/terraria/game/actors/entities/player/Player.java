@@ -329,4 +329,5 @@ public class Player extends Entity {
     public void setInventory(Inventory inventory) {
         this.inventory = inventory;
     }
+
 }

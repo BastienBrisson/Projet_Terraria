@@ -14,6 +14,7 @@ public class PlayerHealth {
 
 
     public double health;  //0 = death
+    public double maxHealth = 10;
     public TextureRegion[][] heart;
     float ScreenX, ScreenY,ScreenWidth,ScreenHeigth;
 
@@ -28,6 +29,14 @@ public class PlayerHealth {
     public void ApplyDamage(double damage) {
         double newHealth = health - Math.round(damage*4f)/4f;
         health = (newHealth > 0) ? newHealth : 0;
+    }
+
+    public void addHealth(double suppHealth) {
+        if (health+suppHealth<=maxHealth) {
+            this.health += suppHealth;
+        } else {
+            this.health = maxHealth;
+        }
     }
 
     public void update(Camera camera, Stage stage){
@@ -66,5 +75,6 @@ public class PlayerHealth {
         }
 
     }
+
 
 }

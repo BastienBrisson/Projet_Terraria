@@ -253,6 +253,16 @@ public class GameScreen extends ScreenAdapter {
             }
         }
 
+        if (Gdx.input.isButtonJustPressed(Buttons.RIGHT) && inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile() == 36) {
+            player.playerHealth.addHealth(2);
+            inventory.getItemsList().get(inventory.getCurrentItems()).decrAmount();
+        }
+
+        if (Gdx.input.isButtonJustPressed(Buttons.RIGHT) && inventory.getItemsList().get(inventory.getCurrentItems()).getIdTile() == 35) {
+            player.playerHealth.addHealth(1);
+            inventory.getItemsList().get(inventory.getCurrentItems()).decrAmount();
+        }
+
         //Handle music
         TileType backTile = gameMap.getTileTypeByLocation(0, player.getX(), player.getY());
         DayNightCycle.TimeOfDay timeOfDay = dayNightCycle.getTime();
