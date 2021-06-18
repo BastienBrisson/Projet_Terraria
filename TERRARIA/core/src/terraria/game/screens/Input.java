@@ -41,11 +41,15 @@ public class Input implements InputProcessor {
             default:
                 break;
         }*/
-        return true;
+        return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
+        if (keycode == Keys.CONTROL_LEFT) {
+            resetZoom();
+            return true;
+        }
         return false;
     }
 
@@ -111,11 +115,12 @@ public class Input implements InputProcessor {
     @Override
     public boolean scrolled(float amountX, float amountY) {
         if(TerrariaGame.getState() == GameScreen.GAME_RUNNING) {
-            if(Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.CONTROL_LEFT)) {
+
+            if(Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
                 float ratio = screen.getStage().getViewport().getWorldWidth()/screen.getStage().getViewport().getWorldHeight();
 
                 if(amountY == 1) {
-                    //System.out.println(ratio);
+
                     if(this.zoomIndice < 2) {
 
                         screen.getCamera().zoom += 0.1f;
@@ -127,6 +132,7 @@ public class Input implements InputProcessor {
 
                         zoomIndice += 1;
                     }
+
                 } else if(amountY == -1) {
                     if (this.zoomIndice > -3) {
                         screen.getCamera().zoom -= 0.1f;
@@ -139,7 +145,9 @@ public class Input implements InputProcessor {
                         zoomIndice -= 1;
                     }
                 }
+
             } else {
+
                 if(amountY == 1) {
                     if(screen.inventory.getCurrentItems() == 9) {
                         Inventory.setCurrentItems(0);
@@ -157,4 +165,32 @@ public class Input implements InputProcessor {
         }
         return false;
     }
+
+    public void resetZoom() {
+        float ratio = screen.getStage().getViewport().getWorldWidth()/screen.getStage().getViewport().getWorldHeight();
+        float width;
+
+        while (zoomIndice < 0) {
+            screen.getCamera().zoom += 0.1f;
+
+            width = screen.getStage().getViewport().getWorldWidth();
+
+            this.screen.getStage().getViewport().setScreenWidth(( (screen.getStage().getViewport().getScreenWidth() + (int)(width * 0.1))));
+            this.screen.getStage().getViewport().setScreenHeight( (screen.getStage().getViewport().getScreenHeight() + (int)((width * 0.1)/ratio)));
+
+            zoomIndice += 1;
+        }
+
+        while (zoomIndice > 0) {
+            screen.getCamera().zoom -= 0.1f;
+
+            width = screen.getStage().getViewport().getWorldWidth();
+
+            this.screen.getStage().getViewport().setScreenWidth( (screen.getStage().getViewport().getScreenWidth() - (int)(width * 0.1)));
+            this.screen.getStage().getViewport().setScreenHeight( (screen.getStage().getViewport().getScreenHeight() - (int)((width * 0.1)/ratio)));
+
+            zoomIndice -= 1;
+        }
+    }
+
 }
