@@ -148,8 +148,8 @@ public class Player extends Entity {
                 }
 
                 //Si la cam sort du cadre
-                if (camera.position.x - pos.x > 250 || pos.x - camera.position.x > 250 || pos.y - camera.position.y > 250 || camera.position.y - pos.y > 250 ){
-                    camera.position.set(pos.x , pos.y+100, 0);
+                if (camera.position.x - pos.x > 201 || pos.x - camera.position.x > 201 || pos.y - camera.position.y > 201 || camera.position.y - pos.y > 201 ){
+                    camera.position.set(pos.x , pos.y+200, 0);
                 }
             }
             camera.unproject(worldCoordinates);
