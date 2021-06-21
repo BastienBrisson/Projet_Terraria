@@ -3,7 +3,7 @@
 # Project_Terra
 A little 2D sandbox game, heavily inspired by Minecraft and Terraria, (maybe the name gave it away ?)
 
-here is a little [video presentation](https://www.youtube.com/watch?v=dQw4w9WgXcQ) !
+here is a little [video presentation](https://www.youtube.com/watch?v=YT99sOy5-_U) !
 
 ## Context
 This game was written in Java using the framework libGDX.
