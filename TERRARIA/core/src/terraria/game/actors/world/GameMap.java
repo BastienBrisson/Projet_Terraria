@@ -245,9 +245,11 @@ public class GameMap extends Actor {
                     getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x+1] != 0 ||
                     getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x-1] != 0  ) {
 
-                    getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = handTile;
-                    inventory.getItemsList().get(inventory.getCurrentItems()).decrAmount();
-                    puttingBlock.play();
+                    if (handTile != 0 && !TileType.getTileTypeById(handTile).isItem()) {
+                        getMap()[(int)coordinate.z][(int)coordinate.y][(int)coordinate.x] = handTile;
+                        inventory.getItemsList().get(inventory.getCurrentItems()).decrAmount();
+                        puttingBlock.play();
+                    }
 
                 }
             }

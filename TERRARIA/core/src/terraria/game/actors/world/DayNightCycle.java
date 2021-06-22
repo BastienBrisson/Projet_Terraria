@@ -1,4 +1,5 @@
 package terraria.game.actors.world;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -11,22 +12,15 @@ public class DayNightCycle extends Actor {
 
     OrthographicCamera camera;
 
-    private TimeOfDay time;
-    private final Texture textures;
+    private TimeOfDay timeOfDay;
+    private final Texture texture;
+    private boolean nightFilter;
 
-    float x, y, width, heigth = 0;
-    float scaleX, scaleY = 1;
-    int originX, originY, rotation, srcX, srcY = 0;
-    boolean flipX, flipY = false;
+    float x, y, width, heigth;
+    int srcY;
 
-    private int scroll = 0;
-    private int speed = 0;
-
-    long temps_depart;
-    long duree;
-
-    boolean first;
-    int i;
+    private static float dayTimer;
+    private final float dayLength = 600; //durée d'un jour / d'une nuit (en seconde)
 
 
     public enum TimeOfDay {
@@ -36,29 +30,21 @@ public class DayNightCycle extends Actor {
         SUNRISE;
     }
 
-    public DayNightCycle(Texture textures) {
+    public DayNightCycle(Texture texture, boolean nightFilter, int srcY, float dayTimer) {
+        this.texture = texture;
+        this.texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
-        this.textures = textures;
-        this.time = TimeOfDay.DAY;
-        textures.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-        scaleX = scaleY = 1;
-        i = 1;
+        this.nightFilter = nightFilter;
 
-        temps_depart = System.currentTimeMillis();
-        duree = 600000; // 10min en millisecondes
-        setSpeed(0);
+        this.srcY = srcY;
+        if (srcY == 0) timeOfDay = TimeOfDay.DAY;
+        else if (srcY == 1068) timeOfDay = TimeOfDay.NIGHT;
+        else if (srcY < 1068) timeOfDay = TimeOfDay.SUNSET;
+        else if (srcY > 1068) timeOfDay = TimeOfDay.SUNRISE;
 
-        first = true;
-
+        this.dayTimer = dayTimer;
     }
 
-    public void setSpeed(int newSpeed) {
-        this.speed = newSpeed;
-    }
-
-    public TimeOfDay getTime(){
-        return time;
-    }
 
     /**
      * mise à jour de la camera
@@ -66,7 +52,7 @@ public class DayNightCycle extends Actor {
      * @param camera
      * @param stage
      */
-    public void update(OrthographicCamera camera, Stage stage) {
+    public void update(float delta, OrthographicCamera camera, Stage stage) {
 
         this.camera = camera;
         Vector3 vec = camera.position;
@@ -74,6 +60,24 @@ public class DayNightCycle extends Actor {
         y = vec.y - stage.getViewport().getScreenHeight() / 2;
         width = stage.getViewport().getScreenWidth();
         heigth = stage.getViewport().getScreenHeight() * 6;
+
+        dayTimer += delta;
+
+        if(dayTimer >= dayLength) {
+
+            srcY = (srcY + 1) % 2136;
+
+            if (srcY == 0 /*day coordinate*/ || srcY == 1068 /*night coordinate*/) dayTimer = 0;
+            else if (srcY < 1068) timeOfDay = TimeOfDay.SUNSET;
+            else if (srcY > 1068) timeOfDay = TimeOfDay.SUNRISE;
+
+        } else {
+
+            if(srcY < 1068 ) timeOfDay = TimeOfDay.DAY;
+            if(srcY >= 1068  ) timeOfDay = TimeOfDay.NIGHT;
+
+        }
+
 
     }
 
@@ -85,47 +89,30 @@ public class DayNightCycle extends Actor {
      */
     @Override
     public void draw(Batch batch, float parentAlpha) {
-
         batch.setColor(getColor().r, getColor().g, getColor().b, getColor().a * parentAlpha);
 
-        scroll -= speed;
-        srcY = scroll;
-        srcY = srcY/4;
+        if (nightFilter) {
 
-        if(temps_depart - System.currentTimeMillis() < -duree)
-        {
-            setSpeed(3);
+            int srcFunc = batch.getBlendSrcFunc();
+            int dstFunc = batch.getBlendDstFunc();
+            batch.enableBlending();
+            batch.setBlendFunction(Gdx.gl20.GL_ZERO, Gdx.gl20.GL_SRC_COLOR);
+            batch.draw(texture, x, y, 0, 0, width, heigth, 1, 1, 0, 0, -srcY, texture.getWidth(), texture.getHeight(), false, false);
+            batch.setBlendFunction(srcFunc , dstFunc);
 
-            if(srcY == -1068 /*night coordinate*/ * i || srcY == - 2136 /*light coordinate*/ * i){
+        } else {
 
-                temps_depart = System.currentTimeMillis();
-                if(first){i++; first = false;}
-                setSpeed(0);
-
-            }
-            else{
-
-                if(-srcY%2136 < 1068 ){time = TimeOfDay.SUNSET;}
-                if(-srcY%2136 >= 1068  ){time = TimeOfDay.SUNRISE;}
-
-                first = true;
-            }
+            batch.draw(texture, x, y, 0, 0, width, heigth, 1, 1, 0, 0, -srcY, texture.getWidth(), texture.getHeight(), false, false);
 
         }
-        else{
-            if(-srcY%2136 < 1068 ){time = TimeOfDay.DAY;}
-            if(-srcY%2136 >= 1068  ){time = TimeOfDay.NIGHT;}
-        }
-
-
-
-        batch.draw(textures, x, y, originX, originY, width, heigth, scaleX, scaleY, rotation, srcX, srcY, textures.getWidth(), textures.getHeight(), flipX, flipY);
-
 
     }
 
-    public long getDuree() {
-        return duree;
+    public TimeOfDay getTimeOfDay(){
+        return timeOfDay;
+    }
+    public float getDayLength() {
+        return dayLength;
     }
 }
 

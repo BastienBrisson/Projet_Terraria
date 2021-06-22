@@ -43,8 +43,7 @@ public class GameScreen extends ScreenAdapter {
     //Acteurs//
     ParallaxBackground parallaxBackground;
     Inventory inventory;
-    DayNightCycle dayNightCycle;
-    NightFiltre nightFiltre;
+    DayNightCycle dayNightCycle, nightFiltre;
 
     private Music gameMusicDay, gameMusicNight;
     private Music forestAmbianceDay, forestAmbianceNight;
@@ -58,9 +57,9 @@ public class GameScreen extends ScreenAdapter {
 
     protected ArrayList<Entity> entities;
     private final int MAX_ENTITIES = 128;
-    private int dayLength;
-    private int rabbitSpawnRate, mushroomSpawnRate, slimeSpawnRate;
-    private float rabbitTimer = rabbitSpawnRate-10, mushroomTimer = 0, slimeTimer = 0;
+    private float dayLength;
+    private float rabbitSpawnRate, mushroomSpawnRate, slimeSpawnRate;
+    private float rabbitTimer = 0, mushroomTimer = 0, slimeTimer = 0;
 
     Player player;
     private int res = 0;
@@ -71,18 +70,20 @@ public class GameScreen extends ScreenAdapter {
         this.entities = entities;
         this.gameMap = gameMap;
 
-        //Initialisation du stage et de la camera//
+        //Initialisation du stage et de la camera
         stage = new Stage(new ScreenViewport());
         camera = (OrthographicCamera) stage.getViewport().getCamera();
 
+        //Initialisation du cycle jour/nuit
+        dayNightCycle = new DayNightCycle(game.getAssetManager().get("dayNightCycle.png",Texture.class), false, 0, 0);
+        nightFiltre = new DayNightCycle(game.getAssetManager().get("filtreNight.png",Texture.class), true, 0, 0);
 
-        dayNightCycle = new DayNightCycle(game.getAssetManager().get("dayNightCycle.png",Texture.class));
-        nightFiltre = new NightFiltre(new Texture("filtreNight.png"));
-        dayLength = (int) dayNightCycle.getDuree() / 1000;  //in seconds
+        dayLength = dayNightCycle.getDayLength();
         rabbitSpawnRate = dayLength / 20;   //20 rabbit spawn every day
         mushroomSpawnRate = dayLength / 10;
         slimeSpawnRate = dayLength / 20;
 
+        //Création des boutons
         TextureRegion save = new TextureRegion(new Texture(Gdx.files.internal("background/save.png")));
         TextureRegion savePressed = new TextureRegion(new Texture(Gdx.files.internal("background/savePressed.png")));
         saveButton = new ImageButton(new TextureRegionDrawable(save), new TextureRegionDrawable(savePressed));
@@ -149,15 +150,33 @@ public class GameScreen extends ScreenAdapter {
             }
         });
 
+        //Initialisation background
         parallaxBackground.setSize(stage.getViewport().getScreenWidth(),stage.getViewport().getScreenHeight());
         parallaxBackground.setSpeed(1);
 
+        //Initialisation player
         player = (Player) entities.get(0);
         gameMap.getDataMap().startingPoint[0] = (int) player.pos.x;
         gameMap.getDataMap().startingPoint[1] = (int) player.pos.y;
         inventory = player.getInventory();
 
-        //On ajoute nos acteurs//
+        //Initialisation de l'audio
+        gameMusicDay = game.getAssetManager().get("audio/music/game_song_day.mp3", Music.class);
+        gameMusicNight = game.getAssetManager().get("audio/music/game_song_night.mp3", Music.class);
+
+        forestAmbianceDay = game.getAssetManager().get("audio/music/forest_ambiance_day.wav", Music.class);
+        forestAmbianceNight = game.getAssetManager().get("audio/music/forest_ambiance_night.wav", Music.class);
+
+        gameMusicDay.setLooping(true);
+        gameMusicDay.setVolume(0.5f);
+        gameMusicNight.setLooping(true);
+        gameMusicNight.setVolume(0.5f);
+        forestAmbianceDay.setLooping(true);
+        forestAmbianceDay.setVolume(0.5f);
+        forestAmbianceNight.setLooping(true);
+        forestAmbianceNight.setVolume(0.5f);
+
+        //Ajout des acteurs
         stage.addActor(dayNightCycle);
         stage.addActor(parallaxBackground);
         stage.addActor(gameMap);
@@ -183,24 +202,8 @@ public class GameScreen extends ScreenAdapter {
         stage.addActor(inventory.getLeftArrow());
         stage.addActor(inventory.getRightArrow());
 
-        //Make mobs focus the player
-        setEntitiesTarget();
 
-        //Initialize music
-        gameMusicDay = game.getAssetManager().get("audio/music/game_song_day.mp3", Music.class);
-        gameMusicNight = game.getAssetManager().get("audio/music/game_song_night.mp3", Music.class);
-
-        forestAmbianceDay = game.getAssetManager().get("audio/music/forest_ambiance_day.wav", Music.class);
-        forestAmbianceNight = game.getAssetManager().get("audio/music/forest_ambiance_night.wav", Music.class);
-
-        gameMusicDay.setLooping(true);
-        gameMusicDay.setVolume(0.5f);
-        gameMusicNight.setLooping(true);
-        gameMusicNight.setVolume(0.5f);
-        forestAmbianceDay.setLooping(true);
-        forestAmbianceDay.setVolume(0.5f);
-        forestAmbianceNight.setLooping(true);
-        forestAmbianceNight.setVolume(0.5f);
+        setEntitiesTarget();    //Makes mobs focus the player
 
         TerrariaGame.setState(GAME_RUNNING);
     }
@@ -269,7 +272,7 @@ public class GameScreen extends ScreenAdapter {
 
         //Handle music
         TileType backTile = gameMap.getTileTypeByLocation(0, player.getX(), player.getY());
-        DayNightCycle.TimeOfDay timeOfDay = dayNightCycle.getTime();
+        DayNightCycle.TimeOfDay timeOfDay = dayNightCycle.getTimeOfDay();
         switch (timeOfDay) {
             case SUNRISE:
             case DAY:
@@ -330,9 +333,9 @@ public class GameScreen extends ScreenAdapter {
             }
         }
 
-        dayNightCycle.update(camera,stage);
+        dayNightCycle.update(delta, camera,stage);
         parallaxBackground.update(camera, stage);
-        nightFiltre.update(camera,stage);
+        nightFiltre.update(delta,camera,stage);
         inventory.update(camera, stage);
         for (ItemsGraphic items : inventory.getGraphicItems()) {
             items.update(camera, stage, inventory.isInventoryOpen());
@@ -378,8 +381,6 @@ public class GameScreen extends ScreenAdapter {
         inputMultiplexer.addProcessor(new terraria.game.screens.Input(this));
         inputMultiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(inputMultiplexer);
-        gameMusicDay.play();
-        forestAmbianceDay.play();
     }
 
 
