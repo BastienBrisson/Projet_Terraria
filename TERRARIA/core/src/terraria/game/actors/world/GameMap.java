@@ -97,6 +97,10 @@ public class GameMap extends Actor {
         return dataMap.map.length;
     }
 
+    public int getSrcY() {return dataMap.srcY;}
+
+    public float getDayTimer() {return dataMap.dayTimer;}
+
     public void update(Camera camera, Stage stage){
         this.camera = camera;
         Vector3 vec = camera.position;

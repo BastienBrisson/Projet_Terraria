@@ -75,8 +75,8 @@ public class GameScreen extends ScreenAdapter {
         camera = (OrthographicCamera) stage.getViewport().getCamera();
 
         //Initialisation du cycle jour/nuit
-        dayNightCycle = new DayNightCycle(game.getAssetManager().get("dayNightCycle.png",Texture.class), false, 0, 0);
-        nightFiltre = new DayNightCycle(game.getAssetManager().get("filtreNight.png",Texture.class), true, 0, 0);
+        dayNightCycle = new DayNightCycle(game.getAssetManager().get("dayNightCycle.png",Texture.class), false, gameMap.getSrcY(), gameMap.getDayTimer());
+        nightFiltre = new DayNightCycle(game.getAssetManager().get("filtreNight.png",Texture.class), true, gameMap.getSrcY(), gameMap.getDayTimer());
 
         dayLength = dayNightCycle.getDayLength();
         rabbitSpawnRate = dayLength / 20;   //20 rabbit spawn every day
@@ -93,7 +93,7 @@ public class GameScreen extends ScreenAdapter {
                 super.tap(event, x, y, count, button);
                 if (game.getState() == 2) {
                     EntityLoader.saveEntities("test", entities);
-                    MapLoader.saveMap(gameMap.getId(), gameMap.getName(), gameMap.getMap(), gameMap.getStartingPoint());
+                    MapLoader.saveMap(gameMap.getId(), gameMap.getName(), gameMap.getMap(), gameMap.getStartingPoint(), dayNightCycle.getSrcY(), dayNightCycle.getDayTimer());
                 }
 
             }
@@ -122,7 +122,7 @@ public class GameScreen extends ScreenAdapter {
                     dispose();
                     game.getAssetManager().clear();
                     EntityLoader.saveEntities("test", entities);
-                    MapLoader.saveMap(gameMap.getId(), gameMap.getName(), gameMap.getMap(), gameMap.getStartingPoint());
+                    MapLoader.saveMap(gameMap.getId(), gameMap.getName(), gameMap.getMap(), gameMap.getStartingPoint(), dayNightCycle.getSrcY(), dayNightCycle.getDayTimer());
                     game.setScreen(new MainMenuScreen(game));
                 }
             }

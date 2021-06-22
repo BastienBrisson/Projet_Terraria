@@ -114,6 +114,14 @@ public class DayNightCycle extends Actor {
     public float getDayLength() {
         return dayLength;
     }
+
+    public int getSrcY() {
+        return this.srcY;
+    }
+
+    public float getDayTimer() {
+        return this.dayTimer;
+    }
 }
 
 

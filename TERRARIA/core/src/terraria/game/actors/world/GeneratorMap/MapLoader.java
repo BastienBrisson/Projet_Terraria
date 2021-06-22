@@ -35,7 +35,7 @@ public class MapLoader {
             mapData = json.fromJson(DataMap.class, file.readString());
         } else {
             mapData = generateRandomMap(id, name);
-            saveMap(mapData.id, mapData.name, mapData.map, mapData.startingPoint);
+            saveMap(mapData.id, mapData.name, mapData.map, mapData.startingPoint, mapData.srcY, mapData.dayTimer);
             mapData = json.fromJson(DataMap.class, file.readString());
         }
         return mapData;
@@ -48,7 +48,7 @@ public class MapLoader {
      * @param name
      * @param map
      */
-    public static void saveMap(String id, String name, int[][][] map, int[] startingPoint) {
+    public static void saveMap(String id, String name, int[][][] map, int[] startingPoint, int srcY, float dayTimer) {
         DataMap mapData = new DataMap();
         mapData.id = id;
         mapData.name = name;
@@ -56,6 +56,8 @@ public class MapLoader {
         mapData.startingPoint = startingPoint;
         mapData.height = HEIGHT;
         mapData.width = WIDTH;
+        mapData.srcY = srcY;
+        mapData.dayTimer = dayTimer;
 
         Gdx.files.local("saves/").file().mkdirs();
         FileHandle file = Gdx.files.local("saves/" + id + ".map");

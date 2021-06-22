@@ -15,6 +15,8 @@ public class DataMap {
     public int[] startingPoint;
     public int height;
     public int width;
+    public int srcY;
+    public float dayTimer;
 
 
 }
