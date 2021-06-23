@@ -15,22 +15,34 @@ Feel free to contribute to the project, the code architecture is described [here
 To install or build from source, see [this](INSTALL.md) document.
 
 ## Controls
-* **Q & D** to move left and right
-* **Space** to jump
-* **E** to open inventory
-* **Left Click** to break tiles
-* **Right Click** to put tiles
-* **Hold Shift** to run
-* **Escape** to open pause menu
-
-## Authors
-* **Bastien Brisson**
-* **Killyan Bour**
-* **Flamine Sebti**
-* **Mathys Stephan**
+| Key | Effect | 
+| :-: |:------:| 
+| Q & D  | move left and right |  
+| Space / Z | jump |   
+| E      | open inventory |    
+| Left Click | break tile |
+| Right Click | put tile / use item |
+| Hold shift | run |
+| Escape | pause |
+| Hold control and scroll| control camera zoom |
 
 ## Screenshots
 ![Game logo](/TERRARIA/core/assets/screenshots/screenshot1.png)
 ![Game logo](/TERRARIA/core/assets/screenshots/screenshot2.png)
 
+## Credits
+Developped by :
+* **Bastien Brisson**
+* **Killyan Bour**
+* **Flamine Sebti**
+* **Mathys Stephan**
 
+We sourced many of the graphic/audio assets :
+- **Tileset** from [analogstudios](https://analogstudios.itch.io/)
+- **Character sprite** from [software-atelier](https://shop.software-atelier.ch/)
+- **Mob sprites** from [o_lobster](https://o-lobster.itch.io/)
+- **Buttons sprites** from [mikiz](https://mikiz.itch.io/)
+- **Background** from [vnitti](https://vnitti.itch.io/)
+- **Items sprites** from minecraft vanilla texture pack
+- **Musics** from the OST of Zelda Breath of the Wild
+- **Sounds** use assets from [the Super Dialogue Audio Pack by Dillon Becker](https://dillonbecker.itch.io/sdap), [Kenney impact sounds](https://www.kenney.nl/assets?q=audio), [kronbits 200 freeSFX](https://kronbits.itch.io/freesfx)
