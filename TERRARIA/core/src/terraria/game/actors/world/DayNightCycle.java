@@ -19,7 +19,7 @@ public class DayNightCycle extends Actor {
     float x, y, width, heigth;
     int srcY;
 
-    private static float dayTimer;
+    private float dayTimer;
     private final float dayLength = 600; //durée d'un jour / d'une nuit (en seconde)
 
 

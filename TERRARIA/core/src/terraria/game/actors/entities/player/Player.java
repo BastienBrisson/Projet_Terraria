@@ -43,6 +43,7 @@ public class Player extends Entity {
     private Sound hurt, footstep_solid, footstep_grass;
     private float stepSoundTimer = 0f;
     private float stepSoundInterval = 0.35f;
+    private static boolean movingHorizontally;
 
     private static int state = 0;
     private static final int IDLE = 0, JUMPING = 1, RUNNING = 2, HIT = 3, WALKING = 4;
@@ -175,14 +176,23 @@ public class Player extends Entity {
 
         //Handle the controls
         if (Gdx.input.isKeyPressed(Keys.Q) && TerrariaGame.getState() == GameScreen.GAME_RUNNING) {
-            if (moveX(-speed * deltaTime) && grounded && !invulnerable) {
-                playSteppingSound(deltaTime);
+            if (moveX(-speed * deltaTime)) {
+                movingHorizontally = true;
+                if (grounded && !invulnerable) playSteppingSound(deltaTime);
+            } else {
+                movingHorizontally = false;
             }
         }
         else if (Gdx.input.isKeyPressed(Keys.D) && TerrariaGame.getState() == GameScreen.GAME_RUNNING) {
-            if (moveX(speed * deltaTime) && grounded && !invulnerable) {
-                playSteppingSound(deltaTime);
+            if (moveX(speed * deltaTime)) {
+                movingHorizontally = true;
+                if (grounded && !invulnerable) playSteppingSound(deltaTime);
+            } else {
+                movingHorizontally = false;
             }
+        }
+        else {
+            movingHorizontally = false;
         }
 
         //Check the invulnerability frame
@@ -326,6 +336,9 @@ public class Player extends Entity {
         return SPAWN_RADIUS;
     }
     public double getHealth() { return playerHealth.health; }
+    public static boolean isMovingHorizontally() {
+        return movingHorizontally;
+    }
     public void setInventory(Inventory inventory) {
         this.inventory = inventory;
     }

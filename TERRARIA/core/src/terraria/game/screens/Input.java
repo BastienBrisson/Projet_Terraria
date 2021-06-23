@@ -5,9 +5,6 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
 import terraria.game.TerrariaGame;
 import terraria.game.actors.Inventory.Inventory;
-import terraria.game.actors.entities.EntityLoader;
-import terraria.game.actors.entities.EntityType;
-import terraria.game.actors.world.GeneratorMap.MapLoader;
 
 public class Input implements InputProcessor {
 
@@ -20,27 +17,6 @@ public class Input implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        /*switch (keycode) {
-            //Save
-            case Keys.ALT_RIGHT:
-                EntityLoader.saveEntities("test", this.screen.entities);
-                MapLoader.saveMap(this.screen.gameMap.getId(), this.screen.gameMap.getName(), this.screen.gameMap.getMap(), this.screen.gameMap.getStartingPoint());
-                break;
-
-            //Spawn mobs
-            case Keys.M:
-                screen.spawnMob(EntityType.MUSHROOM);
-                break;
-            case Keys.L:
-                screen.spawnMob(EntityType.RABBIT);
-                break;
-            case Keys.K:
-                screen.spawnMob(EntityType.SLIME);
-                break;
-
-            default:
-                break;
-        }*/
         return false;
     }
 
