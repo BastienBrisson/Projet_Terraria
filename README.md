@@ -1,7 +1,7 @@
 ![Game logo](/TERRARIA/core/assets/logo_big.png)
 
 # Project_Terra
-A little 2D sandbox game, heavily inspired by Minecraft and Terraria, (maybe the name gave it away ?)
+A little 2D sandbox game, heavily inspired by Minecraft and Terraria (maybe the title gave it away ?),
 
 here is a little [video presentation](https://www.youtube.com/watch?v=YT99sOy5-_U) !
 
@@ -37,7 +37,7 @@ Developped by :
 * **Flamine Sebti**
 * **Mathys Stephan**
 
-We sourced many of the graphic/audio assets :
+We used existing assets :
 - **Tileset** from [analogstudios](https://analogstudios.itch.io/)
 - **Character sprite** from [software-atelier](https://shop.software-atelier.ch/)
 - **Mob sprites** from [o_lobster](https://o-lobster.itch.io/)
