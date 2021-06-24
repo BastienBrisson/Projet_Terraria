@@ -26,6 +26,19 @@ To install or build from source, see [this](INSTALL.md) document.
 | Escape | pause |
 | Hold control and scroll| control camera zoom |
 
+## Content
+Future features to implement :
+
+- Rework light and implement torches (or other light sources)
+- Implement items that add crafts (Terraria style) (such as craft-tables and/or furnace)
+- Ability to craft/destroy/put background tiles
+- Implements liquids (water/lava) (physics of the liquids, ability to swim/breath under water and generate ocean)
+- Add durability to items
+- Add options in pause menu (remap keys, change volume of music/sounds)
+- Ability to handle multiple saves/maps in main menu 
+
+*And of course there is always room to implement new mobs and items*
+
 ## Screenshots
 ![Game logo](/TERRARIA/core/assets/screenshots/screenshot1.png)
 ![Game logo](/TERRARIA/core/assets/screenshots/screenshot2.png)
