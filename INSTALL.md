@@ -4,7 +4,7 @@
 ### Installing
 - Download the release [here](https://github.com/Bast5614/Projet_Terraria/releases)
 
-- Unzip it and launch `ProjectTera_v1.0.jar` as an executable jar.
+- Launch `Project.Terra.v1.0.jar` as an executable jar.
 
 ### Building
 - Clone the repository
