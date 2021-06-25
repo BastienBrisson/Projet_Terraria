@@ -2,7 +2,7 @@
 
 ## UML
 
-insert UML diagram
+![image](https://user-images.githubusercontent.com/72931362/123392369-43435500-d59d-11eb-8286-d0fffb3423de.png)
 
 ![UML](/TERRARIA/core/assets/icons/icon_128.png)
 
