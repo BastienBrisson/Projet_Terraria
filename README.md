@@ -1,4 +1,4 @@
-![Game logo](/TERRARIA/core/assets/logo_big.png)
+![Game logo](/core/assets/logo_big.png)
 
 # Project_Terra
 A little 2D sandbox game, heavily inspired by Minecraft and Terraria (maybe the title gave it away ?),
@@ -40,8 +40,8 @@ Future features to implement :
 *And of course there is always room to implement new mobs and items*
 
 ## Screenshots
-![Game logo](/TERRARIA/core/assets/screenshots/screenshot1.png)
-![Game logo](/TERRARIA/core/assets/screenshots/screenshot2.png)
+![Game logo](/core/assets/screenshots/screenshot1.png)
+![Game logo](/core/assets/screenshots/screenshot2.png)
 
 ## Credits
 Developped by :
