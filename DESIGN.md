@@ -6,9 +6,9 @@
 
 ## Packages structure
 
-The first class called is DesktopLauncher (in [`/TERRARIA/desktop`](/TERRARIA/desktop)) which setup the window and then calls the class TerrariaGame (in [`/TERRARIA/core`](/TERRARIA/core)) that directly calls the MainMenuScreen class in the Screens package,
+The first class called is DesktopLauncher (in [`/desktop`](/desktop/src/terraria/game/desktop/)) which setup the window and then calls the class TerrariaGame (in [`/core`](/core/src/terraria/game/)) that directly calls the MainMenuScreen class in the Screens package,
 
-the project is then structured in 2 main packages (in the [`core file`](/TERRARIA/core)):
+the project is then structured in 2 main packages (in the [`core file`](/core/src/terraria/game/)):
 
 * Actors : 
   * Entities    (handles the player and all mobs)
@@ -19,4 +19,6 @@ the project is then structured in 2 main packages (in the [`core file`](/TERRARI
 
     
 ## Libraries
+The game is made using LibGDX
+
 We are using Gradle to manage dependencies
