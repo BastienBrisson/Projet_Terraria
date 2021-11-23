@@ -1,7 +1,7 @@
-
-/TERRARIA/core/assets/saves/
-/TERRARIA/desktop/build/
-/TERRARIA/core/build/
+### Project ###
+core/assets/saves/
+desktop/build/
+core/build/
 
 # Created by https://www.toptal.com/developers/gitignore/api/intellij,visualstudio,eclipse
 # Edit at https://www.toptal.com/developers/gitignore?templates=intellij,visualstudio,eclipse
