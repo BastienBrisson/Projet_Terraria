@@ -13,4 +13,4 @@
 ## Building
 - Clone the repository
 
-- Run `gradlew desktop:dist` on Linux / `gradlew.bat desktop:dist` on Windows from the [`/TERRARIA`](/TERRARIA) directory to produce an executable jar into `/TERRARIA/desktop/build/libs`.
+- Run `gradlew desktop:dist` on Linux / `gradlew.bat desktop:dist` on Windows from the repo to produce an executable jar into `/desktop/build/libs`.
